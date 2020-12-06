@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/custom_for_user_details"
+    tools:context=".user_data">
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/custom_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@id/family">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/enter_your_name"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/custom_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@id/family">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/family"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/enter_your_family"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/custom_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:imeOptions="actionDone">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/age"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/enter_your_age"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/male"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:backgroundTint="#0277BD"
+            android:text="@string/male"
+            android:textColor="@color/white"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/female"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:backgroundTint="#0277BD"
+            android:text="@string/female"
+            android:textColor="@color/white"
+            tools:ignore="ButtonStyle" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:background="#0277BD"
+        android:text="@string/upload_image" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:progressBackgroundTint="@color/black"
+        android:progressTint="@color/purple_700" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
+        android:text="@string/submit" />
+
+</LinearLayout>

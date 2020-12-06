@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "921328666529",
+    "firebase_url": "https://ayiri-d579c.firebaseio.com",
+    "project_id": "ayiri-d579c",
+    "storage_bucket": "ayiri-d579c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921328666529:android:b2f66d7def787bec5b6de0",
+        "android_client_info": {
+          "package_name": "com.ka12.ayirimatrimony"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921328666529-4ug7f3m5a4ue631j720gqgfss6bhbl5e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ka12.ayirimatrimony",
+            "certificate_hash": "9f17d2ac4a8588e364c3b596cda482d81af3becf"
+          }
+        },
+        {
+          "client_id": "921328666529-dqu2bjhs7tttq16rfs4g96bbndm81rlo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJRdu1MH9Qu9CWrZ1pVVjAg8Lx8iF1llk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921328666529-dqu2bjhs7tttq16rfs4g96bbndm81rlo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

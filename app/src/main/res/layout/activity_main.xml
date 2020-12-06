@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Platform.MaterialComponents.Light"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/change_frag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp" />
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="#EC4444"
+        android:orientation="horizontal">
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            app:bt_colorActive="@color/black"
+            app:bt_colorInactive="@color/white"
+            app:bt_icon="@drawable/match"
+            app:bt_title="Matches" />
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            app:bt_colorActive="@color/black"
+            app:bt_colorInactive="@color/white"
+            app:bt_icon="@drawable/home"
+            app:bt_title="Home" />
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_colorActive="@color/black"
+            app:bt_colorInactive="@color/white"
+            app:bt_icon="@drawable/profile"
+            app:bt_title="Profile" />
+
+    </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+
+</RelativeLayout>

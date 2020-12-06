@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/edits"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:importantForAutofill="no"
+        android:textSize="21sp"
+        android:hint="@string/entre_the_value_here"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textStyle="italic"
+        android:inputType="text"
+        tools:ignore="LabelFor" />
+
+</FrameLayout>

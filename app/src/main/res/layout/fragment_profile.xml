@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_frag"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".profile">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:src="@drawable/profile"
+        app:civ_border_color="@color/black"
+        app:civ_border_width="3dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="10dp"
+        android:background="#7A7878"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="left|center_vertical"
+        android:text="@string/edit_profile"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/down"
+        tools:ignore="RtlHardcoded" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#7A7878"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="left|center_vertical"
+        android:text="@string/name"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/edit"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/surname"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="left|center_vertical"
+        android:text="@string/surname"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/edit"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/age"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="left|center_vertical"
+        android:text="@string/age"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/edit"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/family"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="left|center_vertical"
+        android:text="@string/family_name"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/edit"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="left|center_vertical"
+        android:text="@string/phone"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/edit"
+        tools:ignore="RtlHardcoded" />
+
+    <ImageView
+        android:id="@+id/a"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#7A7878"
+        android:contentDescription="@string/app_name" />
+
+</LinearLayout>

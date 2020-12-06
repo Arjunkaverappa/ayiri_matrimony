@@ -1,0 +1,42 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.AyiriMatrimony" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="custom_for_main" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="actionBarStyle">@style/Theme.AppCompat.DayNight.NoActionBar</item>
+    </style>
+
+    <style name="custom_edit_text" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        style name="TextLabel" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">#777575</item>
+        <item name="android:textSize">20sp</item>
+        <item name="colorControlNormal">#000000</item>
+        <item name="colorControlActivated">#000000</item>
+    </style>
+    <style name="alert_custom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorPrimary">@color/black</item>
+    </style>
+    <style name="custom_for_user_details" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
