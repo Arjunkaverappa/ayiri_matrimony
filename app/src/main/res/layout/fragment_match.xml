@@ -5,17 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".match">
-<!--
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:layout_alignParentTop="true"
-        android:backgroundTint="@color/black"
-        app:itemIconTint="@drawable/selector_for_menu"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/top_menu" />
--->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"

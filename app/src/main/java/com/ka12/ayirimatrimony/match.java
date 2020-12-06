@@ -41,7 +41,6 @@ import static android.content.Context.MODE_PRIVATE;
   TODO :correct line no:164.
  */
 public class match extends Fragment {
-    // BottomNavigationView top_bar;
     LottieAnimationView loading;
     LinearLayout mat, rec, sen;
     //defining the master array list
@@ -112,8 +111,8 @@ public class match extends Fragment {
         list_name = v.findViewById(R.id.list_name);
         list_match = v.findViewById(R.id.list_match);
         requests_list = v.findViewById(R.id.requests);
-        //   top_bar = v.findViewById(R.id.top_bar);
         loading = v.findViewById(R.id.loading);
+
         //retrieving the key of the current user
         SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
         key = ediss.getInt("key", 999999);
@@ -157,30 +156,6 @@ public class match extends Fragment {
             }
         });
 
-        /*
-        top_bar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.matches:
-                        Toast.makeText(getActivity(), "showing matches", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.received:
-                        list_name.setVisibility(View.GONE);
-                        requests_list.setVisibility(View.VISIBLE);
-                        Toast.makeText(getActivity(), "showing received", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.sent:
-                        list_name.setVisibility(View.VISIBLE);
-                        requests_list.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(), "showing sent", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return false;
-            }
-        });
-         */
         //fetching data for 'sent' list
         refresh_data();
         list_name.setAdapter(custom);
