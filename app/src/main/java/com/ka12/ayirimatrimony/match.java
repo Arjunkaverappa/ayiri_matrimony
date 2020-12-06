@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -23,7 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
+
 /*
   TODO :get the name through shared preferences and put it in matched entries calculations.
   TODO :create a new custom list view xml file for displaying matched entries.
@@ -43,9 +41,9 @@ import static android.content.Context.MODE_PRIVATE;
   TODO :correct line no:164.
  */
 public class match extends Fragment {
-   // BottomNavigationView top_bar;
+    // BottomNavigationView top_bar;
     LottieAnimationView loading;
-    LinearLayout mat,rec,sen;
+    LinearLayout mat, rec, sen;
     //defining the master array list
     public ArrayList<String> m_names = new ArrayList<>();
     public ArrayList<String> m_family = new ArrayList<>();
@@ -91,8 +89,8 @@ public class match extends Fragment {
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
     //initializing all the adapters here
     custom_adapter custom = new custom_adapter();
-    custom_adapter_for_requests custom_req=new custom_adapter_for_requests();
-    custom_adapter_for_list_match custom_match=new custom_adapter_for_list_match();
+    custom_adapter_for_requests custom_req = new custom_adapter_for_requests();
+    custom_adapter_for_list_match custom_match = new custom_adapter_for_list_match();
     int key;
     //testing
     int n;
@@ -100,20 +98,21 @@ public class match extends Fragment {
     int sizz;
     int total_count = 0;
     int count = 0;
-    int asd=0;
-    int inc=0;
-    int temp_e=0;
+    int asd = 0;
+    int inc = 0;
+    int temp_e = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_match, container, false);
-        mat=v.findViewById(R.id.mat);
-        rec=v.findViewById(R.id.rec);
-        sen=v.findViewById(R.id.sen);
+        mat = v.findViewById(R.id.mat);
+        rec = v.findViewById(R.id.rec);
+        sen = v.findViewById(R.id.sen);
         list_name = v.findViewById(R.id.list_name);
-        list_match=v.findViewById(R.id.list_match);
-        requests_list=v.findViewById(R.id.requests);
-     //   top_bar = v.findViewById(R.id.top_bar);
+        list_match = v.findViewById(R.id.list_match);
+        requests_list = v.findViewById(R.id.requests);
+        //   top_bar = v.findViewById(R.id.top_bar);
         loading = v.findViewById(R.id.loading);
         //retrieving the key of the current user
         SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
@@ -126,8 +125,7 @@ public class match extends Fragment {
         mat.setBackgroundColor(Color.GRAY);
         mat.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 mat.setBackgroundColor(Color.GRAY);
                 rec.setBackgroundColor(Color.WHITE);
                 sen.setBackgroundColor(Color.WHITE);
@@ -136,11 +134,9 @@ public class match extends Fragment {
                 list_name.setVisibility(View.GONE);
             }
         });
-        rec.setOnClickListener(new View.OnClickListener()
-        {
+        rec.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 mat.setBackgroundColor(Color.WHITE);
                 rec.setBackgroundColor(Color.GRAY);
                 sen.setBackgroundColor(Color.WHITE);
@@ -149,8 +145,7 @@ public class match extends Fragment {
                 list_name.setVisibility(View.GONE);
             }
         });
-        sen.setOnClickListener(new View.OnClickListener()
-        {
+        sen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mat.setBackgroundColor(Color.WHITE);
@@ -194,29 +189,24 @@ public class match extends Fragment {
         return v;
     }
 
-    private void refresh_data()
-    {
+    private void refresh_data() {
         clear_lists();
         reference = FirebaseDatabase.getInstance().getReference().child("male");
         Log.d("try ", "inside refresh_data()");
-        reference.addChildEventListener(new ChildEventListener()
-        {
+        reference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
-            {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 asd++;
-               // Log.d("test ",String.valueOf(snapshot.getChildrenCount()));
+                // Log.d("test ",String.valueOf(snapshot.getChildrenCount()));
                 loading.setVisibility(View.GONE);
                 //storing the keys
-                if(asd<=4)
-                {
+                if (asd <= 4) {
                     keys.add(snapshot.getKey());
                     m_keys.add(snapshot.getKey());
                     Log.d("key ", "snap key " + snapshot.getKey());
                 }
                 String final_data = "";
-                for (DataSnapshot ds : snapshot.getChildren())
-                {
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     String uname = ds.getValue(String.class);
                     final_data = uname + "#" + final_data;
                 }
@@ -227,23 +217,20 @@ public class match extends Fragment {
                 m_family.add(separated[6]);
                 m_links.add(separated[4]);
                 m_gender.add(separated[5]);
-              //  m_keys.add(snapshot.getKey());
+                //  m_keys.add(snapshot.getKey());
                 m_age.add(Integer.parseInt(String.valueOf(separated[7])));
 
                 //the main 'received' list for all calculations
                 received.add(separated[1]);
-                Log.d("lopp ","received :"+separated[1]);
+                Log.d("lopp ", "received :" + separated[1]);
                 n = received.size();
                 //the following code it to populate request 'sent' list of the user
                 //we search the requests section and fill the list if key matches
-                for (int q = count; q < n; q++)
-                {
+                for (int q = count; q < n; q++) {
                     String[] sep = received.get(q).split("\\:");
-                    for (int e = 0; e < sep.length; e++)
-                    {
+                    for (int e = 0; e < sep.length; e++) {
                         Log.d("loop ", "comparing " + key + " with " + sep[e]);
-                        if (String.valueOf(key).equals(sep[e]))
-                        {
+                        if (String.valueOf(key).equals(sep[e])) {
                             names.add(separated[3]);
                             family.add(separated[6]);
                             links.add(separated[4]);
@@ -255,28 +242,22 @@ public class match extends Fragment {
                 }
                 //the following code is to populate 'received' requests from other users
                 //looks like we need to check the send section of every user
-                if(asd==4)
-                {
-                    for (int q = inc; q < n; q++)
-                    {
-                        Log.d("lopp ","***********************************************************");
+                if (asd == 4) {
+                    for (int q = inc; q < n; q++) {
+                        Log.d("lopp ", "***********************************************************");
                         Log.d("lopp", "1) comparing " + key + " with " + keys.get(q) + " while q=" + q);
                         //this for loop is to fetch only the required user account
                         //this is where all the decoding begins
-                        if (String.valueOf(key).equals(keys.get(q)))
-                        {
-                            Log.d("lopp ", "2) success with key " + keys.get(q)+" and name :"+m_names.get(q));
+                        if (String.valueOf(key).equals(keys.get(q))) {
+                            Log.d("lopp ", "2) success with key " + keys.get(q) + " and name :" + m_names.get(q));
                             String[] sep = received.get(q).split("\\:");
-                            for (int e = temp_e; e < sep.length; e++)
-                            {
-                                Log.d("lopp ","3) e="+e+" and sep before entering for is "+sep[e]);
-                                for(int z=0;z<m_names.size();z++)
-                                {
-                                    Log.d("lopp ","4) z="+z+" and size of m_names="+m_names.size());
-                                    Log.d("lopp ","   comparing "+sep[e]+" with "+m_names.get(z)+"("+m_keys.get(z)+")");
-                                    if(sep[e].equals(m_keys.get(z)))
-                                    {
-                                        Log.d("lopp ", "5) ****added " + m_names.get(z)+"**** because z="+z);
+                            for (int e = temp_e; e < sep.length; e++) {
+                                Log.d("lopp ", "3) e=" + e + " and sep before entering for is " + sep[e]);
+                                for (int z = 0; z < m_names.size(); z++) {
+                                    Log.d("lopp ", "4) z=" + z + " and size of m_names=" + m_names.size());
+                                    Log.d("lopp ", "   comparing " + sep[e] + " with " + m_names.get(z) + "(" + m_keys.get(z) + ")");
+                                    if (sep[e].equals(m_keys.get(z))) {
+                                        Log.d("lopp ", "5) ****added " + m_names.get(z) + "**** because z=" + z);
                                         names_req.add(m_names.get(z));
                                         family_req.add(m_family.get(z));
                                         links_req.add(m_links.get(z));
@@ -303,16 +284,13 @@ public class match extends Fragment {
                  */
 
                 //the following code is to find matched (lucky guys)
-                for(int i=0;i<names.size();i++)
-                {
-                    Log.d("matriz ","1) inside for i="+i+" and name ="+names.get(i)+"("+keys.get(i)+")");
-                    for(int j=0;j<names_req.size();j++)
-                    {
-                        Log.d("matriz ","2) inside for with j="+j+" with name_req ="+names_req.get(j));
-                        Log.d("matriz ","   comparing "+names.get(i)+" and "+names_req.get(j));
-                        if(names.get(i).equals(names_req.get(j)) && !names.get(i).equals("monnappa") && !names_req.get(j).equals("monnappa"))
-                        {
-                            Log.d("matriz ",names.get(i)+" ***** matched with ***** "+names_req.get(j));
+                for (int i = 0; i < names.size(); i++) {
+                    Log.d("matriz ", "1) inside for i=" + i + " and name =" + names.get(i) + "(" + keys.get(i) + ")");
+                    for (int j = 0; j < names_req.size(); j++) {
+                        Log.d("matriz ", "2) inside for with j=" + j + " with name_req =" + names_req.get(j));
+                        Log.d("matriz ", "   comparing " + names.get(i) + " and " + names_req.get(j));
+                        if (names.get(i).equals(names_req.get(j)) && !names.get(i).equals("monnappa") && !names_req.get(j).equals("monnappa")) {
+                            Log.d("matriz ", names.get(i) + " ***** matched with ***** " + names_req.get(j));
                             names_match.add(names_req.get(j));
                             family_match.add(family_req.get(j));
                             links_match.add(links_req.get(j));
@@ -350,8 +328,8 @@ public class match extends Fragment {
             }
         });
     }
-    public void clear_lists()
-    {
+
+    public void clear_lists() {
         //clearing master list
         m_keys.clear();
         m_names.clear();
@@ -385,8 +363,9 @@ public class match extends Fragment {
         custom_req.notifyDataSetChanged();
         custom_match.notifyDataSetChanged();
     }
+
     @Keep
-    //this adapter is to show all 'sent' requests lists
+            //this adapter is to show all 'sent' requests lists
     class custom_adapter extends BaseAdapter {
 
         @Override
@@ -424,10 +403,10 @@ public class match extends Fragment {
             return view;
         }
     }
+
     @Keep
-    //this adapter is to display 'requests' from other users
-    class custom_adapter_for_requests extends BaseAdapter
-    {
+            //this adapter is to display 'requests' from other users
+    class custom_adapter_for_requests extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -447,10 +426,8 @@ public class match extends Fragment {
 
         @SuppressLint({"InflateParams", "SetTextI18n"})
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup)
-        {
-            if (view == null)
-            {
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.display_list, null);
             }
@@ -466,8 +443,8 @@ public class match extends Fragment {
             return view;
         }
     }
-    class custom_adapter_for_list_match extends BaseAdapter
-    {
+
+    class custom_adapter_for_list_match extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -487,10 +464,8 @@ public class match extends Fragment {
 
         @SuppressLint({"InflateParams", "SetTextI18n"})
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup)
-        {
-            if (view == null)
-            {
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.display_list, null);
             }
