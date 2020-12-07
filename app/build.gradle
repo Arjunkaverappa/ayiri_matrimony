@@ -35,17 +35,26 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     //noinspection GradleDependency
+    implementation 'com.google.firebase:firebase-auth:19.4.0'           //firebase auth
+    //noinspection GradleDependency
     implementation 'com.google.firebase:firebase-database:19.5.0'       //realtime db
     implementation 'com.google.android.material:material:1.2.1'         //material design
     //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'com.google.firebase:firebase-storage:19.2.0'        //material design
-    implementation 'com.squareup.picasso:picasso:2.71828'               //picasso
-    implementation 'com.airbnb.android:lottie:3.4.2'                    //lottie animations
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.daimajia.androidanimations:library:2.4@aar'      //yoyo animation
+    implementation 'com.github.mohammadatif:Animatoo:master'             //Animatoo
+    implementation 'com.google.firebase:firebase-storage:19.2.0'         //material design
+    implementation 'com.squareup.picasso:picasso:2.71828'                //picasso
+    implementation 'com.airbnb.android:lottie:3.4.2'                     //lottie animations
+    implementation 'com.chaos.view:pinview:1.4.4'                        //pin view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'                  //circular image
     implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7' //bubble action bar
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'//circular image
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+  //  implementation 'com.google.firebase:firebase-auth:20.0.1'         //new auth
 
     //noinspection GradleDynamicVersion
     testImplementation 'junit:junit:4.+'

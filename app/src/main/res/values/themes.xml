@@ -39,4 +39,9 @@
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+    <style name="custon_for_splash" parent="Theme.MaterialComponents.Light">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#6ABEDF</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>
