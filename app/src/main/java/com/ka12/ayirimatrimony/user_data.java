@@ -1,16 +1,22 @@
 package com.ka12.ayirimatrimony;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
@@ -18,7 +24,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,31 +35,35 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class user_data extends AppCompatActivity {
     TextInputEditText name, family, age;
     Button submit, male, female, upload;
+    LottieAnimationView up, loading;
+    CardView card_one, card_two;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
-    String gender, img_link;
+    String gender = null, img_link;
     Boolean is_gender_clicked = false;
-    ProgressBar progress;
+    // ProgressBar progress;
     public static final String D_LINK = "com.ka12.ayiri_matrimony.this_is_where_download_link_is_saved";
     public static final String P_LINK = "com.ka12.ayiri_matrimony.this_is_where_local_link_is_saved";
     public static final String LOGIN = "com.ka12.ayiri_matrimony_login_details";
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
+    //database needs
+    public static final String PHONE = "com.ka12.ayiri_matrimony_phone_number_is_saved_here";
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
+    String user_num;
     //the following are for uploading the image
     Uri image_url;
     String download_link;
     public StorageReference storageReference;
     public static final int PICK_IMAGE_REQUEST = 1;
+    Boolean is_connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,29 +80,51 @@ public class user_data extends AppCompatActivity {
         male = findViewById(R.id.male);
         female = findViewById(R.id.female);
         upload = findViewById(R.id.upload);
-        progress = findViewById(R.id.progress);
+        //   progress = findViewById(R.id.progress);
+        card_one = findViewById(R.id.card_one);
+        card_two = findViewById(R.id.card_two);
+        up = findViewById(R.id.up);
+        loading = findViewById(R.id.loading);
+        //status bar colors
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#ED8A6B"));
+        //hiding card 2
+        card_two.setVisibility(View.GONE);
+        loading.setVisibility(View.GONE);
+        check_network();
+        //TODO:safely remove this section
         //fetching the image link from firebase
         SharedPreferences edit = getSharedPreferences(D_LINK, MODE_PRIVATE);
         img_link = edit.getString("link", "something_went_wrong");
         Log.d("download ", "received " + img_link);
 
+        //fetching the user's phone number to be used as key in firebase
+        SharedPreferences get_number = getSharedPreferences(PHONE, MODE_PRIVATE);
+        user_num = get_number.getString("key", "9999999999");
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Objects.requireNonNull(name.getText()).toString().equals("") || Objects.requireNonNull(age.getText()).toString().equals("")
-                        || Objects.requireNonNull(family.getText()).toString().equals("")) {
-                    Toast.makeText(user_data.this, "Please enter all the values!!", Toast.LENGTH_SHORT).show();
+                if (!is_connected)
+                {
+                    Toast.makeText(user_data.this, "Please connect to internet", Toast.LENGTH_SHORT).show();
+                } else if (Objects.requireNonNull(name.getText()).toString().equals("") || Objects.requireNonNull(age.getText()).toString().equals("")
+                        || Objects.requireNonNull(family.getText()).toString().equals("") && gender != null) {
+                    Toast.makeText(user_data.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                 } else {
-                    push_into_database();
+                    SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
+                    edit.putString("gender", gender).apply();
+                    card_one.setVisibility(View.GONE);
+                    card_two.setVisibility(View.VISIBLE);
                 }
             }
         });
         male.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                SharedPreferences.Editor edit=getSharedPreferences(GENDER,MODE_PRIVATE).edit();
-                edit.putString("gender","male").apply();
+            public void onClick(View view) {
+                SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
+                edit.putString("gender", "male").apply();
                 gender = "male";
                 is_gender_clicked = true;
                 male.setBackgroundColor(Color.BLACK);
@@ -98,10 +132,9 @@ public class user_data extends AppCompatActivity {
         });
         female.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                SharedPreferences.Editor edit=getSharedPreferences(GENDER,MODE_PRIVATE).edit();
-                edit.putString("gender","female").apply();
+            public void onClick(View view) {
+                SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
+                edit.putString("gender", "female").apply();
                 gender = "female";
                 is_gender_clicked = true;
                 male.setBackgroundColor(Color.BLACK);
@@ -140,8 +173,6 @@ public class user_data extends AppCompatActivity {
             }
         });
         //hiding submit button
-        // submit.setVisibility(View.GONE);
-        progress.setVisibility(View.GONE);
     }
 
     private void upload_image() {
@@ -149,8 +180,7 @@ public class user_data extends AppCompatActivity {
             Toast.makeText(this, "uploading image", Toast.LENGTH_LONG).show();
             String name_file = System.currentTimeMillis() + "." + get_file_extension(image_url);
             StorageReference filereference = storageReference.child(name_file);
-            upload.setVisibility(View.GONE);
-            progress.setVisibility(View.VISIBLE);
+
             filereference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -158,28 +188,24 @@ public class user_data extends AppCompatActivity {
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
+                            //pushing the values into firebase
+                            push_into_database();
+                            //getting the download link
                             download_link = uri.toString();
                             Log.d("download ", "sending " + download_link);
+                            //passing it to shared preferences
                             SharedPreferences.Editor edit = getSharedPreferences(D_LINK, MODE_PRIVATE).edit();
                             edit.putString("link", download_link).apply();
                             Log.d("download ", "get download :" + download_link);
                         }
                     });
-                    progress.setVisibility(View.GONE);
-                    submit.setVisibility(View.VISIBLE);
+                    // submit.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    //formula to get the current upload status
-                    // double prog = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    //  progress.setProgress((int) prog);
                 }
             });
         } else {
@@ -201,6 +227,7 @@ public class user_data extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -208,45 +235,45 @@ public class user_data extends AppCompatActivity {
             image_url = data.getData();
             SharedPreferences.Editor edit = getSharedPreferences(P_LINK, MODE_PRIVATE).edit();
             edit.putString("plink", image_url.toString()).apply();
-            upload_image();
+            up.setVisibility(View.GONE);
+            loading.setVisibility(View.VISIBLE);
+            if(is_connected) {
+                upload_image();
+                upload.setText("Uploading...");
+            }
             //  Picasso.get().load(image_url).into(profile);
         }
     }
 
     private void push_into_database() {
         firebaseDatabase = FirebaseDatabase.getInstance();
-        if (gender.equals("male")) {
+        if (gender.equals("male"))
             reference = firebaseDatabase.getReference().child("male");
-        } else {
+        else
             reference = firebaseDatabase.getReference().child("female");
-        }
+
         //retriving the values
         String uname = Objects.requireNonNull(name.getText()).toString().trim();
         String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
         String uage = Objects.requireNonNull(age.getText()).toString().trim();
         String ugender = gender.trim();
-        //helperclass //TODO take the phone number too
+        //helperclass
         heplerclass help = new heplerclass();
         help.setName(uname);
         help.setFamily(ufamily);
         help.setAge(uage);
         help.setGender(ugender);
         help.setReceived("received");
-        help.setSent("sent");
-        help.setPhone("9980464155");
-        //do not forget to uncomment the following code
+        // help.setSent("sent");
+        help.setPhone(user_num);
+        //TODO:do not forget to uncomment the following code
         //help.setLink(download_link);
         help.setLink("this.is.a.dummy.link");
-        String ran = get_random_name();
-        Log.d("key ", "from ran " + ran);
-        //saving the key in shared preferences
-        SharedPreferences.Editor ediss = getSharedPreferences(KEY, MODE_PRIVATE).edit();
-        ediss.putInt("key", Integer.parseInt(String.valueOf(ran))).apply();
-        reference.child(ran).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+        reference.child(user_num).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
-                progress.setVisibility(View.VISIBLE);
 
                 //testing change to true
                 SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
@@ -263,7 +290,8 @@ public class user_data extends AppCompatActivity {
             }
         });
     }
-
+    //TODO: remove the following method
+    /*
     public String get_random_name() {
         String num = "";
         Random random = new Random();
@@ -273,6 +301,7 @@ public class user_data extends AppCompatActivity {
         Log.d("num ", num);
         return num;
     }
+     */
 
     @Keep
     static class heplerclass {
@@ -289,16 +318,16 @@ public class user_data extends AppCompatActivity {
 
         }
 
-        public heplerclass(String name, String family, String gender,String link,String phone,
+        public heplerclass(String name, String family, String gender, String link, String phone,
                            String age, String sent, String received) {
             this.name = name;
             this.family = family;
             this.gender = gender;
-            this.link=link;
+            this.link = link;
             this.age = age;
             this.sent = sent;
             this.received = received;
-            this.phone=phone;
+            this.phone = phone;
         }
 
         public void setPhone(String phone) {
@@ -337,5 +366,20 @@ public class user_data extends AppCompatActivity {
             this.link = link;
         }
 
+    }
+
+    public void check_network() {
+        new Handler().postDelayed(new Runnable() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void run()
+            {
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                is_connected = (wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected());
+                check_network();
+            }
+        }, 2000);
     }
 }

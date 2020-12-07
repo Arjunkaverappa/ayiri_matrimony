@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -52,7 +53,9 @@ public class Login extends AppCompatActivity {
     //trying countdown timer
     CountDownTimer countDownTimer;
     long time_left_in_mili=61000;
-
+    //login details
+    public static final String LOGIN="com.ka12.ayiri_matrimony_login_details";
+    public static final String PHONE="com.ka12.ayiri_matrimony_phone_number_is_saved_here";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +115,17 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+        //TODO:remove the following code
+        submit.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                Intent in=new Intent(Login.this,user_data.class);
+                startActivity(in);
+                finish();
+                return false;
+            }
+        });
         check_network();
     }
 
@@ -169,7 +183,15 @@ public class Login extends AppCompatActivity {
             {
                 //TODO save the login details here
                 //TODO pass the phone number to next activity
-                if (task.isSuccessful()) {
+                if (task.isSuccessful())
+                {
+                    //saving the login details
+                 //   SharedPreferences.Editor edit=getSharedPreferences(LOGIN,MODE_PRIVATE).edit();
+                 //   edit.putBoolean("login",true).apply();
+                    //saving the phone number
+                    SharedPreferences.Editor save=getSharedPreferences(PHONE,MODE_PRIVATE).edit();
+                    save.putString("key",get_number.getText().toString().trim()).apply();
+
                     Toast.makeText(Login.this, "Login successfull", Toast.LENGTH_SHORT).show();
                     Intent succ = new Intent(Login.this, com.ka12.ayirimatrimony.user_data.class);
                     startActivity(succ);

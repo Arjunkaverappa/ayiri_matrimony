@@ -40,4 +40,7 @@
     <string name="enter_your_phone_number">Enter your phone number</string>
     <string name="get_otp">get otp</string>
     <string name="note">Phone numbers wont be shared with anyone unless you find a match</string>
+    <string name="step_1">Step 1</string>
+    <string name="next">Next</string>
+    <string name="step_2">Step 2</string>
 </resources>
