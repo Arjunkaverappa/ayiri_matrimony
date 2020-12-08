@@ -15,8 +15,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
@@ -27,6 +29,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,9 +47,9 @@ import java.util.Objects;
 
 public class user_data extends AppCompatActivity {
     TextInputEditText name, family, age;
-    Button submit, male, female, upload;
+    Button submit, male, female, upload, conti;
     LottieAnimationView up, loading;
-    CardView card_one, card_two;
+    CardView card_one, card_two, card_three;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
     String gender = null, img_link;
@@ -54,9 +59,12 @@ public class user_data extends AppCompatActivity {
     public static final String P_LINK = "com.ka12.ayiri_matrimony.this_is_where_local_link_is_saved";
     public static final String LOGIN = "com.ka12.ayiri_matrimony_login_details";
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
+    public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
+    public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
+    public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
+    public static final String IS_OLD = "com.ka12.ayiri_matrimony_checking_for_previous_entries";
     //database needs
     public static final String PHONE = "com.ka12.ayiri_matrimony_phone_number_is_saved_here";
-    public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     String user_num;
     //the following are for uploading the image
     Uri image_url;
@@ -64,6 +72,7 @@ public class user_data extends AppCompatActivity {
     public StorageReference storageReference;
     public static final int PICK_IMAGE_REQUEST = 1;
     Boolean is_connected;
+    TextView welcome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,14 +92,18 @@ public class user_data extends AppCompatActivity {
         //   progress = findViewById(R.id.progress);
         card_one = findViewById(R.id.card_one);
         card_two = findViewById(R.id.card_two);
+        card_three = findViewById(R.id.card_three);
         up = findViewById(R.id.up);
         loading = findViewById(R.id.loading);
+        welcome = findViewById(R.id.welcome);
+        conti = findViewById(R.id.conti);
         //status bar colors
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#ED8A6B"));
         //hiding card 2
         card_two.setVisibility(View.GONE);
+        card_three.setVisibility(View.GONE);
         loading.setVisibility(View.GONE);
         check_network();
         //TODO:safely remove this section
@@ -99,6 +112,15 @@ public class user_data extends AppCompatActivity {
         img_link = edit.getString("link", "something_went_wrong");
         Log.d("download ", "received " + img_link);
 
+        //checking if old user
+        SharedPreferences getold = getSharedPreferences(IS_OLD, MODE_PRIVATE);
+        boolean is_old = getold.getBoolean("isold", false);
+        Log.d("logg", "old user " + is_old);
+        if (is_old) {
+            Log.d("logg", "initiated old user protocol");
+            initiate_old_user_protocol();
+        }
+
         //fetching the user's phone number to be used as key in firebase
         SharedPreferences get_number = getSharedPreferences(PHONE, MODE_PRIVATE);
         user_num = get_number.getString("key", "9999999999");
@@ -106,8 +128,7 @@ public class user_data extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!is_connected)
-                {
+                if (!is_connected) {
                     Toast.makeText(user_data.this, "Please connect to internet", Toast.LENGTH_SHORT).show();
                 } else if (Objects.requireNonNull(name.getText()).toString().equals("") || Objects.requireNonNull(age.getText()).toString().equals("")
                         || Objects.requireNonNull(family.getText()).toString().equals("") && gender != null) {
@@ -117,42 +138,34 @@ public class user_data extends AppCompatActivity {
                     edit.putString("gender", gender).apply();
                     card_one.setVisibility(View.GONE);
                     card_two.setVisibility(View.VISIBLE);
+                    //hiding the keyboard
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
             }
         });
         male.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                YoYo.with(Techniques.Tada).duration(1000).repeat(0).playOn(male);
                 SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
                 edit.putString("gender", "male").apply();
                 gender = "male";
                 is_gender_clicked = true;
-                male.setBackgroundColor(Color.BLACK);
+                male.setBackgroundColor(Color.parseColor("#ED8A6B"));
+                female.setBackgroundColor(Color.parseColor("#0277BD"));
             }
         });
         female.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                YoYo.with(Techniques.Tada).duration(1000).repeat(0).playOn(female);
                 SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
                 edit.putString("gender", "female").apply();
                 gender = "female";
                 is_gender_clicked = true;
-                male.setBackgroundColor(Color.BLACK);
-            }
-        });
-        submit.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                try {
-                    Log.d("key ", "inside try");
-                    firebaseDatabase = FirebaseDatabase.getInstance();
-                    reference = firebaseDatabase.getReference().child("male").child("-MNYy-7-otGTVkRMwfcp").child("family");
-                    reference.setValue("demo");
-                    Toast.makeText(user_data.this, "trying to dynamically change the value!", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    Log.d("key ", "error :" + e.getMessage());
-                }
-                return false;
+                female.setBackgroundColor(Color.parseColor("#ED8A6B"));
+                male.setBackgroundColor(Color.parseColor("#0277BD"));
             }
         });
         upload.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +175,7 @@ public class user_data extends AppCompatActivity {
                 open_file_chooser();
             }
         });
-        //delete the following code
+        //TODO:delete the following code
         female.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -172,7 +185,21 @@ public class user_data extends AppCompatActivity {
                 return false;
             }
         });
-        //hiding submit button
+        //TODO:delete the following code
+        submit.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                try {
+                    push_into_database_final();
+                    Toast.makeText(user_data.this, "pushing dynamically!", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.d("key ", "error :" + e.getMessage());
+                }
+                return false;
+            }
+        });
     }
 
     private void upload_image() {
@@ -189,7 +216,8 @@ public class user_data extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             //pushing the values into firebase
-                            push_into_database();
+                           // push_into_database();
+                            push_into_database_final();
                             //getting the download link
                             download_link = uri.toString();
                             Log.d("download ", "sending " + download_link);
@@ -199,8 +227,7 @@ public class user_data extends AppCompatActivity {
                             Log.d("download ", "get download :" + download_link);
                         }
                     });
-                    // submit.setVisibility(View.VISIBLE);
-                    Toast.makeText(getApplicationContext(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(getApplicationContext(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -237,13 +264,17 @@ public class user_data extends AppCompatActivity {
             edit.putString("plink", image_url.toString()).apply();
             up.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
-            if(is_connected) {
+            if (is_connected) {
                 upload_image();
                 upload.setText("Uploading...");
             }
             //  Picasso.get().load(image_url).into(profile);
         }
     }
+    /*
+      this is the working method for pushing data in 8 child format.
+      later db structure was reduced to  3 child structure.
+      push_into_database_final() method was created to support the improved db structure.
 
     private void push_into_database() {
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -290,19 +321,7 @@ public class user_data extends AppCompatActivity {
             }
         });
     }
-    //TODO: remove the following method
-    /*
-    public String get_random_name() {
-        String num = "";
-        Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            num = num + (random.nextInt(9));
-        }
-        Log.d("num ", num);
-        return num;
-    }
-     */
-
+*/
     @Keep
     static class heplerclass {
         public String name;
@@ -372,8 +391,7 @@ public class user_data extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void run()
-            {
+            public void run() {
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -381,5 +399,72 @@ public class user_data extends AppCompatActivity {
                 check_network();
             }
         }, 2000);
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void initiate_old_user_protocol() {
+        SharedPreferences getname = getSharedPreferences(NAME, MODE_PRIVATE);
+        String get_name = getname.getString("name", "null");
+
+        SharedPreferences getfamily = getSharedPreferences(FAMILY, MODE_PRIVATE);
+        String fam = getfamily.getString("family", "null");
+
+        card_one.setVisibility(View.GONE);
+        card_two.setVisibility(View.GONE);
+        card_three.setVisibility(View.VISIBLE);
+        welcome.setText("Welcome back,\n" + fam + " " + get_name);
+
+        conti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(user_data.this, MainActivity.class);
+                startActivity(in);
+                finish();
+                Animatoo.animateZoom(user_data.this);
+            }
+        });
+    }
+
+    private void push_into_database_final()
+    {
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        if (gender.equals("male"))
+            reference = firebaseDatabase.getReference().child("male");
+        else
+            reference = firebaseDatabase.getReference().child("female");
+        //retriving the values
+        String uname = Objects.requireNonNull(name.getText()).toString().trim();
+        String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
+        String uage = Objects.requireNonNull(age.getText()).toString().trim();
+        String ugender = gender.trim();
+
+        //TODO:do not forget to set the correct download link
+        download_link="this_is_dummy_link";
+        String final_data=uname+"#"+ufamily+"#"+uage+"#"+ugender+"#"+download_link;
+        //helperclass
+        heplerclass help = new heplerclass();
+        help.setName(final_data);
+        help.setReceived("received");
+        help.setSent("seen");
+
+        reference.child(user_num).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
+
+                //testing change to true
+                SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
+                edist.putBoolean("login", false).apply();
+                Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
+                startActivity(in);
+                finish();
+                Log.d("push ", "from inside " + reference.getKey());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(user_data.this, "error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

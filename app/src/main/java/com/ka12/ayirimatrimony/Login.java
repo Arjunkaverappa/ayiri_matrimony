@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +61,18 @@ public class Login extends AppCompatActivity {
     long time_left_in_mili=61000;
     //login details
     public static final String LOGIN="com.ka12.ayiri_matrimony_login_details";
+    //database entries
+    DatabaseReference reference;
+    String data="";
+    int count=0;
     public static final String PHONE="com.ka12.ayiri_matrimony_phone_number_is_saved_here";
+    public static final String IS_OLD="com.ka12.ayiri_matrimony_checking_for_previous_entries";
+    public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
+    public static final String D_LINK = "com.ka12.ayiri_matrimony.this_is_where_download_link_is_saved";
+    public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
+    public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
+    public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +94,9 @@ public class Login extends AppCompatActivity {
         window.setStatusBarColor(Color.parseColor("#A374ED"));
         //hiding the otp card
         otp_card.setVisibility(View.GONE);
+        //resetting is old preferences
+        SharedPreferences.Editor getstatus=getSharedPreferences(IS_OLD,MODE_PRIVATE).edit();
+        getstatus.putBoolean("isold",false).apply();
         //setting up onclick listeneres
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +115,7 @@ public class Login extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     start_timer();
+                    check_if_old_account(get_number.getText().toString().trim());
                 }else
                 {
                     Toast.makeText(Login.this, "Please connect to internet and try again!", Toast.LENGTH_SHORT).show();
@@ -185,7 +206,7 @@ public class Login extends AppCompatActivity {
                 //TODO pass the phone number to next activity
                 if (task.isSuccessful())
                 {
-                    //saving the login details
+                    //saving the login details  //testing
                  //   SharedPreferences.Editor edit=getSharedPreferences(LOGIN,MODE_PRIVATE).edit();
                  //   edit.putBoolean("login",true).apply();
                     //saving the phone number
@@ -264,6 +285,108 @@ public class Login extends AppCompatActivity {
     }
     // androidx.browser:browser:1.2.0
     // implementation 'com.android.support:customtabs:28.0.0'
+    public void check_if_old_account(String number)
+    {
+        data="";
+       Log.d("snap ","inside check if");
+       reference= FirebaseDatabase.getInstance().getReference().child("male").child(number);
+       reference.addChildEventListener(new ChildEventListener() {
+           @Override
+           public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
+           {
+             count++;
+             String ss=snapshot.getValue(String.class);
+             data=ss+"#"+data;
+             Log.d("snap ",ss);
+             //TODO chenge the count if it changes in future
+             if(count==7)
+             {
+                 assign_values(data,number);
+             }
+           }
+
+           @Override
+           public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+           }
+
+           @Override
+           public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+           }
+
+           @Override
+           public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError error) {
+
+           }
+       });
+        reference= FirebaseDatabase.getInstance().getReference().child("female").child(number);
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
+            {
+                String ss=snapshot.getValue(String.class);
+                data=data+ss;
+                Log.d("snap ",ss);
+                if(count==7)
+                {
+                    assign_values(data,number);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public void assign_values(String data,String number)
+    {
+        String[] sep=data.split("\\#");
+        String name=sep[2];
+        String gender=sep[4];
+        String family=sep[5];
+        String image_d_link=sep[3];
+        Log.d("snap "," name= "+name+" gender ="+gender+" download link "+image_d_link);
+        //saving the values in shared preferences
+        SharedPreferences.Editor getstatus=getSharedPreferences(IS_OLD,MODE_PRIVATE).edit();
+        getstatus.putBoolean("isold",true).apply();
+
+        SharedPreferences.Editor getname=getSharedPreferences(NAME,MODE_PRIVATE).edit();
+        getname.putString("name",name).apply();
+
+        SharedPreferences.Editor getgender=getSharedPreferences(GENDER,MODE_PRIVATE).edit();
+        getgender.putString("gender",gender).apply();
+
+        SharedPreferences.Editor getimage=getSharedPreferences(D_LINK,MODE_PRIVATE).edit();
+        getimage.putString("link",image_d_link).apply();
+
+        SharedPreferences.Editor getkey=getSharedPreferences(KEY,MODE_PRIVATE).edit();
+        getkey.putString("key",number).apply();
+
+        SharedPreferences.Editor getfamily=getSharedPreferences(FAMILY,MODE_PRIVATE).edit();
+        getfamily.putString("family",family).apply();
+    }
 }
 
 

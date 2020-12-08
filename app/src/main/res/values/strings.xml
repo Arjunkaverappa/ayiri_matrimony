@@ -43,4 +43,6 @@
     <string name="step_1">Step 1</string>
     <string name="next">Next</string>
     <string name="step_2">Step 2</string>
+    <string name="welcome_text">welcome text</string>
+    <string name="last_seen">Last seen</string>
 </resources>
