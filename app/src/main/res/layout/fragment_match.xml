@@ -8,90 +8,122 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="62dp"
         android:layout_alignParentTop="true"
+        android:background="@color/white"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/mat"
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_margin="2.5dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            app:cardCornerRadius="30dp">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                app:tint="@color/purple_500"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/match" />
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/mat"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:text="@string/matches" />
-        </LinearLayout>
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/rec"
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/match"
+                    app:tint="@color/purple_500" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:gravity="center|top"
+                    android:text="@string/matches"
+                    android:textColor="@color/black" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_margin="2.5dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            app:cardCornerRadius="30dp">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/down"
-                app:tint="@color/purple_500"/>
-            <TextView
+            <LinearLayout
+                android:id="@+id/rec"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:text="@string/received" />
-        </LinearLayout>
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/sen"
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/down"
+                    app:tint="@color/purple_500" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:gravity="center|top"
+                    android:text="@string/received"
+                    android:textColor="@color/black" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_margin="2.5dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            app:cardCornerRadius="30dp">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:tint="@color/purple_500"
-                android:layout_gravity="center"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/profile" />
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/sen"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:text="@string/sent" />
-        </LinearLayout>
+                android:layout_height="60dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/profile"
+                    app:tint="@color/purple_500" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:gravity="center|top"
+                    android:text="@string/sent"
+                    android:textColor="@color/black" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/loading"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="63dp"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/yellow"
@@ -101,18 +133,55 @@
         android:id="@+id/list_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp" />
+        android:layout_marginTop="63dp" />
 
     <ListView
         android:id="@+id/requests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp" />
+        android:layout_marginTop="63dp" />
 
     <ListView
         android:id="@+id/list_match"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp" />
+        android:layout_marginTop="63dp" />
+   <!--
+    <TextView
+        android:id="@+id/nomat"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="65dp"
+        android:gravity="center"
+        android:text="@string/no_match"
+        android:layout_alignBottom="@+id/list_match"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="italic" />
 
+    <TextView
+        android:id="@+id/noreq"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="65dp"
+        android:gravity="center"
+        android:text="@string/no_requests"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/requests"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/nosen"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginBottom="65dp"
+        android:gravity="center"
+        android:text="@string/no_sent"
+        android:layout_alignBottom="@+id/list_name"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="italic" />
+     -->
 </RelativeLayout>

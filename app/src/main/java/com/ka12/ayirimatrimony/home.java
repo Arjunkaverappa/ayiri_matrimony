@@ -57,6 +57,7 @@ public class home extends Fragment {
     public ArrayList<String> gender = new ArrayList<>();
     public ArrayList<String> seen = new ArrayList<>();
     public ArrayList<String> received = new ArrayList<>();
+    public ArrayList<String> received_text = new ArrayList<>();
     custom_adapter custom = new custom_adapter();
     //firebase
     FirebaseDatabase firebaseDatabase;
@@ -77,7 +78,7 @@ public class home extends Fragment {
     int no_of_child = 0;
     String user_gender;
     String user_key;
-
+    Boolean is_request_already_sent=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,47 +103,92 @@ public class home extends Fragment {
         return v;
     }
 
-    /* this is a officail working method for retrieving the data when child count was 8
-       the db structure was improved later and the child count was reduced to 3
-       so a new method refresh_data_final() is  defined to support the new db structure
+    public void change_request_text(int i)
+    {
+        received_text.add(i,"Requested");
+        custom.notifyDataSetChanged();
+    }
 
-
-    private void refresh_data() {
+    private void refresh_data_final() {
+        count = 0;
         names.clear();
         family.clear();
         age.clear();
         keys.clear();
         gender.clear();
         links.clear();
-        Log.d("try ", "inside refresh_data()");
+        Log.d("delta ", "inside refresh_data_final()");
         //TODO:change the child(male)
         //TODO:it should be the opposite of user's gender
         reference = FirebaseDatabase.getInstance().getReference().child("male");
         reference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
-            {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                count = 0;
+                Log.d("delta ", "triggered on child added");
                 loading.setVisibility(View.GONE);
                 keys.add(snapshot.getKey());
-                Log.d("try ", "triggered on child added");
-                String final_data = "";
                 for (DataSnapshot ds : snapshot.getChildren())
                 {
-                    String uname = ds.getValue(String.class);
-                    final_data = uname + "#" + final_data;
+                    String data = ds.getValue(String.class);
+                    if (count == 0)
+                    {
+                        Log.d("delta ", "data :" + data);
+                        String[] separated = data.split("\\#");
+                        names.add(separated[0]);
+                        family.add(separated[1]);
+                        age.add(Integer.valueOf(separated[2]));
+                        gender.add(separated[3]);
+                        links.add(separated[4]);
+                        Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                    }
+                    if(count==1)
+                    {
+                        //we are filtering dubplicate entries
+                        received.add(data);
+                        Log.d("request ","**************************************");
+                        Log.d("request","from db :"+data);
+                        String[] spli=data.split("\\:");
+                        for(int e=0;e<spli.length;e++)
+                        {
+                            Log.d("request ","1) comparing "+user_key+" with "+spli[e]);
+                            if(user_key.equals(spli[e]))
+                            {
+                            //  Log.d("request ","2) got in for "+names.get(e));
+                              is_request_already_sent=true;
+                            }
+                        }
+                        if(is_request_already_sent) {
+                            received_text.add("Requested");
+                            is_request_already_sent=false;
+                        }else
+                        {
+                            received_text.add("Send Request");
+                        }
+                    }
+                    if (count == 2)
+                    {
+                        seen.add(data);
+                    }
+                    count++;
                 }
-                Log.d("final ", "final data " + final_data);
-
-                String[] separated = final_data.split("\\#");
-                names.add(separated[3]);
-                family.add(separated[6]);
-                links.add(separated[4]);
-                gender.add(separated[5]);
-                age.add(Integer.parseInt(String.valueOf(separated[7])));
-                Log.d("try ", "calling notify");
+                //testing
                 if (!is_changed)
                 {
                     custom.notifyDataSetChanged();
+                }
+                //getting the number of child nodes
+                if (count > 0)
+                {
+                    no_of_child++;
+                    Log.d("jizz", String.valueOf(no_of_child));
+                    try {
+                        SharedPreferences.Editor edit = getActivity().getSharedPreferences(CHILD, MODE_PRIVATE).edit();
+                        edit.putInt("child", no_of_child).apply();
+                    }catch (Exception e)
+                    {
+                        Log.d("catch","Error :"+e.getMessage());
+                    }
                 }
             }
 
@@ -170,94 +216,6 @@ public class home extends Fragment {
                 custom.notifyDataSetChanged();
             }
         });
-      }
-     */
-    class custom_adapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            Log.d("try ", "inside get count :" + names.size());
-            return names.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @SuppressLint({"InflateParams", "SetTextI18n"})
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.display_list, null);
-            }
-            Log.d("try", "************************************");
-            Log.d("try ", "inside times " + i);
-            ImageView img = view.findViewById(R.id.pic);
-            TextView name = view.findViewById(R.id.name);
-            Button request = view.findViewById(R.id.request);
-            TextView last = view.findViewById(R.id.last);
-            name.setText("Name :" + names.get(i) + "\nfamily :" + family.get(i) + "\nAge :" + age.get(i));
-            last.setText("Last seen :" + seen.get(i));
-            Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
-            Log.d("try ", "names :" + names.get(i));
-            Log.d("try ", "link :" + links.get(i));
-            Log.d("request","******************************************************");
-            for(int m=0;m<received.size();m++)
-            {
-                Log.d("request","1) entered for with m="+m+" and size="+received.size());
-                String[] seper=received.get(m).split("\\:");
-                for(int e=0;e<seper.length;e++)
-                {
-                    Log.d("request ","comparing "+user_key+" with "+seper[e]);
-                    if (user_key.equals(seper[e]))
-                    {
-                        Log.d("request", "successfull for " + names.get(m));
-                        request.setText("Requested");
-                    }
-                }
-            }
-            request.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    if(request.getText().toString().equals("Requested"))
-                    {
-                        Toast.makeText(getActivity(), "Request already sent!!", Toast.LENGTH_SHORT).show();
-                    }else {
-                        AlertDialog.Builder b = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
-                        b.setMessage("Send request to " + names.get(i) + "?");
-                        b.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int num) {
-                                //saving the send request in shared preferences
-                                SharedPreferences e = getActivity().getSharedPreferences(DUPLICATE, MODE_PRIVATE);
-                                String prev_key = e.getString("sent", "");
-                                String put_key = keys.get(i) + ":" + prev_key;
-
-                                SharedPreferences.Editor edit = getActivity().getSharedPreferences(DUPLICATE, MODE_PRIVATE).edit();
-                                edit.putString("sent", put_key).apply();
-                                send_request_pro(keys.get(i), gender.get(i));
-                            }
-                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-                        b.show();
-                    }
-                }
-            });
-            return view;
-        }
     }
     //TODO:send request pro is available
     /*
@@ -380,89 +338,39 @@ public class home extends Fragment {
     }
       */
 
-    private void refresh_data_final() {
-        count = 0;
-        names.clear();
-        family.clear();
-        age.clear();
-        keys.clear();
-        gender.clear();
-        links.clear();
-        Log.d("delta ", "inside refresh_data_final()");
-        //TODO:change the child(male)
-        //TODO:it should be the opposite of user's gender
-        reference = FirebaseDatabase.getInstance().getReference().child("male");
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                count = 0;
-                Log.d("delta ", "triggered on child added");
-                loading.setVisibility(View.GONE);
-                keys.add(snapshot.getKey());
-                for (DataSnapshot ds : snapshot.getChildren())
-                {
-                    String data = ds.getValue(String.class);
-                    if (count == 0)
-                    {
-                        Log.d("delta ", "data :" + data);
-                        String[] separated = data.split("\\#");
-                        names.add(separated[0]);
-                        family.add(separated[1]);
-                        age.add(Integer.valueOf(separated[2]));
-                        gender.add(separated[3]);
-                        links.add(separated[4]);
-                        Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
-                    }
-                    if(count==1)
-                    {
-                        received.add(data);
-                        Log.d("request","received :"+data);
-                    }
-                    if (count == 2)
-                    {
-                        seen.add(data);
-                    }
-                    count++;
-                }
-                //testing
-                //custom.notifyDataSetChanged();
-                if (!is_changed)
-                {
-                    custom.notifyDataSetChanged();
-                }
-                //getting the number of child nodes
-                if (count > 0) {
-                    no_of_child++;
-                    Log.d("jizz", String.valueOf(no_of_child));
-                    SharedPreferences.Editor edit = getActivity().getSharedPreferences(CHILD, MODE_PRIVATE).edit();
-                    edit.putInt("child", no_of_child).apply();
-                }
-            }
+    public void send_request_finally_ultra(String data, String gender, String key)
+    {
+        is_changed = true;
+        Log.d("send", "Entered send request finally ultra");
+        //key is the receiver key
+        //tempo is passed as data
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("try ", "triggered on child changed");
-                custom.notifyDataSetChanged();
-            }
+        //retrieving the user key
+        SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
+        String user_key = ediss.getString("key", "999999999");
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("try ", "triggered on child removed");
-                custom.notifyDataSetChanged();
-            }
+        Log.d("send ", "user key :" + user_key);
 
+        //creating the new push data for received
+        push_data = user_key + ":" + data;
+        //updating received node in receiver account
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        reference = firebaseDatabase.getReference().child(gender).child(key).child("received");
+        reference.setValue(push_data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("try ", "triggered on child moved");
-                custom.notifyDataSetChanged();
-            }
+            public void onSuccess(Void aVoid)
+            {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("try ", "triggered on child cancelled");
-                custom.notifyDataSetChanged();
+                Toast.makeText(getActivity(), "Request sent!", Toast.LENGTH_SHORT).show();
+                Log.d("send ", "pushed successfully");
             }
         });
+
+        push_data = "";
+        count = 0;
+        temp_for_request = "";
+        is_changed = false;
+        s_count = 0;
     }
 
     public void send_request_pro(String key, String gender) {
@@ -510,40 +418,8 @@ public class home extends Fragment {
         }
     }
 
-    public void send_request_finally_ultra(String data, String gender, String key) {
-        is_changed = true;
-        Log.d("send", "Entered send request finally ultra");
-        //key is the receiver key
-        //tempo is passed as data
-
-        //retrieving the user key
-        SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
-        String user_key = ediss.getString("key", "999999999");
-
-        Log.d("send ", "user key :" + user_key);
-
-        //creating the new push data for received
-        push_data = user_key + ":" + data;
-        //updating received node in receiver account
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        reference = firebaseDatabase.getReference().child(gender).child(key).child("received");
-        reference.setValue(push_data).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getActivity(), "Request sent!", Toast.LENGTH_SHORT).show();
-                Log.d("send ", "pushed successfully");
-            }
-        });
-
-        push_data = "";
-        count = 0;
-        temp_for_request = "";
-        is_changed = false;
-        s_count = 0;
-    }
-
-    public void update_lastseen() {
-
+    public void update_lastseen()
+    {
         String final_date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         Log.d("date", final_date);
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -554,5 +430,151 @@ public class home extends Fragment {
                 Log.d("date ", "uploaded successfully");
             }
         });
+    }
+
+    /* this is a officail working method for retrieving the data when child count was 8
+       the db structure was improved later and the child count was reduced to 3
+       so a new method refresh_data_final() is  defined to support the new db structure
+
+
+    private void refresh_data() {
+        names.clear();
+        family.clear();
+        age.clear();
+        keys.clear();
+        gender.clear();
+        links.clear();
+        Log.d("try ", "inside refresh_data()");
+        //TODO:change the child(male)
+        //TODO:it should be the opposite of user's gender
+        reference = FirebaseDatabase.getInstance().getReference().child("male");
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
+            {
+                loading.setVisibility(View.GONE);
+                keys.add(snapshot.getKey());
+                Log.d("try ", "triggered on child added");
+                String final_data = "";
+                for (DataSnapshot ds : snapshot.getChildren())
+                {
+                    String uname = ds.getValue(String.class);
+                    final_data = uname + "#" + final_data;
+                }
+                Log.d("final ", "final data " + final_data);
+
+                String[] separated = final_data.split("\\#");
+                names.add(separated[3]);
+                family.add(separated[6]);
+                links.add(separated[4]);
+                gender.add(separated[5]);
+                age.add(Integer.parseInt(String.valueOf(separated[7])));
+                Log.d("try ", "calling notify");
+                if (!is_changed)
+                {
+                    custom.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("try ", "triggered on child changed");
+                custom.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Log.d("try ", "triggered on child removed");
+                custom.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("try ", "triggered on child moved");
+                custom.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("try ", "triggered on child cancelled");
+                custom.notifyDataSetChanged();
+            }
+        });
+      }
+     */
+    class custom_adapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            Log.d("try ", "inside get count :" + names.size());
+            return names.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @SuppressLint({"InflateParams", "SetTextI18n"})
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.display_list, null);
+            }
+            Log.d("try", "************************************");
+            Log.d("try ", "inside times " + i);
+            ImageView img = view.findViewById(R.id.pic);
+            TextView name = view.findViewById(R.id.name);
+            Button request = view.findViewById(R.id.request);
+            TextView last = view.findViewById(R.id.last);
+            name.setText("Name :" + names.get(i) + "\nfamily :" + family.get(i) + "\nAge :" + age.get(i));
+            last.setText("Last seen :" + seen.get(i));
+            Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
+            Log.d("try ", "names :" + names.get(i));
+            Log.d("try ", "link :" + links.get(i));
+            request.setText(received_text.get(i));
+
+            request.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    if(request.getText().toString().equals("Requested"))
+                    {
+                        Toast.makeText(getActivity(), "Request already sent!!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        AlertDialog.Builder b = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
+                        b.setMessage("Send request to " + names.get(i) + "?");
+                        b.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int num) {
+                                //saving the send request in shared preferences
+                                SharedPreferences e = getActivity().getSharedPreferences(DUPLICATE, MODE_PRIVATE);
+                                String prev_key = e.getString("sent", "");
+                                String put_key = keys.get(i) + ":" + prev_key;
+
+                                SharedPreferences.Editor edit = getActivity().getSharedPreferences(DUPLICATE, MODE_PRIVATE).edit();
+                                edit.putString("sent", put_key).apply();
+                                change_request_text(i);
+                                send_request_pro(keys.get(i), gender.get(i));
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                        b.show();
+                    }
+                }
+            });
+            return view;
+        }
     }
 }

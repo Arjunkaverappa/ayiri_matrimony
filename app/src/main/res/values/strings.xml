@@ -45,4 +45,9 @@
     <string name="step_2">Step 2</string>
     <string name="welcome_text">welcome text</string>
     <string name="last_seen">Last seen</string>
+    <string name="accept">Accept</string>
+    <string name="contact">Contact</string>
+    <string name="no_requests">No requests yet</string>
+    <string name="no_sent">You havent sent any requests to anyone yet</string>
+    <string name="no_match">No matches yet</string>
 </resources>

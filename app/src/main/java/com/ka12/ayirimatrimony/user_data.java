@@ -141,6 +141,7 @@ public class user_data extends AppCompatActivity {
                     //hiding the keyboard
                     InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    //saving all details in shared preferences
                 }
             }
         });
@@ -170,7 +171,8 @@ public class user_data extends AppCompatActivity {
         });
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 storageReference = FirebaseStorage.getInstance().getReference("profile_pictures");
                 open_file_chooser();
             }
@@ -437,7 +439,7 @@ public class user_data extends AppCompatActivity {
         String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
         String uage = Objects.requireNonNull(age.getText()).toString().trim();
         String ugender = gender.trim();
-
+        save_in_shared_preferences(uname,ufamily);
         //TODO:do not forget to set the correct download link
         download_link="this_is_dummy_link";
         String final_data=uname+"#"+ufamily+"#"+uage+"#"+ugender+"#"+download_link;
@@ -466,5 +468,13 @@ public class user_data extends AppCompatActivity {
                 Toast.makeText(user_data.this, "error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    public void save_in_shared_preferences(String name,String family)
+    {
+        SharedPreferences.Editor getname=getSharedPreferences(NAME,MODE_PRIVATE).edit();
+        getname.putString("name",name).apply();
+
+        SharedPreferences.Editor getfamily=getSharedPreferences(FAMILY,MODE_PRIVATE).edit();
+        getfamily.putString("family",family).apply();
     }
 }
