@@ -379,7 +379,7 @@ public class match extends Fragment {
                         Log.d("matriz ", "2) inside for with j=" + get_j + " with name_req =" + names_req.get(get_j));
                         Log.d("matriz ", "   comparing " + names.get(get_i) + " and " + names_req.get(get_j));
                         //TODO:dont forget to change the name
-                        if (names.get(get_i).equals(names_req.get(get_j)) && !names.get(get_i).equals("manan") && !names_req.get(get_j).equals("manan")) {
+                        if (names.get(get_i).equals(names_req.get(get_j)) && !names.get(get_i).equals(user_name) && !names_req.get(get_j).equals(user_name)) {
                             Log.d("matriz ", names.get(get_i) + " ***** matched with ***** " + names_req.get(get_j));
                             names_match.add(names_req.get(get_j));
                             family_match.add(family_req.get(get_j));

@@ -63,7 +63,7 @@
         tools:ignore="RtlHardcoded" />
 
     <TextView
-        android:id="@+id/surname"
+        android:id="@+id/family"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
@@ -71,12 +71,13 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="left|center_vertical"
-        android:text="@string/surname"
+        android:text="@string/family_name"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
         app:drawableEndCompat="@drawable/edit"
         tools:ignore="RtlHardcoded" />
+
 
     <TextView
         android:id="@+id/age"
@@ -94,37 +95,6 @@
         app:drawableEndCompat="@drawable/edit"
         tools:ignore="RtlHardcoded" />
 
-    <TextView
-        android:id="@+id/family"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|center_vertical"
-        android:text="@string/family_name"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/edit"
-        tools:ignore="RtlHardcoded" />
-
-    <TextView
-        android:id="@+id/phone"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|center_vertical"
-        android:text="@string/phone"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/edit"
-        tools:ignore="RtlHardcoded" />
 
     <ImageView
         android:id="@+id/a"

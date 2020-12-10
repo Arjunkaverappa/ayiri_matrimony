@@ -16,48 +16,60 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class profile extends Fragment {
-    TextView name,surname,age,phone,family,edit;
+    public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     CircleImageView image;
     ImageView a;
     public static final String P_LINK = "com.ka12.ayiri_matrimony.this_is_where_local_link_is_saved";
     public static final String KEY="com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
+    TextView name,age,family,edit;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
+    String user_key,user_gender;
+    int count=0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_profile, container, false);
         name=v.findViewById(R.id.name);
-        surname=v.findViewById(R.id.surname);
         age=v.findViewById(R.id.age);
         family=v.findViewById(R.id.family);
-        phone=v.findViewById(R.id.phone);
         image=v.findViewById(R.id.image);
         edit=v.findViewById(R.id.edit);
         a=v.findViewById(R.id.a);
         image.setVisibility(View.GONE);
-        //hinding the views
-        /*
-        name.setVisibility(View.GONE);
-        surname.setVisibility(View.GONE);
-        phone.setVisibility(View.GONE);
-        age.setVisibility(View.GONE);
-        family.setVisibility(View.GONE);
-        a.setVisibility(View.GONE);
-         */
+
+        SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+        user_gender = getgender.getString("gender", "female");
+        Log.d("datas","user gender "+user_gender);
+
+        //retrieving the key of the current user
+        SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
+        user_key = ediss.getString("key", "999999999");
+        Log.d("datas","user key "+user_key);
+
+        refresh_data_final();
+
         //setting up image
         SharedPreferences get=getActivity().getSharedPreferences(P_LINK, Context.MODE_PRIVATE);
         String image_url=get.getString("plink","something_went_wrong");
@@ -75,8 +87,6 @@ public class profile extends Fragment {
             @Override
             public void onClick(View view) {
                 name.setVisibility(View.VISIBLE);
-                surname.setVisibility(View.VISIBLE);
-                phone.setVisibility(View.VISIBLE);
                 age.setVisibility(View.VISIBLE);
                 family.setVisibility(View.VISIBLE);
                 a.setVisibility(View.VISIBLE);
@@ -86,12 +96,6 @@ public class profile extends Fragment {
             @Override
             public void onClick(View view) {
                 change_fields("name");
-            }
-        });
-        surname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                change_fields("surname");
             }
         });
         age.setOnClickListener(new View.OnClickListener() {
@@ -136,14 +140,60 @@ public class profile extends Fragment {
        builder.show();
     }
 
+        private void refresh_data_final()
+        {
+        reference = FirebaseDatabase.getInstance().getReference().child(user_gender);
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                count = 0;
+                for (DataSnapshot ds : snapshot.getChildren())
+                {
+                    Log.d("datas","ds key "+ds.getKey());
+                    if(count==1)
+                    {
+                        Log.d("datas","comaring ds key "+ds.getKey()+" user key "+user_key);
+                      if(user_key.equals(ds.getKey()))
+                      {
+                          String data = ds.getValue(String.class);
+                          Log.d("datas",data);
+                      }
+                    }
+                    count++;
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("try ", "triggered on child changed");
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Log.d("try ", "triggered on child removed");
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d("try ", "triggered on child moved");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("try ", "triggered on child cancelled");
+
+            }
+        });
+    }
+
     private void change_values_now(String text, String value)
     {
-       SharedPreferences getkey=getActivity().getSharedPreferences(KEY,Context.MODE_PRIVATE);
-       Integer key=getkey.getInt("key",99999999);
-       Log.d("key","recieved "+ key);
+
+        Log.d("key ", "received " + user_key);
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         reference = firebaseDatabase.getReference().child("male");
-        reference.child(String.valueOf(key)).child(text).setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.child(user_key).child(text).setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(getActivity(), "updated profile!", Toast.LENGTH_SHORT).show();

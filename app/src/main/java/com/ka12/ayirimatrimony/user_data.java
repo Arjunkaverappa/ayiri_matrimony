@@ -229,7 +229,6 @@ public class user_data extends AppCompatActivity {
                             Log.d("download ", "get download :" + download_link);
                         }
                     });
-                    //  Toast.makeText(getApplicationContext(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -273,57 +272,7 @@ public class user_data extends AppCompatActivity {
             //  Picasso.get().load(image_url).into(profile);
         }
     }
-    /*
-      this is the working method for pushing data in 8 child format.
-      later db structure was reduced to  3 child structure.
-      push_into_database_final() method was created to support the improved db structure.
 
-    private void push_into_database() {
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        if (gender.equals("male"))
-            reference = firebaseDatabase.getReference().child("male");
-        else
-            reference = firebaseDatabase.getReference().child("female");
-
-        //retriving the values
-        String uname = Objects.requireNonNull(name.getText()).toString().trim();
-        String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
-        String uage = Objects.requireNonNull(age.getText()).toString().trim();
-        String ugender = gender.trim();
-        //helperclass
-        heplerclass help = new heplerclass();
-        help.setName(uname);
-        help.setFamily(ufamily);
-        help.setAge(uage);
-        help.setGender(ugender);
-        help.setReceived("received");
-        // help.setSent("sent");
-        help.setPhone(user_num);
-        //TODO:do not forget to uncomment the following code
-        //help.setLink(download_link);
-        help.setLink("this.is.a.dummy.link");
-
-        reference.child(user_num).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
-
-                //testing change to true
-                SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
-                edist.putBoolean("login", false).apply();
-                Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
-                startActivity(in);
-                finish();
-                Log.d("push ", "from inside " + reference.getKey());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(user_data.this, "error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-*/
     @Keep
     static class heplerclass {
         public String name;
@@ -440,8 +389,8 @@ public class user_data extends AppCompatActivity {
         String uage = Objects.requireNonNull(age.getText()).toString().trim();
         String ugender = gender.trim();
         save_in_shared_preferences(uname,ufamily);
-        //TODO:do not forget to set the correct download link
-        download_link="this_is_dummy_link";
+        //TODO:do not forget to set the correct download link=done
+        //download_link="this_is_dummy_link";
         String final_data=uname+"#"+ufamily+"#"+uage+"#"+ugender+"#"+download_link;
         //helperclass
         heplerclass help = new heplerclass();
@@ -454,9 +403,9 @@ public class user_data extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
 
-                //testing change to true
+                //TODO:change to true=done
                 SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
-                edist.putBoolean("login", false).apply();
+                edist.putBoolean("login", true).apply();
                 Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
                 startActivity(in);
                 finish();

@@ -79,6 +79,7 @@ public class home extends Fragment {
     String user_gender;
     String user_key;
     Boolean is_request_already_sent=false;
+    String search_gender;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,6 +93,13 @@ public class home extends Fragment {
         //retreiving users gender
         SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
         user_gender = getgender.getString("gender", "female");
+        if(user_gender.equals("male"))
+        {
+            search_gender="female";
+        }else
+        {
+            search_gender="male";
+        }
 
         //retreiving user key
         SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
@@ -118,9 +126,8 @@ public class home extends Fragment {
         gender.clear();
         links.clear();
         Log.d("delta ", "inside refresh_data_final()");
-        //TODO:change the child(male)
-        //TODO:it should be the opposite of user's gender
-        reference = FirebaseDatabase.getInstance().getReference().child("male");
+        //TODO:change the child(male)=done
+        reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -154,7 +161,6 @@ public class home extends Fragment {
                             Log.d("request ","1) comparing "+user_key+" with "+spli[e]);
                             if(user_key.equals(spli[e]))
                             {
-                            //  Log.d("request ","2) got in for "+names.get(e));
                               is_request_already_sent=true;
                             }
                         }
@@ -217,126 +223,6 @@ public class home extends Fragment {
             }
         });
     }
-    //TODO:send request pro is available
-    /*
-    public void send_request(String key, String gender)
-    {
-        //getting the user's key
-        SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
-        int user_key = ediss.getInt("key", 999999);
-        Log.d("send ", "sender key   :" + user_key);
-        Log.d("send ", "receiver key :" + key);
-
-        //retrieving the existing requests before sending
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        reference = firebaseDatabase.getReference().child(gender).child(key);
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
-            {
-                count++;
-                String tempo = snapshot.getValue(String.class);
-                Log.d("tempo", tempo);
-                temp_for_request = tempo + "#" + temp_for_request;
-                if (count == 8)
-                {
-                    Log.d("loop ", "temp for request " + temp_for_request);
-                    send_request_finally(temp_for_request, gender, key);
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                custom.notifyDataSetChanged();
-            }
-        });
-    }
-
-     */
-     /*
-    public void send_request_finally(String data, String gender, String key)
-    {
-        is_changed = true;
-        Log.d("try", "************************************");
-        //key is the receiver key
-
-        String[] seperate = data.split("\\#");
-        Log.d("tempo ", "data received is :" + seperate[1]);
-
-        //retrieving the user key
-        SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
-        int user_key = ediss.getInt("key", 999999);
-        Log.d("send ", "inside send finally with user key :" + user_key);
-
-        //creating the new push data for received
-        push_data = user_key + ":" + seperate[1];
-
-        //creating the new push_send for sender
-        push_send= key + ":" +seperate[0];
-        Log.d("loop ","data     "+data);
-        Log.d("loop ","previous "+seperate[0]);
-        Log.d("loop ","pushing  "+push_send);
-
-        Log.d("test ", "push received " + push_data);
-        Log.d("test ", "push send     " + push_send);
-        //updating received node in receiver account
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        reference = firebaseDatabase.getReference().child(gender).child(key).child("received");
-        reference.setValue(push_data).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-                Toast.makeText(getActivity(), "Request sent", Toast.LENGTH_SHORT).show();
-                Log.d("send ", "pushed successfully");
-            }
-        });
-
-        //retrieving the user's gender to push
-        SharedPreferences edit =getActivity().getSharedPreferences(GENDER,MODE_PRIVATE);
-        String ugender=edit.getString("gender","male");
-        Log.d("test ","user gender is "+ugender);
-
-        //updating send node from sender account
-        //don't forget to put the users gender
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        reference=firebaseDatabase.getReference().child("male").child(String.valueOf(user_key)).child("sent");
-        reference.setValue(push_send).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-              Log.d("test ","updated sent of sender account");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("test ","something went wrong while updating sent :"+e.getMessage());
-            }
-        });
-        push_data = "";
-        push_send="";
-        count = 0;
-        temp_for_request = "";
-        is_changed = false;
-       //  refresh_data();
-        refresh_data_final();
-    }
-      */
 
     public void send_request_finally_ultra(String data, String gender, String key)
     {
@@ -432,76 +318,6 @@ public class home extends Fragment {
         });
     }
 
-    /* this is a officail working method for retrieving the data when child count was 8
-       the db structure was improved later and the child count was reduced to 3
-       so a new method refresh_data_final() is  defined to support the new db structure
-
-
-    private void refresh_data() {
-        names.clear();
-        family.clear();
-        age.clear();
-        keys.clear();
-        gender.clear();
-        links.clear();
-        Log.d("try ", "inside refresh_data()");
-        //TODO:change the child(male)
-        //TODO:it should be the opposite of user's gender
-        reference = FirebaseDatabase.getInstance().getReference().child("male");
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
-            {
-                loading.setVisibility(View.GONE);
-                keys.add(snapshot.getKey());
-                Log.d("try ", "triggered on child added");
-                String final_data = "";
-                for (DataSnapshot ds : snapshot.getChildren())
-                {
-                    String uname = ds.getValue(String.class);
-                    final_data = uname + "#" + final_data;
-                }
-                Log.d("final ", "final data " + final_data);
-
-                String[] separated = final_data.split("\\#");
-                names.add(separated[3]);
-                family.add(separated[6]);
-                links.add(separated[4]);
-                gender.add(separated[5]);
-                age.add(Integer.parseInt(String.valueOf(separated[7])));
-                Log.d("try ", "calling notify");
-                if (!is_changed)
-                {
-                    custom.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("try ", "triggered on child changed");
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("try ", "triggered on child removed");
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("try ", "triggered on child moved");
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("try ", "triggered on child cancelled");
-                custom.notifyDataSetChanged();
-            }
-        });
-      }
-     */
     class custom_adapter extends BaseAdapter {
 
         @Override
