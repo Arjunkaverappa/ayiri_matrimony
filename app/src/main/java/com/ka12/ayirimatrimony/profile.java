@@ -127,7 +127,8 @@ public class profile extends Fragment {
                    Toast.makeText(getContext(), "Please enter a value", Toast.LENGTH_SHORT).show();
                }else {
                    String value = edits.getText().toString();
-                   change_values_now(text,value);
+                  Toast.makeText(getActivity(), "coming soon", Toast.LENGTH_SHORT).show();
+                  // change_values_now(text,value);
                    Log.d("value ",value);
                }
            }

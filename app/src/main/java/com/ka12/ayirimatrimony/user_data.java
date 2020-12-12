@@ -194,7 +194,7 @@ public class user_data extends AppCompatActivity {
             public boolean onLongClick(View view)
             {
                 try {
-                    push_into_database_final();
+                    push_into_database_final("this_is_a_dummy_link_sent_from_onLongClickListener");
                     Toast.makeText(user_data.this, "pushing dynamically!", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Log.d("key ", "error :" + e.getMessage());
@@ -218,8 +218,7 @@ public class user_data extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             //pushing the values into firebase
-                           // push_into_database();
-                            push_into_database_final();
+                            push_into_database_final(uri.toString());
                             //getting the download link
                             download_link = uri.toString();
                             Log.d("download ", "sending " + download_link);
@@ -353,7 +352,11 @@ public class user_data extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void initiate_old_user_protocol() {
+    public void initiate_old_user_protocol()
+    {
+        SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
+        edist.putBoolean("login", true).apply();
+
         SharedPreferences getname = getSharedPreferences(NAME, MODE_PRIVATE);
         String get_name = getname.getString("name", "null");
 
@@ -376,13 +379,17 @@ public class user_data extends AppCompatActivity {
         });
     }
 
-    private void push_into_database_final()
+    private void push_into_database_final(String image_dwonload_link)
     {
         firebaseDatabase = FirebaseDatabase.getInstance();
         if (gender.equals("male"))
             reference = firebaseDatabase.getReference().child("male");
         else
             reference = firebaseDatabase.getReference().child("female");
+        //getting download link
+        SharedPreferences getlink=getSharedPreferences(D_LINK,MODE_PRIVATE);
+        download_link=getlink.getString("link","wrong link");
+
         //retriving the values
         String uname = Objects.requireNonNull(name.getText()).toString().trim();
         String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
@@ -390,20 +397,23 @@ public class user_data extends AppCompatActivity {
         String ugender = gender.trim();
         save_in_shared_preferences(uname,ufamily);
         //TODO:do not forget to set the correct download link=done
-        //download_link="this_is_dummy_link";
-        String final_data=uname+"#"+ufamily+"#"+uage+"#"+ugender+"#"+download_link;
+        Log.d("download","before pushing "+download_link);
+        String final_data=uname+"#"+ufamily+"#"+uage+"#"+ugender+"#"+image_dwonload_link;
         //helperclass
         heplerclass help = new heplerclass();
         help.setName(final_data);
         help.setReceived("received");
         help.setSent("seen");
 
+        SharedPreferences.Editor putkey=getSharedPreferences(KEY,MODE_PRIVATE).edit();
+        putkey.putString("key",user_num).apply();
+
         reference.child(user_num).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
 
-                //TODO:change to true=done
+                //TODO:change to true
                 SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
                 edist.putBoolean("login", true).apply();
                 Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);

@@ -65,6 +65,7 @@ public class home extends Fragment {
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     public static final String CHILD = "com.ka12.ayiri_matrimony_number_of_child_nodes";
     public static final String DUPLICATE = "com.ka12.ayiri_all_the_sent_requests_are_saved_here";
+    public static final String CUR_USER_DATA = "com.ka12.ayiri_this_is_where_current_user_data_is_aved";
     String all_request;
     String push_data;
     String push_send;
@@ -80,6 +81,8 @@ public class home extends Fragment {
     String user_key;
     Boolean is_request_already_sent=false;
     String search_gender;
+    String current_user_received;
+    int current_count=0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -106,8 +109,8 @@ public class home extends Fragment {
         user_key = ediss.getString("key", "999999999");
 
         //testing
+        pass_current_users_received_requests();
         refresh_data_final();
-        update_lastseen();
         return v;
     }
 
@@ -182,6 +185,7 @@ public class home extends Fragment {
                 if (!is_changed)
                 {
                     custom.notifyDataSetChanged();
+                    update_lastseen();
                 }
                 //getting the number of child nodes
                 if (count > 0)
@@ -284,20 +288,24 @@ public class home extends Fragment {
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     custom.notifyDataSetChanged();
+                    pass_current_users_received_requests();
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                     custom.notifyDataSetChanged();
+                    pass_current_users_received_requests();
                 }
 
                 @Override
                 public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     custom.notifyDataSetChanged();
+                    pass_current_users_received_requests();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                    pass_current_users_received_requests();
                     custom.notifyDataSetChanged();
                 }
             });
@@ -306,6 +314,8 @@ public class home extends Fragment {
 
     public void update_lastseen()
     {
+
+        Log.d("download","user key before updating the last seen  :"+user_key);
         String final_date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         Log.d("date", final_date);
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -392,5 +402,60 @@ public class home extends Fragment {
             });
             return view;
         }
+    }
+    public void pass_current_users_received_requests()
+    {
+        reference = FirebaseDatabase.getInstance().getReference().child(user_gender);
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
+            {
+                /*
+                current_count++;
+                if(current_count==3)
+                {
+                    String snap=snapshot.getValue(String.class);
+                    current_user_received=snap;
+                    SharedPreferences.Editor putsnap=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE).edit();
+                    putsnap.putString("data",snap).apply();
+                    Log.d("receivedz","current_data ="+snap);
+                    current_count=0;
+                }
+                 */
+                //alternate method to get the desired values,use if the current method is not working
+                count=0;
+                for(DataSnapshot ds :snapshot.getChildren())
+                {
+                  if(user_key.equals(snapshot.getKey()) && count==1)
+                  {
+                      current_user_received=ds.getValue(String.class);
+                      SharedPreferences.Editor putsnap=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE).edit();
+                      putsnap.putString("data",current_user_received).apply();
+                      Log.d("receivedz","current_data ="+current_user_received);
+                  }
+                  count++;
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

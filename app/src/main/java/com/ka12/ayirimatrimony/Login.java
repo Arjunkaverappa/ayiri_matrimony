@@ -94,7 +94,7 @@ public class Login extends AppCompatActivity {
         window.setStatusBarColor(Color.parseColor("#A374ED"));
         //hiding the otp card
         otp_card.setVisibility(View.GONE);
-        //resetting is old preferences
+        //resetting is_old preferences
         SharedPreferences.Editor getstatus=getSharedPreferences(IS_OLD,MODE_PRIVATE).edit();
         getstatus.putBoolean("isold",false).apply();
         //setting up onclick listeneres
@@ -115,7 +115,8 @@ public class Login extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     start_timer();
-                    check_if_old_account(get_number.getText().toString().trim());
+                    //we are not calling this function for now
+                   // check_if_old_account(get_number.getText().toString().trim());
                 }else
                 {
                     Toast.makeText(Login.this, "Please connect to internet and try again!", Toast.LENGTH_SHORT).show();
@@ -153,7 +154,8 @@ public class Login extends AppCompatActivity {
     private void sendvarification(String number) {
         try {
             PhoneAuthProvider.getInstance().verifyPhoneNumber("+91" + number, 60, TimeUnit.SECONDS, this, mCallbacks);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Toast.makeText(this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.d("login ", "something went wrong in send varification :" + e.getMessage());
         }
@@ -298,8 +300,8 @@ public class Login extends AppCompatActivity {
              String ss=snapshot.getValue(String.class);
              data=ss+"#"+data;
              Log.d("snap ",ss);
-             //TODO chenge the count if it changes in future
-             if(count==7)
+             //TODO chenge the count if it changes in future=done
+             if(count==1)
              {
                  assign_values(data,number);
              }
