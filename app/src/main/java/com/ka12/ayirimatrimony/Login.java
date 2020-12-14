@@ -63,8 +63,8 @@ public class Login extends AppCompatActivity {
     public static final String LOGIN="com.ka12.ayiri_matrimony_login_details";
     //database entries
     DatabaseReference reference;
-    String data="";
-    int count=0;
+    String data_m="",data_f="";
+    int count_m=0,count_f=0;
     public static final String PHONE="com.ka12.ayiri_matrimony_phone_number_is_saved_here";
     public static final String IS_OLD="com.ka12.ayiri_matrimony_checking_for_previous_entries";
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
@@ -72,7 +72,7 @@ public class Login extends AppCompatActivity {
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
-
+    Boolean old_data_obtained=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,8 +115,9 @@ public class Login extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     start_timer();
-                    //we are not calling this function for now
-                   // check_if_old_account(get_number.getText().toString().trim());
+
+                    //TODO:do not forget to enable this method(imp)
+                    // check_if_old_account(get_number.getText().toString().trim());
                 }else
                 {
                     Toast.makeText(Login.this, "Please connect to internet and try again!", Toast.LENGTH_SHORT).show();
@@ -204,16 +205,12 @@ public class Login extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task)
             {
-                //TODO save the login details here
-                //TODO pass the phone number to next activity
                 if (task.isSuccessful())
                 {
-                    //saving the login details  //testing
-                 //   SharedPreferences.Editor edit=getSharedPreferences(LOGIN,MODE_PRIVATE).edit();
-                 //   edit.putBoolean("login",true).apply();
+
                     //saving the phone number
                     SharedPreferences.Editor save=getSharedPreferences(PHONE,MODE_PRIVATE).edit();
-                    save.putString("key",get_number.getText().toString().trim()).apply();
+                    save.putString("key", Objects.requireNonNull(get_number.getText()).toString().trim()).apply();
 
                     Toast.makeText(Login.this, "Login successfull", Toast.LENGTH_SHORT).show();
                     Intent succ = new Intent(Login.this, com.ka12.ayirimatrimony.user_data.class);
@@ -269,7 +266,7 @@ public class Login extends AppCompatActivity {
         {
            countDownTimer.cancel();
             final AlertDialog.Builder dialog = new AlertDialog.Builder(Login.this);
-            dialog.setTitle("We could not reach " + get_number.getText().toString());
+            dialog.setTitle("We could not reach " + Objects.requireNonNull(get_number.getText()).toString());
             dialog.setMessage("Check your network connectivity and try again.");
             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
@@ -285,26 +282,27 @@ public class Login extends AppCompatActivity {
     }.start();
 
     }
-    // androidx.browser:browser:1.2.0
-    // implementation 'com.android.support:customtabs:28.0.0'
+
     public void check_if_old_account(String number)
     {
-        data="";
-       Log.d("snap ","inside check if");
+       data_m="";
+       Log.d("old ","inside check if");
        reference= FirebaseDatabase.getInstance().getReference().child("male").child(number);
        reference.addChildEventListener(new ChildEventListener() {
            @Override
            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
            {
-             count++;
-             String ss=snapshot.getValue(String.class);
-             data=ss+"#"+data;
-             Log.d("snap ",ss);
-             //TODO chenge the count if it changes in future=done
-             if(count==1)
-             {
-                 assign_values(data,number);
-             }
+               Log.d("old","child is added");
+               Log.d("old","data "+snapshot.getValue(String.class));
+               if(count_m==0)
+               {
+                   data_m=snapshot.getValue(String.class);
+                   if(data_m!=null) {
+                       assign_values(data_m, number);
+                       Log.d("old","send from male"+data_m);
+                   }
+               }
+               count_m++;
            }
 
            @Override
@@ -327,18 +325,22 @@ public class Login extends AppCompatActivity {
 
            }
        });
+
         reference= FirebaseDatabase.getInstance().getReference().child("female").child(number);
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
             {
-                String ss=snapshot.getValue(String.class);
-                data=data+ss;
-                Log.d("snap ",ss);
-                if(count==7)
+                Log.d("old","child is added");
+                if(count_f==0)
                 {
-                    assign_values(data,number);
+                    data_f=snapshot.getValue(String.class);
+                    if(data_f!=null) {
+                        assign_values(data_f, number);
+                        Log.d("old","send from male"+data_f);
+                    }
                 }
+                count_f++;
             }
 
             @Override
@@ -365,11 +367,13 @@ public class Login extends AppCompatActivity {
     public void assign_values(String data,String number)
     {
         String[] sep=data.split("\\#");
-        String name=sep[2];
-        String gender=sep[4];
-        String family=sep[5];
-        String image_d_link=sep[3];
-        Log.d("snap "," name= "+name+" gender ="+gender+" download link "+image_d_link);
+        String name=sep[0];
+        String gender=sep[3];
+        String family=sep[1];
+        String image_d_link=sep[4];
+
+        Log.d("old"," name= "+name+" gender ="+gender+" download link "+image_d_link);
+
         //saving the values in shared preferences
         SharedPreferences.Editor getstatus=getSharedPreferences(IS_OLD,MODE_PRIVATE).edit();
         getstatus.putBoolean("isold",true).apply();

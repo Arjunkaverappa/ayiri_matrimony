@@ -50,4 +50,9 @@
     <string name="no_requests">No requests yet</string>
     <string name="no_sent">You havent sent any requests to anyone yet</string>
     <string name="no_match">No matches yet</string>
+    <string name="step_3">Step 3</string>
+    <string name="warning_text">
+                               Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
+                               User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
+    <string name="continue_">Continue</string>
 </resources>
