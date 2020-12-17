@@ -56,4 +56,5 @@
                                Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
                                User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
     <string name="continue_">Continue</string>
+    <string name="please_connect_to_internet">Please connect to internet</string>
 </resources>

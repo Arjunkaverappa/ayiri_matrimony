@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                         home.beginTransaction().replace(R.id.change_frag, new home()).remove(new match()).remove(new profile()).commit();
                         break;
                     case 3:
-                        bottom_bar.setBackgroundColor(Color.parseColor("#6ABEDF"));
+                        bottom_bar.setBackgroundColor(Color.parseColor("#66bb6a"));
                         main_layout.setVisibility(View.GONE);
                         FragmentManager sent = getSupportFragmentManager();
                         sent.beginTransaction().replace(R.id.change_frag, new sent()).remove(new match()).commit();

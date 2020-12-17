@@ -59,112 +59,119 @@ public class sent extends Fragment
         View v= inflater.inflate(R.layout.fragment_sent, container, false);
         list_names=v.findViewById(R.id.list_name);
         loading=v.findViewById(R.id.loading);
+        try {
+            //retrieving the key of the current user
+            SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
+            key = ediss.getString("key", "999999999");
+            Log.d("key ", "received " + key);
 
-        //retrieving the key of the current user
-        SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
-        key = ediss.getString("key", "999999999");
-        Log.d("key ", "received " + key);
+            //retreieving the user gender
+            SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+            user_gender = getgender.getString("gender", "male");
 
-        //retreieving the user gender
-        SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
-        user_gender = getgender.getString("gender", "male");
-
-        list_names.setAdapter(custom);
-        refresh_data_final();
+            list_names.setAdapter(custom);
+            refresh_data_final();
+        }catch (Exception e)
+        {
+            Log.d("error sent","catch in  :"+e.getMessage());
+        }
         return v;
     }
 
     private void refresh_data_final() {
-        clear_lists();
-        SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
-        user_gender = getgender.getString("gender", "female");
-        if (user_gender.equals("male")) {
-            search_gender = "female";
-        } else {
-            search_gender = "male";
-        }
-        reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
-        Log.d("try ", "inside refresh_data()");
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("beta", "1) went inside onchildadded");
-                asd++;
-                temp = 0;
-                loading.setVisibility(View.GONE);
-                String final_data = "";
-                for (DataSnapshot ds : snapshot.getChildren())
-                {
-                    Log.d("beta", "2) inside populating master list");
-                    String data = ds.getValue(String.class);
-                    if (temp == 0) {
-                        Log.d("delta ", "data :" + data);
-                        separated = data.split("\\#");
-                        Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+        try {
+            clear_lists();
+            SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+            user_gender = getgender.getString("gender", "female");
+            if (user_gender.equals("male")) {
+                search_gender = "female";
+            } else {
+                search_gender = "male";
+            }
+            reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
+            Log.d("try ", "inside refresh_data()");
+            reference.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Log.d("beta", "1) went inside onchildadded");
+                    asd++;
+                    temp = 0;
+                    loading.setVisibility(View.GONE);
+                    String final_data = "";
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Log.d("beta", "2) inside populating master list");
+                        String data = ds.getValue(String.class);
+                        if (temp == 0) {
+                            Log.d("delta ", "data :" + data);
+                            separated = data.split("\\#");
+                            Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                        }
+                        if (temp == 1) {
+                            received.add(data);
+                        }
+                        temp++;
                     }
-                    if (temp == 1) {
-                        received.add(data);
-                    }
-                    temp++;
-                }
 
-                n = received.size();
-                //the following code it to populate request 'sent' list of the user
-                //we search the requests section and fill the list if key matches
-                for (int q = count; q < n; q++) {
-                    Log.d("beta", "3) inside populating sent list ");
-                    String[] sep = received.get(q).split("\\:");
-                    for (int e = 0; e < sep.length; e++) {
-                        Log.d("loop ", "comparing " + key + " with " + sep[e]);
-                        if (String.valueOf(key).equals(sep[e]))
-                        {
-                            keys.add(snapshot.getKey());
-                            names.add(separated[0]);
-                            family.add(separated[1]);
-                            links.add(separated[4]);
-                            gender.add(separated[3]);
-                            age.add(Integer.valueOf(separated[2]));
-                            Log.d("loop ", "added " + separated[0]);
+                    n = received.size();
+                    //the following code it to populate request 'sent' list of the user
+                    //we search the requests section and fill the list if key matches
+                    for (int q = count; q < n; q++) {
+                        Log.d("beta", "3) inside populating sent list ");
+                        String[] sep = received.get(q).split("\\:");
+                        for (int e = 0; e < sep.length; e++) {
+                            Log.d("loop ", "comparing " + key + " with " + sep[e]);
+                            if (String.valueOf(key).equals(sep[e])) {
+                                keys.add(snapshot.getKey());
+                                names.add(separated[0]);
+                                family.add(separated[1]);
+                                links.add(separated[4]);
+                                gender.add(separated[3]);
+                                age.add(Integer.valueOf(separated[2]));
+                                Log.d("loop ", "added " + separated[0]);
+                            }
                         }
                     }
+                    if (asd == no_of_children) {
+                        n = 0;
+                        count = 0;
+                        asd = 0;
+                        temp_e = 0;
+                        Log.d("beta", "asd reset");
+                    }
+                    count++;
+                    custom.notifyDataSetChanged();
+
+                    Log.d("beta", "*****************************************************");
                 }
-                if (asd == no_of_children) {
-                    n = 0;
-                    count = 0;
-                    asd = 0;
-                    temp_e = 0;
-                    Log.d("beta", "asd reset");
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Log.d("beta", "went inside on child changed!!! " + previousChildName);
+                    custom.notifyDataSetChanged();
                 }
-                count++;
-                custom.notifyDataSetChanged();
 
-                Log.d("beta", "*****************************************************");
-            }
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                    Log.d("beta", "went inside on child removed");
+                    custom.notifyDataSetChanged();
+                }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("beta", "went inside on child changed!!! " + previousChildName);
-                custom.notifyDataSetChanged();
-            }
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Log.d("beta", "went inside onChildMoved");
+                    custom.notifyDataSetChanged();
+                }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("beta", "went inside on child removed");
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("beta", "went inside onChildMoved");
-                custom.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("beta", "went inside onCancelled");
-                custom.notifyDataSetChanged();
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("beta", "went inside onCancelled");
+                    custom.notifyDataSetChanged();
+                }
+            });
+        }catch (Exception e)
+        {
+            Log.d("error sent","catch in refresh_data_final :"+e.getMessage());
+        }
     }
 
     public void clear_lists() {
@@ -204,15 +211,20 @@ public class sent extends Fragment
                 LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.display_list_sent, null);
             }
-            Log.d("try ", "inside times " + i);
-            ImageView img = view.findViewById(R.id.pic);
-            TextView name = view.findViewById(R.id.name);
+            try {
+                Log.d("try ", "inside times " + i);
+                ImageView img = view.findViewById(R.id.pic);
+                TextView name = view.findViewById(R.id.name);
 
-            Log.d("loop ", "**************************************************");
-            Log.d("loop ", "the value of n before entering =" + n);
+                Log.d("loop ", "**************************************************");
+                Log.d("loop ", "the value of n before entering =" + n);
 
-            name.setText("Name :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge :" + age.get(i));
-            Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
+                name.setText("Name :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge :" + age.get(i));
+                Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
+            }catch (Exception e)
+            {
+                Log.d("error sent","catch in  custom_adapter :"+e.getMessage());
+            }
             return view;
         }
     }
