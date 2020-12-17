@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +34,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.onesignal.OSDeviceState;
+import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -45,6 +54,7 @@ import static android.content.Context.MODE_PRIVATE;
    TODO :Figure out a logic to prevent duplicate send requests.
  */
 public class home extends Fragment {
+    public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     LinearLayout main_layout, profile_frag;
     DatabaseReference reference;
     ListView list_name;
@@ -58,6 +68,9 @@ public class home extends Fragment {
     public ArrayList<String> seen = new ArrayList<>();
     public ArrayList<String> received = new ArrayList<>();
     public ArrayList<String> received_text = new ArrayList<>();
+    public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
+    //one signal app id
+    public static final String ONESIGNAL_APP_ID = "4359ad23-f128-46aa-aba3-caebf6058549";
     custom_adapter custom = new custom_adapter();
     //firebase
     FirebaseDatabase firebaseDatabase;
@@ -66,6 +79,10 @@ public class home extends Fragment {
     public static final String CHILD = "com.ka12.ayiri_matrimony_number_of_child_nodes";
     public static final String DUPLICATE = "com.ka12.ayiri_all_the_sent_requests_are_saved_here";
     public static final String CUR_USER_DATA = "com.ka12.ayiri_this_is_where_current_user_data_is_aved";
+    public ArrayList<String> valid = new ArrayList<>();
+    public ArrayList<String> notification_token = new ArrayList<>();
+    Boolean is_connected;
+    String[] separated;
     String all_request;
     String push_data;
     String push_send;
@@ -79,10 +96,15 @@ public class home extends Fragment {
     int no_of_child = 0;
     String user_gender;
     String user_key;
-    Boolean is_request_already_sent=false;
+    String[] spli;
     String search_gender;
     String current_user_received;
-    int current_count=0;
+    Boolean is_request_already_sent = false;
+    int current_count = 0;
+    int last_seen_count = 0;
+    String last_seen_data;
+    String player_id = "";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,14 +116,12 @@ public class home extends Fragment {
         list_name.setAdapter(custom);
 
         //retreiving users gender
-        SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+        SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
         user_gender = getgender.getString("gender", "female");
-        if(user_gender.equals("male"))
-        {
-            search_gender="female";
-        }else
-        {
-            search_gender="male";
+        if (user_gender.equals("male")) {
+            search_gender = "female";
+        } else {
+            search_gender = "male";
         }
 
         //retreiving user key
@@ -111,12 +131,19 @@ public class home extends Fragment {
         //testing
         pass_current_users_received_requests();
         refresh_data_final();
+        update_lastseen_data();
+
+        //initialising one signal
+        Log.d("onesignal", "initialising one signal with context");
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+        OneSignal.initWithContext(getContext());
+        OneSignal.setAppId(ONESIGNAL_APP_ID);
+
         return v;
     }
 
-    public void change_request_text(int i)
-    {
-        received_text.add(i,"Requested");
+    public void change_request_text(int i) {
+        received_text.add(i, "Requested");
         custom.notifyDataSetChanged();
     }
 
@@ -129,7 +156,7 @@ public class home extends Fragment {
         gender.clear();
         links.clear();
         Log.d("delta ", "inside refresh_data_final()");
-        //TODO:change the child(male)=done
+
         reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
         reference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -138,66 +165,93 @@ public class home extends Fragment {
                 Log.d("delta ", "triggered on child added");
                 loading.setVisibility(View.GONE);
                 keys.add(snapshot.getKey());
-                for (DataSnapshot ds : snapshot.getChildren())
-                {
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     String data = ds.getValue(String.class);
-                    if (count == 0)
-                    {
-                        Log.d("delta ", "data :" + data);
-                        String[] separated = data.split("\\#");
-                        names.add(separated[0]);
-                        family.add(separated[1]);
-                        age.add(Integer.valueOf(separated[2]));
-                        gender.add(separated[3]);
-                        links.add(separated[4]);
-                        Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                    if (count == 0) {
+                        if (data != null) {
+                            Log.d("delta ", "data :" + data);
+                            separated = data.split("\\#");
+                            /*
+                            names.add(separated[0]);
+                            family.add(separated[1]);
+                            age.add(Integer.valueOf(separated[2]));
+                            gender.add(separated[3]);
+                            links.add(separated[4]);  */
+                            Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                        }
                     }
-                    if(count==1)
-                    {
+                    if (count == 1) {
                         //we are filtering dubplicate entries
                         received.add(data);
-                        Log.d("request ","**************************************");
-                        Log.d("request","from db :"+data);
-                        String[] spli=data.split("\\:");
-                        for(int e=0;e<spli.length;e++)
-                        {
-                            Log.d("request ","1) comparing "+user_key+" with "+spli[e]);
-                            if(user_key.equals(spli[e]))
-                            {
-                              is_request_already_sent=true;
+                        Log.d("request ", "**************************************");
+                        Log.d("request", "from db :" + data);
+                        if (data != null) {
+                            spli = data.split("\\:");
+                            /*
+                            for (int e = 0; e < spli.length; e++) {
+                                Log.d("request ", "1) comparing " + user_key + " with " + spli[e]);
+                                if (user_key.equals(spli[e]))
+                                {
+                                    is_request_already_sent = true;
+                                }
                             }
-                        }
-                        if(is_request_already_sent) {
-                            received_text.add("Requested");
-                            is_request_already_sent=false;
-                        }else
-                        {
-                            received_text.add("Send Request");
+                            if (is_request_already_sent)
+                            {
+                                received_text.add("Requested");
+                                is_request_already_sent = false;
+                            } else
+                                {
+                                received_text.add("Send Request");
+                                }             */
                         }
                     }
-                    if (count == 2)
-                    {
-                        seen.add(data);
+                    if (count == 2) {
+                        //testing
+                        if (data != null) {
+                            Log.d("split", "data :" + data);
+                            String[] split_last = data.split("\\:");
+                            //only adding if the account is valid
+                            if (split_last[1].equals("yes")) {
+                                Log.d("split", "   Added :" + split_last[1]);
+                                seen.add(split_last[0]);
+                                valid.add(split_last[1]);
+                                notification_token.add(split_last[2]);
+                                names.add(separated[0]);
+                                family.add(separated[1]);
+                                age.add(Integer.valueOf(separated[2]));
+                                gender.add(separated[3]);
+                                links.add(separated[4]);
+
+                                for (int e = 0; e < spli.length; e++) {
+                                    Log.d("request ", "1) comparing " + user_key + " with " + spli[e]);
+                                    if (user_key.equals(spli[e])) {
+                                        is_request_already_sent = true;
+                                    }
+                                }
+                                if (is_request_already_sent) {
+                                    received_text.add("Requested");
+                                    is_request_already_sent = false;
+                                } else {
+                                    received_text.add("Send Request");
+                                }
+                            }
+                        }
                     }
                     count++;
                 }
                 //testing
-                if (!is_changed)
-                {
+                if (!is_changed) {
                     custom.notifyDataSetChanged();
-                    update_lastseen();
                 }
                 //getting the number of child nodes
-                if (count > 0)
-                {
+                if (count > 0) {
                     no_of_child++;
-                    Log.d("jizz", String.valueOf(no_of_child));
+                    Log.d("jiss", String.valueOf(no_of_child));
                     try {
-                        SharedPreferences.Editor edit = getActivity().getSharedPreferences(CHILD, MODE_PRIVATE).edit();
+                        SharedPreferences.Editor edit = Objects.requireNonNull(getActivity()).getSharedPreferences(CHILD, MODE_PRIVATE).edit();
                         edit.putInt("child", no_of_child).apply();
-                    }catch (Exception e)
-                    {
-                        Log.d("catch","Error :"+e.getMessage());
+                    } catch (Exception e) {
+                        Log.d("catch", "Error :" + e.getMessage());
                     }
                 }
             }
@@ -228,8 +282,7 @@ public class home extends Fragment {
         });
     }
 
-    public void send_request_finally_ultra(String data, String gender, String key)
-    {
+    public void send_request_finally_ultra(String data, String gender, String key, int notifi_index) {
         is_changed = true;
         Log.d("send", "Entered send request finally ultra");
         //key is the receiver key
@@ -248,11 +301,12 @@ public class home extends Fragment {
         reference = firebaseDatabase.getReference().child(gender).child(key).child("received");
         reference.setValue(push_data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid)
-            {
+            public void onSuccess(Void aVoid) {
 
                 Toast.makeText(getActivity(), "Request sent!", Toast.LENGTH_SHORT).show();
                 Log.d("send ", "pushed successfully");
+                //sending notification
+                send_notification(notifi_index);
             }
         });
 
@@ -263,7 +317,7 @@ public class home extends Fragment {
         s_count = 0;
     }
 
-    public void send_request_pro(String key, String gender) {
+    public void send_request_pro(String key, String gender, int notify_index) {
 
         Log.d("send ", "sender key   :" + user_key);
         Log.d("send ", "receiver key :" + key);
@@ -281,7 +335,7 @@ public class home extends Fragment {
                     if (s_count == 2) {
                         String tempo = snapshot.getValue(String.class);
                         Log.d("loop ", "tempo for request :" + tempo);
-                        send_request_finally_ultra(tempo, gender, key);
+                        send_request_finally_ultra(tempo, gender, key, notify_index);
                     }
                 }
 
@@ -312,20 +366,185 @@ public class home extends Fragment {
         }
     }
 
-    public void update_lastseen()
-    {
-
-        Log.d("download","user key before updating the last seen  :"+user_key);
-        String final_date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        Log.d("date", final_date);
+    //improved method for lastseen
+    public void update_lastseen_data() {
+        Log.d("seen_data", "initiated");
         firebaseDatabase = FirebaseDatabase.getInstance();
-        reference = firebaseDatabase.getReference().child(user_gender).child(user_key).child("sent");
-        reference.setValue(final_date).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference = firebaseDatabase.getReference().child(user_gender).child(user_key);
+        reference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d("date ", "uploaded successfully");
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                last_seen_count++;
+                if (last_seen_count == 3) {
+                    last_seen_data = snapshot.getValue(String.class);
+                    Log.d("seen", "data " + last_seen_data);
+                    update_last_seen(last_seen_data);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
+    }
+
+    public void update_last_seen(String data) {
+        //retreiving the user id for notifications
+        OSDeviceState device = OneSignal.getDeviceState();
+        player_id = device.getUserId();
+
+        Log.d("seen", "received data " + data);
+        String[] split_seen = data.split("\\:");
+        if (!split_seen[1].equals("no") && !split_seen[1].equals("yes")) {
+            initiate_fake_user_protocol();
+        } else {
+            Date c = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String final_date = df.format(c) + ":" + split_seen[1] + ":" + player_id;
+            Log.d("seen", final_date);
+
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            reference = firebaseDatabase.getReference().child(user_gender).child(user_key).child("sent");
+            reference.setValue(final_date).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d("seen ", "uploaded successfully");
+                }
+            });
+        }
+    }
+
+    public void pass_current_users_received_requests() {
+        reference = FirebaseDatabase.getInstance().getReference().child(user_gender);
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                /*
+                current_count++;
+                if(current_count==3)
+                {
+                    String snap=snapshot.getValue(String.class);
+                    current_user_received=snap;
+                    SharedPreferences.Editor putsnap=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE).edit();
+                    putsnap.putString("data",snap).apply();
+                    Log.d("receivedz","current_data ="+snap);
+                    current_count=0;
+                }
+                 */
+                //alternate method to get the desired values,use if the current method is not working
+                count = 0;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if (user_key.equals(snapshot.getKey()) && count == 1) {
+                        try {
+                            current_user_received = ds.getValue(String.class);
+                            SharedPreferences.Editor putsnap = Objects.requireNonNull(getActivity()).getSharedPreferences(CUR_USER_DATA, MODE_PRIVATE).edit();
+                            putsnap.putString("data", current_user_received).apply();
+                            Log.d("receivedz", "current_data =" + current_user_received);
+                        } catch (Exception e) {
+                            Log.d("shared", "Error while fetch current user request :" + e.getMessage());
+                        }
+                    }
+                    count++;
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void initiate_fake_user_protocol() {
+        Context context;
+        AlertDialog.Builder fakeAlert = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
+        fakeAlert.setTitle("Disclaimer!");
+        fakeAlert.setMessage(R.string.fake_alert);
+        fakeAlert.setCancelable(false);
+        fakeAlert.setPositiveButton("Delete account", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO:delete account method
+                Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                System.exit(0);
+            }
+        }).show();
+    }
+
+    public void send_notification(int index) {
+        String user_id = notification_token.get(index);
+        String sender_name = names.get(index);
+        String sender_family = family.get(index);
+
+        //getting user family
+        SharedPreferences getfamily = getActivity().getSharedPreferences(FAMILY, MODE_PRIVATE);
+        String user_family = getfamily.getString("family", "null");
+
+        //retreiving the user_name
+        SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
+        String user_name = getname.getString("name", "null");
+
+        String message = "Hey " + sender_name + ", you have received a request from " + user_family + " " + user_name;
+        Log.d("json", "player id=" + user_id);
+        try {
+            OneSignal.postNotification(new JSONObject("{'contents': {'en':'" + message + "'}, 'include_player_ids': ['" + user_id + "']}"), null);
+        } catch (JSONException e) {
+            Log.d("json", "Error :" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void check_network() {
+        new Handler().postDelayed(new Runnable() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void run() {
+                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                if ((wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected())) {
+                    is_connected = true;
+                } else {
+                    is_connected = false;
+                    check_network();
+                }
+            }
+        }, 4000);
     }
 
     class custom_adapter extends BaseAdapter {
@@ -333,7 +552,7 @@ public class home extends Fragment {
         @Override
         public int getCount() {
             Log.d("try ", "inside get count :" + names.size());
-            return names.size();
+            return valid.size();
         }
 
         @Override
@@ -359,36 +578,40 @@ public class home extends Fragment {
             TextView name = view.findViewById(R.id.name);
             Button request = view.findViewById(R.id.request);
             TextView last = view.findViewById(R.id.last);
-            name.setText("Name :" + names.get(i) + "\nfamily :" + family.get(i) + "\nAge :" + age.get(i));
+            //here we only show  the valid accounts
+
+            name.setText("Name :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge :" + age.get(i));
             last.setText("Last seen :" + seen.get(i));
             Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
+
+
             Log.d("try ", "names :" + names.get(i));
             Log.d("try ", "link :" + links.get(i));
             request.setText(received_text.get(i));
+            if (received_text.get(i).equals("Requested")) {
+                request.setVisibility(View.GONE);
+            }
 
-            request.setOnClickListener(new View.OnClickListener()
-            {
+            request.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view)
-                {
-                    if(request.getText().toString().equals("Requested"))
-                    {
+                public void onClick(View view) {
+                    if (request.getText().toString().equals("Requested")) {
                         Toast.makeText(getActivity(), "Request already sent!!", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         AlertDialog.Builder b = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
                         b.setMessage("Send request to " + names.get(i) + "?");
                         b.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int num) {
                                 //saving the send request in shared preferences
-                                SharedPreferences e = getActivity().getSharedPreferences(DUPLICATE, MODE_PRIVATE);
+                                SharedPreferences e = Objects.requireNonNull(getActivity()).getSharedPreferences(DUPLICATE, MODE_PRIVATE);
                                 String prev_key = e.getString("sent", "");
                                 String put_key = keys.get(i) + ":" + prev_key;
 
                                 SharedPreferences.Editor edit = getActivity().getSharedPreferences(DUPLICATE, MODE_PRIVATE).edit();
                                 edit.putString("sent", put_key).apply();
                                 change_request_text(i);
-                                send_request_pro(keys.get(i), gender.get(i));
+                                send_request_pro(keys.get(i), gender.get(i), i);
                             }
                         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
                             @Override
@@ -402,60 +625,5 @@ public class home extends Fragment {
             });
             return view;
         }
-    }
-    public void pass_current_users_received_requests()
-    {
-        reference = FirebaseDatabase.getInstance().getReference().child(user_gender);
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName)
-            {
-                /*
-                current_count++;
-                if(current_count==3)
-                {
-                    String snap=snapshot.getValue(String.class);
-                    current_user_received=snap;
-                    SharedPreferences.Editor putsnap=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE).edit();
-                    putsnap.putString("data",snap).apply();
-                    Log.d("receivedz","current_data ="+snap);
-                    current_count=0;
-                }
-                 */
-                //alternate method to get the desired values,use if the current method is not working
-                count=0;
-                for(DataSnapshot ds :snapshot.getChildren())
-                {
-                  if(user_key.equals(snapshot.getKey()) && count==1)
-                  {
-                      current_user_received=ds.getValue(String.class);
-                      SharedPreferences.Editor putsnap=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE).edit();
-                      putsnap.putString("data",current_user_received).apply();
-                      Log.d("receivedz","current_data ="+current_user_received);
-                  }
-                  count++;
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 }

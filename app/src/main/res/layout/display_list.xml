@@ -83,6 +83,16 @@
                     android:text="@string/send_request"
                     android:textColor="@color/white"
                     tools:ignore="SmallSp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="#85F88E"
+                    android:contentDescription="@string/app_name"
+                    android:scaleX="1.5"
+                    android:scaleY="1.1"
+                    android:src="@drawable/check"/>
+
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
 

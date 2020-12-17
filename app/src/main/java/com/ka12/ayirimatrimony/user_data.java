@@ -85,7 +85,7 @@ public class user_data extends AppCompatActivity {
     String user_num;
     //the following are for uploading the image
     Uri image_url;
-    String download_link,download_link_proof;
+    String download_link, download_link_proof;
     public StorageReference storageReference;
     public static final int PICK_IMAGE_REQUEST = 1;
     Boolean is_connected;
@@ -136,8 +136,7 @@ public class user_data extends AppCompatActivity {
 
         Log.d("old", "old user " + is_old);
 
-        if (is_old)
-        {
+        if (is_old) {
             Log.d("old", "initiated old user protocol");
             initiate_old_user_protocol();
         }
@@ -249,19 +248,18 @@ public class user_data extends AppCompatActivity {
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            if (is_uploaded_proof)
-                            {
+                            if (is_uploaded_proof) {
                                 download_link_proof = uri.toString();
                                 Log.d(TAG, "download link of proof :" + download_link_proof);
                                 SharedPreferences.Editor edit = getSharedPreferences(PROOF_DOWNLOAD, MODE_PRIVATE).edit();
                                 edit.putString("proof", download_link_proof).apply();
 
-                                //saving all data
+                                //save everything in db
                                 push_into_database_final(uri.toString());
 
                             } else {
                                 //pushing the values into firebase
-                               // push_into_database_final(uri.toString());
+                                // push_into_database_final(uri.toString());
                                 //getting the download link
                                 download_link = uri.toString();
                                 Log.d("download ", "sending " + download_link);
@@ -325,10 +323,10 @@ public class user_data extends AppCompatActivity {
             up_img.setVisibility(View.VISIBLE);
             up_img.setImageURI(image_url);
             loading.setVisibility(View.VISIBLE);
-            if (is_uploaded_proof)
-            {
+            if (is_uploaded_proof) {
                 p_loading.setVisibility(View.VISIBLE);
                 long_text.setVisibility(View.GONE);
+                sub_proof.setText("Uploading...");
             }
             if (is_connected) {
                 try {
@@ -423,8 +421,7 @@ public class user_data extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void initiate_old_user_protocol()
-    {
+    public void initiate_old_user_protocol() {
         //retreiving the name
         SharedPreferences getname = getSharedPreferences(NAME, MODE_PRIVATE);
         String get_name = getname.getString("name", "null");
@@ -438,11 +435,9 @@ public class user_data extends AppCompatActivity {
         card_three.setVisibility(View.VISIBLE);
         welcome.setText("Welcome back,\n" + fam + " " + get_name);
 
-        conti.setOnClickListener(new View.OnClickListener()
-        {
+        conti.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 //saving the login details
                 SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
                 edist.putBoolean("login", true).apply();
@@ -455,8 +450,7 @@ public class user_data extends AppCompatActivity {
         });
     }
 
-    private void push_into_database_final(String image_dwonload_link)
-    {
+    private void push_into_database_final(String image_dwonload_link) {
         firebaseDatabase = FirebaseDatabase.getInstance();
         if (gender.equals("male"))
             reference = firebaseDatabase.getReference().child("male");
@@ -476,14 +470,14 @@ public class user_data extends AppCompatActivity {
         //TODO:do not forget to set the correct download link=done
         Log.d("downs", "proof    :" + image_dwonload_link);
         Log.d("downs", "download :" + download_link);
-
-        String final_data = uname + "#" + ufamily + "#" + uage + "#" + ugender + "#"+download_link+ "#" + image_dwonload_link;
+        //image_download_link is the proof id
+        String final_data = uname + "#" + ufamily + "#" + uage + "#" + ugender + "#" + download_link + "#" + image_dwonload_link;
         Log.d("downs", "final data :" + final_data);
         //helperclass
         heplerclass help = new heplerclass();
         help.setName(final_data);
         help.setReceived("received");
-        help.setSent("seen");
+        help.setSent("seen:no:null");
 
         SharedPreferences.Editor putkey = getSharedPreferences(KEY, MODE_PRIVATE).edit();
         putkey.putString("key", user_num).apply();
@@ -496,10 +490,10 @@ public class user_data extends AppCompatActivity {
                 card_two.setVisibility(View.GONE);
                 card_four.setVisibility(View.VISIBLE);
                 p_loading.setVisibility(View.GONE);
-                //TODO:change to true
 
+                //TODO:change to true!!=done for now
                 SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
-                edist.putBoolean("login", false).apply();
+                edist.putBoolean("login", true).apply();
                 Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
                 startActivity(in);
                 finish();

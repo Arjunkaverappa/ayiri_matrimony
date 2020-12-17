@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,13 +22,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +39,12 @@ import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/*
+  this fragment is responsible to fill the matched list for a given user
+  this fragment was able to get the sent,received and matched lists all at once.
+  most of the methods are commented due to later deciding to make a seperate fragment for each of them
+  please go through the methods below upon encountering bugs in future
+ */
 public class match extends Fragment {
     LottieAnimationView loading;
     LinearLayout mat, rec, sen;
@@ -53,6 +56,8 @@ public class match extends Fragment {
     public ArrayList<String> m_keys = new ArrayList<>();
     public ArrayList<String> m_sent = new ArrayList<>();
     public ArrayList<String> m_received = new ArrayList<>();
+    //defining the master array list
+    public ArrayList<String> m_names = new ArrayList<>();
     //the following are for 'sent' list
     ListView list_name;
     public ArrayList<String> names = new ArrayList<>();
@@ -73,6 +78,7 @@ public class match extends Fragment {
     public ArrayList<String> keys_req = new ArrayList<>();
     public ArrayList<String> sent_req = new ArrayList<>();
     public ArrayList<String> received_req = new ArrayList<>();
+    public ArrayList<String> m_notification = new ArrayList<>();
     //the following lists are for matches profiles
     ListView list_match;
     public ArrayList<String> names_match = new ArrayList<>();
@@ -90,12 +96,11 @@ public class match extends Fragment {
     public static final String CHILD = "com.ka12.ayiri_matrimony_number_of_child_nodes";
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     public static final String CUR_USER_DATA = "com.ka12.ayiri_this_is_where_current_user_data_is_aved";
+    public ArrayList<String> noti_req = new ArrayList<>();
     //  TextView nomat,noreq,nosen;
-    //defining the master array list
-    public ArrayList<String> m_names = new ArrayList<>();
     //initializing all the adapters here
-    custom_adapter custom = new custom_adapter();
-    custom_adapter_for_requests custom_req = new custom_adapter_for_requests();
+    //  custom_adapter custom = new custom_adapter();
+    //  custom_adapter_for_requests custom_req = new custom_adapter_for_requests();
     custom_adapter_for_list_match custom_match = new custom_adapter_for_list_match();
     String key;
     int no_of_children;
@@ -106,7 +111,6 @@ public class match extends Fragment {
     int total_count = 0;
     int count = 0;
     int asd = 0;
-    int inc = 0;
     int temp_e = 0;
     //testing
     int temp = 0;
@@ -118,22 +122,26 @@ public class match extends Fragment {
     int get_i = 0, get_j = 0;
     String search_gender;
     String current_user_received;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_match, container, false);
+        /*
         mat = v.findViewById(R.id.mat);
         rec = v.findViewById(R.id.rec);
         sen = v.findViewById(R.id.sen);
-        list_name = v.findViewById(R.id.list_name);
+        */
+        // list_name = v.findViewById(R.id.list_name);
         list_match = v.findViewById(R.id.list_match);
-        requests_list = v.findViewById(R.id.requests);
+        //  requests_list = v.findViewById(R.id.requests);
         loading = v.findViewById(R.id.loading);
 
-        //getting the current user received data
-        SharedPreferences getdata=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE);
-        current_user_received=getdata.getString("data","something_went_wrong");
-        Log.d("receivedz","current user data from shared preferences ="+current_user_received);
+        //getting the current user 'received' data
+        SharedPreferences getdata = getActivity().getSharedPreferences(CUR_USER_DATA, MODE_PRIVATE);
+        current_user_received = getdata.getString("data", "something_went_wrong");
+
+        Log.d("receivedz", "current user data from shared preferences =" + current_user_received);
 
         //getting the number of child nodes in main db
         SharedPreferences getchild = getActivity().getSharedPreferences(CHILD, MODE_PRIVATE);
@@ -151,12 +159,14 @@ public class match extends Fragment {
         //retreiving user name
         SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
         user_name = getname.getString("name", "manan");
-
+         /*
         //hinding the requests list initialy
         requests_list.setVisibility(View.GONE);
         list_name.setVisibility(View.GONE);
         mat.setBackgroundColor(Color.parseColor("#ED8A6B"));
-        mat.setOnClickListener(new View.OnClickListener() {
+
+        mat.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view) {
 
@@ -168,7 +178,8 @@ public class match extends Fragment {
                 list_name.setVisibility(View.GONE);
             }
         });
-        rec.setOnClickListener(new View.OnClickListener() {
+        rec.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view) {
                 mat.setBackgroundColor(Color.WHITE);
@@ -179,7 +190,8 @@ public class match extends Fragment {
                 list_name.setVisibility(View.GONE);
             }
         });
-        sen.setOnClickListener(new View.OnClickListener() {
+        sen.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view) {
 
@@ -192,11 +204,15 @@ public class match extends Fragment {
             }
         });
 
-        //fetching data for 'sent' list
-        //testing
+         */
+
+        //fetching data
         refresh_data_final();
+        /*
         list_name.setAdapter(custom);
         requests_list.setAdapter(custom_req);
+
+         */
         list_match.setAdapter(custom_match);
         return v;
     }
@@ -223,7 +239,7 @@ public class match extends Fragment {
         family_req.clear();
         age_req.clear();
         received_req.clear();
-        keys.clear();
+        keys_req.clear();
         gender_req.clear();
         links_req.clear();
         //clearing matches
@@ -235,12 +251,12 @@ public class match extends Fragment {
         gender_match.clear();
         links_match.clear();
         //notifying the adapters
-        custom.notifyDataSetChanged();
-        custom_req.notifyDataSetChanged();
+        //  custom.notifyDataSetChanged();
+        //  custom_req.notifyDataSetChanged();
         custom_match.notifyDataSetChanged();
         Log.d("beta ", "clear list initiated");
     }
-
+   /*
     public void accept_request(String data, String sender_gender, String sender_key, int i) {
         Log.d("send ", "*************************************");
         Log.d("send ", "data :" + data + "\nsender gender=" + sender_gender + "\nsender_key=" + sender_key);
@@ -253,7 +269,11 @@ public class match extends Fragment {
         reference = firebaseDatabase.getReference().child(sender_gender).child(sender_key).child("received");
         reference.setValue(accept_data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(Void aVoid)
+            {
+                //sending notification
+                send_notification(i);
+
                 accept_data = "";
                 custom_match.notifyDataSetChanged();
                 //adding it to the matched list
@@ -270,13 +290,15 @@ public class match extends Fragment {
                 links_req.remove(i);
                 gender_req.remove(i);
                 age_req.remove(i);
-                custom_req.notifyDataSetChanged();
+             //   custom_req.notifyDataSetChanged();
 
                 Toast.makeText(getActivity(), "Request accepted!", Toast.LENGTH_SHORT).show();
                 Log.d("send ", "pushed successfully");
             }
         });
     }
+
+    */
 
     private void refresh_data_final() {
         clear_lists();
@@ -297,7 +319,7 @@ public class match extends Fragment {
                 temp = 0;
                 loading.setVisibility(View.GONE);
                 if (asd <= no_of_children) {
-                    keys.add(snapshot.getKey());
+                    //keys.add(snapshot.getKey());
                     m_keys.add(snapshot.getKey());
                     Log.d("key ", "snap key " + snapshot.getKey());
                 }
@@ -319,6 +341,12 @@ public class match extends Fragment {
                         received.add(data);
                         m_received.add(data);
                     }
+                    if (temp == 2) {
+                        if (data != null) {
+                            String[] sp = data.split("\\:");
+                            m_notification.add(sp[2]);
+                        }
+                    }
                     temp++;
                 }
 
@@ -331,6 +359,7 @@ public class match extends Fragment {
                     for (int e = 0; e < sep.length; e++) {
                         Log.d("loop ", "comparing " + key + " with " + sep[e]);
                         if (String.valueOf(key).equals(sep[e])) {
+                            keys.add(snapshot.getKey());
                             names.add(separated[0]);
                             family.add(separated[1]);
                             links.add(separated[4]);
@@ -340,74 +369,19 @@ public class match extends Fragment {
                         }
                     }
                 }
-                //the following code is to populate 'received' requests from other users
-                //asd is  total child count
-                /*
-                if (asd == no_of_children) {
-                    Log.d("beta", "4) inside populating received list");
-                    Log.d("lopp ", "Entered the loop with n=" + n);
-                    for (int q = inc; q < n; q++)
-                    {
-                        Log.d("lopp ", "***********************************************************");
-                        Log.d("lopp", "1) comparing " + key + " with " + keys.get(q) + " while q=" + q);
-                        //this loop will be entered only once
-                        //this for loop is to fetch only the required user account
-                        //this is where all the decoding begins
-                        //TODO:fix the gender specific search error         */
-                        /*
-                           right now we only have the keys from the opposite gender=male
-                           we are comparing user key with keys list(where it is only added for account of opposite gender)
-                           if user key is male it will be compared to all the keys from female, but it will never match and enter inside
-                           we need to find a method to fetch all the keys of same gender as the user
-                           rework the logic from beginning...
-
-                           //we need a duplicate method to access the keys from other gender too
-                         */
-                /*        if (String.valueOf(key).equals(keys.get(q)))
-                        {
-                            //this means the current user is found
-                            Log.d("lopp ", "2) success with key " + keys.get(q) + " and name :" + m_names.get(q));
-                            Log.d("lopp ", "  received of q =" + received.get(q));
-                            //now we fetch the received list of current user to break it down
-                            String[] sep = received.get(q).split("\\:");
-                            for (int e = temp_e; e < sep.length; e++) {
-                                Log.d("lopp ", "3) e=" + e + " and sep before entering for is " + sep[e]);
-                                for (int z = 0; z < m_names.size(); z++) {
-                                    Log.d("lopp ", "4) z=" + z + " and size of m_names=" + m_names.size());
-                                    Log.d("lopp ", "   comparing " + sep[e] + " with " + m_names.get(z) + "(" + m_keys.get(z) + ")");
-                                    if (sep[e].equals(m_keys.get(z))) {
-                                        Log.d("lopp ", "5) ****added " + m_names.get(z) + "**** because z=" + z);
-                                        names_req.add(m_names.get(z));
-                                        family_req.add(m_family.get(z));
-                                        links_req.add(m_links.get(z));
-                                        received_req.add(m_received.get(z));
-                                        keys_req.add(m_keys.get(z));
-                                        gender_req.add(m_gender.get(z));
-                                        age_req.add(Integer.parseInt(String.valueOf(m_age.get(z))));
-                                    }
-                                }
-                                temp_e++;
-                            }
-                        }
-                    }
-                    inc++;
-                }     */
                 //*********************************************************************************
-                if (asd == no_of_children)
-                {
-                    Log.d("receivedz","*****************************************************");
-                    Log.d("receivedz","current data inside the loop :"+current_user_received);
-                    String[] sepea=current_user_received.split("\\:");
-                    for(int s=0;s<sepea.length;s++)
-                    {
-                        Log.d("receivedz","for s ="+s+" length of data:"+sepea.length);
-                        for(int d=0;d<m_keys.size();d++)
-                        {
-                            Log.d("receivedz","d ="+d);
-                            Log.d("receivedz","comparing "+sepea[s]+" with "+m_keys.get(d)+" ("+m_names.get(d)+")");
-                            if(sepea[s].equals(m_keys.get(d)))
-                            {
-                                Log.d("receivedz","**********ADDED "+m_names.get(d).toUpperCase()+" *************");
+                //the following is for received section
+                if (asd == no_of_children) {
+                    Log.d("receivedz", "*****************************************************");
+                    Log.d("receivedz", "current data inside the loop :" + current_user_received);
+                    String[] sepea = current_user_received.split("\\:");
+                    for (int s = 0; s < sepea.length; s++) {
+                        Log.d("receivedz", "for s =" + s + " length of data:" + sepea.length);
+                        for (int d = 0; d < m_keys.size(); d++) {
+                            Log.d("receivedz", "d =" + d);
+                            Log.d("receivedz", "comparing " + sepea[s] + " with " + m_keys.get(d) + " (" + m_names.get(d) + ")");
+                            if (sepea[s].equals(m_keys.get(d))) {
+                                Log.d("receivedz", "**********ADDED " + m_names.get(d).toUpperCase() + " *************");
                                 names_req.add(m_names.get(d));
                                 family_req.add(m_family.get(d));
                                 links_req.add(m_links.get(d));
@@ -415,66 +389,11 @@ public class match extends Fragment {
                                 keys_req.add(m_keys.get(d));
                                 gender_req.add(m_gender.get(d));
                                 age_req.add(Integer.parseInt(String.valueOf(m_age.get(d))));
+                                noti_req.add(m_notification.get(d));
                             }
                         }
                     }
-
-
-                    /*
-                    for (int q = 0; q < n; q++)
-                    {
-                        Log.d("receivedz", "***********************************************************");
-                        Log.d("receivedz","1) value of q="+q+" and m_received of q="+m_received.get(q)+" of name "+m_names.get(q));
-                        //expect array out of bounds exception
-                        String[] seperates=m_received.get(q).split("\\:");
-                        for(int e=0;e<seperates.length;e++)
-                        {
-                            Log.d("receivedz","inside with e="+e);
-                            Log.d("receivedz","comparing user_key "+key+" with "+seperates[e]);
-                            if(key.equals(seperates[e]))
-                            {
-                                Log.d("receivedz ","***********went inside for "+m_names.get(q)+"*************");
-                                names_req.add(m_names.get(q));
-                                family_req.add(m_family.get(q));
-                                links_req.add(m_links.get(q));
-                                received_req.add(m_received.get(q));
-                                keys_req.add(m_keys.get(q));
-                                gender_req.add(m_gender.get(q));
-                                age_req.add(Integer.parseInt(String.valueOf(m_age.get(q))));
-                            }
-                        }
-
-
-                        if (String.valueOf(key).equals(keys.get(q)))
-                        {
-                            //this means the current user is found
-                            Log.d("lopp ", "2) success with key " + keys.get(q) + " and name :" + m_names.get(q));
-                            Log.d("lopp ", "  received of q =" + received.get(q));
-                            //now we fetch the received list of current user to break it down
-                            String[] sep = received.get(q).split("\\:");
-                            for (int e = temp_e; e < sep.length; e++) {
-                                Log.d("lopp ", "3) e=" + e + " and sep before entering for is " + sep[e]);
-                                for (int z = 0; z < m_names.size(); z++) {
-                                    Log.d("lopp ", "4) z=" + z + " and size of m_names=" + m_names.size());
-                                    Log.d("lopp ", "   comparing " + sep[e] + " with " + m_names.get(z) + "(" + m_keys.get(z) + ")");
-                                    if (sep[e].equals(m_keys.get(z))) {
-                                        Log.d("lopp ", "5) ****added " + m_names.get(z) + "**** because z=" + z);
-                                        names_req.add(m_names.get(z));
-                                        family_req.add(m_family.get(z));
-                                        links_req.add(m_links.get(z));
-                                        received_req.add(m_received.get(z));
-                                        keys_req.add(m_keys.get(z));
-                                        gender_req.add(m_gender.get(z));
-                                        age_req.add(Integer.parseInt(String.valueOf(m_age.get(z))));
-                                    }
-                                }
-                                temp_e++;
-                            }
-                        }
-                    }*/
-                    inc++;
                 }
-                ///**************************************************************************************************
 
                 //the following code is to find matched
                 for (int get_i = 0; get_i < names.size(); get_i++) {
@@ -483,7 +402,7 @@ public class match extends Fragment {
                     for (int get_j = 0; get_j < names_req.size(); get_j++) {
                         Log.d("matriz ", "2) inside for with j=" + get_j + " with name_req =" + names_req.get(get_j));
                         Log.d("matriz ", "   comparing " + names.get(get_i) + " and " + names_req.get(get_j));
-                        //TODO:dont forget to change the name
+                        //TODO:dont forget to change the name=done
                         if (names.get(get_i).equals(names_req.get(get_j)) && !names.get(get_i).equals(user_name) && !names_req.get(get_j).equals(user_name)) {
                             Log.d("matriz ", names.get(get_i) + " ***** matched with ***** " + names_req.get(get_j));
                             names_match.add(names_req.get(get_j));
@@ -492,7 +411,7 @@ public class match extends Fragment {
                             gender_match.add(gender_req.get(get_j));
                             age_match.add(age_req.get(get_j));
 
-                            //trying a method of removing the same from requested list
+                            //trying a method of removing the duplicates from requested list
                             Log.d("removed", names_req.get(get_j));
                             names_req.remove(get_j);
                             family_req.remove(get_j);
@@ -509,12 +428,11 @@ public class match extends Fragment {
                     get_i = 0;
                     get_j = 0;
                     temp_e = 0;
-                    inc = 0;
                     Log.d("beta", "asd reset");
                 }
                 count++;
-                custom.notifyDataSetChanged();
-                custom_req.notifyDataSetChanged();
+                //   custom.notifyDataSetChanged();
+                //   custom_req.notifyDataSetChanged();
                 custom_match.notifyDataSetChanged();
                 Log.d("beta", "*****************************************************");
             }
@@ -522,37 +440,37 @@ public class match extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Log.d("beta", "went inside on child changed!!! " + previousChildName);
-                custom.notifyDataSetChanged();
+                //   custom.notifyDataSetChanged();
                 custom_match.notifyDataSetChanged();
-                custom_req.notifyDataSetChanged();
+                //   custom_req.notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Log.d("beta", "went inside on child removed");
-                custom.notifyDataSetChanged();
+                //   custom.notifyDataSetChanged();
                 custom_match.notifyDataSetChanged();
-                custom_req.notifyDataSetChanged();
+                //   custom_req.notifyDataSetChanged();
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Log.d("beta", "went inside onChildMoved");
-                custom.notifyDataSetChanged();
+                //  custom.notifyDataSetChanged();
                 custom_match.notifyDataSetChanged();
-                custom_req.notifyDataSetChanged();
+                //  custom_req.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("beta", "went inside onCancelled");
-                custom.notifyDataSetChanged();
+                //  custom.notifyDataSetChanged();
                 custom_match.notifyDataSetChanged();
-                custom_req.notifyDataSetChanged();
+                //  custom_req.notifyDataSetChanged();
             }
         });
     }
-
+    /*
     //this adapter is to show all 'sent' requests lists
     @Keep
     class custom_adapter extends BaseAdapter {
@@ -634,15 +552,18 @@ public class match extends Fragment {
                 @Override
                 public void onClick(View view) {
                     //we have all the details of the sender account
-                    AlertDialog.Builder build = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
-                    build.setTitle("Accept request from " + names_req.get(i));
-                    build.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+
+                    AlertDialog.Builder b = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
+                    b.setTitle("Disclaimer");
+                    b.setMessage("Accepting this request will mean that you have matched with " + names_req.get(i)
+                            + ".\nyour contact details will be shared with " + names_req.get(i) + ".Do you still wish to continue?");
+                    b.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int in) {
                             request.setText("Accepted");
                             accept_request(received_req.get(i), gender_req.get(i), keys_req.get(i), i);
                         }
-                    }).setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int in) {
 
@@ -653,6 +574,8 @@ public class match extends Fragment {
             return view;
         }
     }
+
+     */
 
     class custom_adapter_for_list_match extends BaseAdapter {
 
@@ -723,4 +646,26 @@ public class match extends Fragment {
             return view;
         }
     }
+    /*
+    public void send_notification(int index)
+    {
+        String user_id=noti_req.get(index);
+        String sender_name=names_req.get(index);
+        String sender_family=family_req.get(index);
+
+        //retreiving the user_name
+        SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
+        String user_name = getname.getString("name", "null");
+
+        String message="Hey "+user_name+", "+sender_family+" "+sender_name+" has accepted your request!";
+        Log.d("json", "player id=" + user_id);
+        try {
+            OneSignal.postNotification(new JSONObject("{'contents': {'en':'"+message+"'}, 'include_player_ids': ['" + user_id + "']}"), null);
+        } catch (JSONException e) {
+            Log.d("json", "Error :" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+     */
 }

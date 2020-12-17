@@ -13,7 +13,6 @@
     <string name="choose_a_profile_picture">Choose a profile picture</string>
     <string name="choose">choose</string>
     <string name="upload">upload</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="edit_profile">Edit profile</string>
     <string name="name">Name</string>
@@ -51,6 +50,8 @@
     <string name="no_sent">You havent sent any requests to anyone yet</string>
     <string name="no_match">No matches yet</string>
     <string name="step_3">Step 3</string>
+    <string name="fake_alert"> There was a problem validating your account, please make sure you have entered the correct deatails.
+                               \nPlease delete the existing account and create a new one with same number.</string>
     <string name="warning_text">
                                Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
                                User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>

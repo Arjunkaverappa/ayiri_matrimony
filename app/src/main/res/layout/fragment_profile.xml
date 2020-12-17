@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".profile">
-
+    <!--
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image"
         android:layout_width="250dp"
@@ -16,7 +16,14 @@
         android:src="@drawable/profile"
         app:civ_border_color="@color/black"
         app:civ_border_width="3dp" />
-
+     -->
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/profile" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="3dp"

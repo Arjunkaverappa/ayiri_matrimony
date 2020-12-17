@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 }
 
 android {
@@ -47,19 +48,21 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'com.daimajia.androidanimations:library:2.4@aar'      //yoyo animation
     implementation 'com.github.mohammadatif:Animatoo:master'             //Animatoo
-    implementation 'com.google.firebase:firebase-storage:19.2.0'         //material design
+    implementation 'com.google.firebase:firebase-storage:19.2.0'         //firebase storage
     implementation 'com.squareup.picasso:picasso:2.71828'                //picasso
     implementation 'com.airbnb.android:lottie:3.4.2'                     //lottie animations
     implementation 'com.chaos.view:pinview:1.4.4'                        //pin view
     implementation 'de.hdodenhof:circleimageview:3.1.0'                  //circular image
     implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7' //bubble action bar
     implementation 'com.iceteck.silicompressorr:silicompressor:2.2.4'    //sili something
+    implementation 'com.onesignal:OneSignal:4.0.0'                       //one signal
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-  //  implementation 'com.google.firebase:firebase-auth:20.0.1'         //new auth
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    //  implementation 'com.google.firebase:firebase-auth:20.0.1'         //new auth
 
     //noinspection GradleDynamicVersion
     testImplementation 'junit:junit:4.+'

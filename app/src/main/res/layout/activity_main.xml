@@ -22,19 +22,29 @@
 
     </LinearLayout>
 
-    <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+    <com.gauravk.bubblenavigation.BubbleNavigationConstraintView
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
-        android:background="#EC4444"
+        android:background="#000000"
+        app:bnc_mode="spread"
         android:orientation="horizontal">
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/received"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            app:bt_colorActive="@color/black"
+            app:bt_colorInactive="@color/white"
+            app:bt_icon="@drawable/down"
+            app:bt_title="Requests" />
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/settings"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
+            android:layout_height="45dp"
+            android:hapticFeedbackEnabled="true"
             app:bt_colorActive="@color/black"
             app:bt_colorInactive="@color/white"
             app:bt_icon="@drawable/match"
@@ -43,22 +53,30 @@
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/home"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
+            android:layout_height="45dp"
             app:bt_colorActive="@color/black"
             app:bt_colorInactive="@color/white"
             app:bt_icon="@drawable/home"
-            app:bt_title="Home" />
+            app:bt_title="Explore" />
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/sent"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            app:bt_colorActive="@color/black"
+            app:bt_colorInactive="@color/white"
+            app:bt_icon="@drawable/send"
+            app:bt_title="Sent" />
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/profile"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             app:bt_colorActive="@color/black"
             app:bt_colorInactive="@color/white"
             app:bt_icon="@drawable/profile"
             app:bt_title="Profile" />
 
-    </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+    </com.gauravk.bubblenavigation.BubbleNavigationConstraintView>
 
 </RelativeLayout>

@@ -29,7 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".upload_img" />
         <activity android:name=".user_data" />
         <activity
             android:name=".MainActivity"
