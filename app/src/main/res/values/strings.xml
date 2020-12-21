@@ -3,10 +3,10 @@
     <string name="check">check</string>
     <string name="add">add</string>
     <string name="demo">demo</string>
-    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_name">First name</string>
     <string name="enter_your_surname">Enter your surname</string>
-    <string name="enter_your_family">Enter your family name</string>
-    <string name="enter_your_age">Enter your age</string>
+    <string name="enter_your_family">Family name</string>
+    <string name="enter_your_age">Age</string>
     <string name="submit">submit</string>
     <string name="male">male</string>
     <string name="female">Female</string>
@@ -57,4 +57,11 @@
                                User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
     <string name="continue_">Continue</string>
     <string name="please_connect_to_internet">Please connect to internet</string>
+    <string name="highest_qualification">Qualification :</string>
+    <string name="working_sector">Working sector :</string>
+    <string name="your_height">Your height :</string>
+    <string name="currently_living_in">Currently living in (eg:Virajpet)</string>
+    <string name="description">description</string>
+    <string name="requested">Requested</string>
+    <string name="bio">Bio</string>
 </resources>

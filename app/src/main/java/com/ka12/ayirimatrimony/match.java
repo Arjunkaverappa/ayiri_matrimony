@@ -1,32 +1,30 @@
 package com.ka12.ayirimatrimony;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,6 +54,8 @@ public class match extends Fragment {
     public ArrayList<String> m_keys = new ArrayList<>();
     public ArrayList<String> m_sent = new ArrayList<>();
     public ArrayList<String> m_received = new ArrayList<>();
+    public ArrayList<String> m_height = new ArrayList<>();
+    public ArrayList<String> m_description = new ArrayList<>();
     //defining the master array list
     public ArrayList<String> m_names = new ArrayList<>();
     //the following are for 'sent' list
@@ -79,6 +79,8 @@ public class match extends Fragment {
     public ArrayList<String> sent_req = new ArrayList<>();
     public ArrayList<String> received_req = new ArrayList<>();
     public ArrayList<String> m_notification = new ArrayList<>();
+    public ArrayList<String> height_req = new ArrayList<>();
+    public ArrayList<String> description_req = new ArrayList<>();
     //the following lists are for matches profiles
     ListView list_match;
     public ArrayList<String> names_match = new ArrayList<>();
@@ -89,6 +91,8 @@ public class match extends Fragment {
     public ArrayList<String> keys_match = new ArrayList<>();
     public ArrayList<String> sent_match = new ArrayList<>();
     public ArrayList<String> received_match = new ArrayList<>();
+    public ArrayList<String> height = new ArrayList<>();
+    public ArrayList<String> description_match = new ArrayList<>();
     //database references
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
@@ -127,97 +131,60 @@ public class match extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_match, container, false);
-        /*
-        mat = v.findViewById(R.id.mat);
-        rec = v.findViewById(R.id.rec);
-        sen = v.findViewById(R.id.sen);
-        */
+
         // list_name = v.findViewById(R.id.list_name);
         list_match = v.findViewById(R.id.list_match);
         //  requests_list = v.findViewById(R.id.requests);
         loading = v.findViewById(R.id.loading);
-       try {
-           //getting the current user 'received' data
-           SharedPreferences getdata = getActivity().getSharedPreferences(CUR_USER_DATA, MODE_PRIVATE);
-           current_user_received = getdata.getString("data", "something_went_wrong");
 
-           Log.d("receivedz", "current user data from shared preferences =" + current_user_received);
+        Window window = getActivity().getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FFFFFF"));
 
-           //getting the number of child nodes in main db
-           SharedPreferences getchild = getActivity().getSharedPreferences(CHILD, MODE_PRIVATE);
-           no_of_children = getchild.getInt("child", 0);
+        Log.d("barry", "*************************************");
+        Log.d("barry", "initiated match sequence ");
+        try {
+            //getting the current user 'received' data
+            SharedPreferences getdata = Objects.requireNonNull(getActivity()).getSharedPreferences(CUR_USER_DATA, MODE_PRIVATE);
+            current_user_received = getdata.getString("data", "something_went_wrong");
 
-           //retrieving the key of the current user
-           SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
-           key = ediss.getString("key", "999999999");
-           Log.d("key ", "received " + key);
+            Log.d("receivedz", "current user data from shared preferences =" + current_user_received);
 
-           //retreieving the user gender
-           SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
-           user_gender = getgender.getString("gender", "male");
+            //getting the number of child nodes in main db
+            SharedPreferences getchild = getActivity().getSharedPreferences(CHILD, MODE_PRIVATE);
+            no_of_children = getchild.getInt("child", 0);
 
-           //retreiving user name
-           SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
-           user_name = getname.getString("name", "manan");
+            //retrieving the key of the current user
+            SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
+            key = ediss.getString("key", "999999999");
+            Log.d("key ", "received " + key);
+
+            //retreieving the user gender
+            SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+            user_gender = getgender.getString("gender", "male");
+
+            //retreiving user name
+            SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
+            user_name = getname.getString("name", "manan");
          /*
         //hinding the requests list initialy
         requests_list.setVisibility(View.GONE);
         list_name.setVisibility(View.GONE);
-        mat.setBackgroundColor(Color.parseColor("#ED8A6B"));
-
-        mat.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-
-                mat.setBackgroundColor(Color.parseColor("#ED8A6B"));
-                rec.setBackgroundColor(Color.WHITE);
-                sen.setBackgroundColor(Color.WHITE);
-                list_match.setVisibility(View.VISIBLE);
-                requests_list.setVisibility(View.GONE);
-                list_name.setVisibility(View.GONE);
-            }
-        });
-        rec.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                mat.setBackgroundColor(Color.WHITE);
-                rec.setBackgroundColor(Color.parseColor("#ED8A6B"));
-                sen.setBackgroundColor(Color.WHITE);
-                list_match.setVisibility(View.GONE);
-                requests_list.setVisibility(View.VISIBLE);
-                list_name.setVisibility(View.GONE);
-            }
-        });
-        sen.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-
-                mat.setBackgroundColor(Color.WHITE);
-                rec.setBackgroundColor(Color.WHITE);
-                sen.setBackgroundColor(Color.parseColor("#ED8A6B"));
-                list_match.setVisibility(View.GONE);
-                requests_list.setVisibility(View.GONE);
-                list_name.setVisibility(View.VISIBLE);
-            }
-        });
 
          */
 
-           //fetching data
-           refresh_data_final();
+            //fetching data
+            refresh_data_final();
         /*
         list_name.setAdapter(custom);
         requests_list.setAdapter(custom_req);
 
          */
-           list_match.setAdapter(custom_match);
-       }catch (Exception e)
-       {
-           Log.d("error match","catch in  onCreateView:"+e.getMessage());
-       }
+
+            list_match.setAdapter(custom_match);
+        } catch (Exception e) {
+            Log.d("error match", "catch in  onCreateView:" + e.getMessage());
+        }
         return v;
     }
 
@@ -307,7 +274,7 @@ public class match extends Fragment {
     private void refresh_data_final() {
         try {
             clear_lists();
-            SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+            SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
             user_gender = getgender.getString("gender", "female");
             if (user_gender.equals("male")) {
                 search_gender = "female";
@@ -315,7 +282,7 @@ public class match extends Fragment {
                 search_gender = "male";
             }
             reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
-            Log.d("try ", "inside refresh_data()");
+            Log.d("barry", "initiated refresh_data_final of match");
             reference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -334,13 +301,16 @@ public class match extends Fragment {
                         String data = ds.getValue(String.class);
                         if (temp == 0) {
                             Log.d("delta ", "data :" + data);
-                            separated = data.split("\\#");
-                            m_names.add(separated[0]);
-                            m_family.add(separated[1]);
-                            m_age.add(Integer.valueOf(separated[2]));
-                            m_gender.add(separated[3]);
-                            m_links.add(separated[4]);
-                            Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                            if (data != null) {
+                                separated = data.split("\\#");
+                                m_names.add(separated[0]);
+                                m_family.add(separated[1]);
+                                m_age.add(Integer.valueOf(separated[2]));
+                                m_gender.add(separated[3]);
+                                m_links.add(separated[4]);
+                                m_description.add(separated[9]);
+                                Log.d("match ", "name :" + separated[0] + " fam :" + separated[1] + "age :" + age + "gen :" + gender + "link :" + separated[4]);
+                            }
                         }
                         if (temp == 1) {
                             received.add(data);
@@ -395,6 +365,7 @@ public class match extends Fragment {
                                     gender_req.add(m_gender.get(d));
                                     age_req.add(Integer.parseInt(String.valueOf(m_age.get(d))));
                                     noti_req.add(m_notification.get(d));
+                                    description_req.add(m_description.get(d));
                                 }
                             }
                         }
@@ -415,6 +386,7 @@ public class match extends Fragment {
                                 links_match.add(links_req.get(get_j));
                                 gender_match.add(gender_req.get(get_j));
                                 age_match.add(age_req.get(get_j));
+                                description_match.add(description_req.get(get_j));
 
                                 //trying a method of removing the duplicates from requested list
                                 Log.d("removed", names_req.get(get_j));
@@ -474,9 +446,8 @@ public class match extends Fragment {
                     //  custom_req.notifyDataSetChanged();
                 }
             });
-        }catch (Exception e)
-        {
-            Log.d("error match","catch in refresh_data_final :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error match", "catch in refresh_data_final :" + e.getMessage());
         }
     }
     /*
@@ -616,12 +587,30 @@ public class match extends Fragment {
                 ImageView img = view.findViewById(R.id.pic);
                 TextView name = view.findViewById(R.id.name);
                 Button request = view.findViewById(R.id.request);
+                //  CardView main_card=view.findViewById(R.id.main_card);
+                //  Animation list_anim= AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
+                //  main_card.startAnimation(list_anim);
                 Log.d("loop ", "**************************************************");
-                Log.d("loop ", "the value of n before entering =" + n);
+                Log.d("barry", "initiated adapter for match");
 
                 name.setText("Name :" + names_match.get(i) + "\nFamily :" + family_match.get(i) + "\nAge :" + age_match.get(i));
                 Picasso.get().load(links_match.get(i)).fit().centerCrop().into(img);
 
+                request.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent ins = new Intent(getActivity(), final_match.class);
+                        ins.putExtra("name", names_match.get(i));
+                        ins.putExtra("family", family_match.get(i));
+                        ins.putExtra("age", age_match.get(i));
+                        ins.putExtra("link", links_match.get(i));
+                        ins.putExtra("desc", description_match.get(i));
+                        startActivity(ins);
+                        Animatoo.animateZoom(Objects.requireNonNull(getActivity()));
+                    }
+                });
+
+                  /*
                 request.setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("QueryPermissionsNeeded")
                     @Override
@@ -634,7 +623,7 @@ public class match extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int in) {
                                 getContext();
-                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
                                 ClipData clip = ClipData.newPlainText("+91", m_keys.get(i));
                                 clipboard.setPrimaryClip(clip);
                                 Toast.makeText(getActivity(), "Number copied to clipboard", Toast.LENGTH_SHORT).show();
@@ -653,33 +642,12 @@ public class match extends Fragment {
                         }).show();
                     }
                 });
-            }catch (Exception e)
-            {
-                Log.d("error match","catch in custom_adapter_for_list_match :"+e.getMessage());
+              */
+
+            } catch (Exception e) {
+                Log.d("error match", "catch in custom_adapter_for_list_match :" + e.getMessage());
             }
             return view;
         }
     }
-    /*
-    public void send_notification(int index)
-    {
-        String user_id=noti_req.get(index);
-        String sender_name=names_req.get(index);
-        String sender_family=family_req.get(index);
-
-        //retreiving the user_name
-        SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
-        String user_name = getname.getString("name", "null");
-
-        String message="Hey "+user_name+", "+sender_family+" "+sender_name+" has accepted your request!";
-        Log.d("json", "player id=" + user_id);
-        try {
-            OneSignal.postNotification(new JSONObject("{'contents': {'en':'"+message+"'}, 'include_player_ids': ['" + user_id + "']}"), null);
-        } catch (JSONException e) {
-            Log.d("json", "Error :" + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-     */
 }

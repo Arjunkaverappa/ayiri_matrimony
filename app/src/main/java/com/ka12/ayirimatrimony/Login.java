@@ -72,6 +72,7 @@ public class Login extends AppCompatActivity {
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
+    public static final String AGE = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
     Boolean old_data_obtained=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +118,7 @@ public class Login extends AppCompatActivity {
                     start_timer();
 
                     //TODO:do not forget to enable this method(imp)
-                    // check_if_old_account(get_number.getText().toString().trim());
+                     check_if_old_account(get_number.getText().toString().trim());
                 }else
                 {
                     Toast.makeText(Login.this, "Please connect to internet and try again!", Toast.LENGTH_SHORT).show();
@@ -368,6 +369,7 @@ public class Login extends AppCompatActivity {
     {
         String[] sep=data.split("\\#");
         String name=sep[0];
+        String age=sep[2];
         String gender=sep[3];
         String family=sep[1];
         String image_d_link=sep[4];
@@ -380,6 +382,9 @@ public class Login extends AppCompatActivity {
 
         SharedPreferences.Editor getname=getSharedPreferences(NAME,MODE_PRIVATE).edit();
         getname.putString("name",name).apply();
+
+        SharedPreferences.Editor set_age=getSharedPreferences(AGE,MODE_PRIVATE).edit();
+        set_age.putString("age",age).apply();
 
         SharedPreferences.Editor getgender=getSharedPreferences(GENDER,MODE_PRIVATE).edit();
         getgender.putString("gender",gender).apply();

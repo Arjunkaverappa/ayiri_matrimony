@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150dp"
+    android:id="@+id/main_card"
+    android:layout_marginBottom="10dp"
     android:elevation="20dp"
     app:cardCornerRadius="20dp"
     app:cardElevation="20dp">
@@ -11,9 +13,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:showDividers="none"
-        android:backgroundTint="@color/cardview_shadow_start_color"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:showDividers="none">
 
         <androidx.cardview.widget.CardView
             android:layout_width="135dp"
@@ -21,8 +23,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="7.5dp"
             android:elevation="30dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="30dp">
+            app:cardCornerRadius="15dp">
 
             <ImageView
                 android:id="@+id/pic"
@@ -30,6 +31,7 @@
                 android:layout_height="135dp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_launcher_background" />
+
         </androidx.cardview.widget.CardView>
 
         <RelativeLayout
@@ -42,7 +44,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:text="@string/demo"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -53,9 +55,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_alignParentBottom="true"
-                android:layout_toStartOf="@+id/simple_card"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="10dp"
+                android:layout_toStartOf="@+id/simple_card"
                 android:text="@string/last_seen"
                 android:textColor="#636363"
                 android:textSize="14sp"
@@ -65,36 +67,48 @@
                 android:id="@+id/simple_card"
                 android:layout_width="110dp"
                 android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:elevation="20dp"
-                app:cardElevation="20dp"
-                android:layout_marginStart="0dp"
                 app:cardCornerRadius="20dp">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="#5FFD67"
+                    android:text="@string/requested"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    tools:ignore="SmallSp" />
 
                 <Button
                     android:id="@+id/request"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:textSize="11.5sp"
                     android:background="#8F44FA"
                     android:text="@string/send_request"
                     android:textColor="@color/white"
+                    android:textSize="11.5sp"
                     tools:ignore="SmallSp" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="#85F88E"
-                    android:contentDescription="@string/app_name"
-                    android:scaleX="1.5"
-                    android:scaleY="1.1"
-                    android:src="@drawable/check"/>
 
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="@string/demo"
+        android:textColor="#504F4F"
+        android:textSize="16sp"
+        android:textStyle="italic" />
+
 </androidx.cardview.widget.CardView>

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,6 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -69,6 +75,8 @@ public class home extends Fragment {
     public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
     //one signal app id
     public static final String ONESIGNAL_APP_ID = "4359ad23-f128-46aa-aba3-caebf6058549";
+    public ArrayList<String> height = new ArrayList<>();
+    public ArrayList<String> description = new ArrayList<>();
     custom_adapter custom = new custom_adapter();
     //firebase
     FirebaseDatabase firebaseDatabase;
@@ -79,29 +87,11 @@ public class home extends Fragment {
     public static final String CUR_USER_DATA = "com.ka12.ayiri_this_is_where_current_user_data_is_aved";
     public ArrayList<String> valid = new ArrayList<>();
     public ArrayList<String> notification_token = new ArrayList<>();
-    Boolean is_connected;
-    String[] separated;
-    String all_request;
-    String push_data;
-    String push_send;
-    String temp_for_request;
-    int count = 0;
-    Boolean is_changed = false;
-    int final_length;
-    //testing
-    String data;
-    int s_count = 0;
-    int no_of_child = 0;
-    String user_gender;
-    String user_key;
-    String[] spli;
-    String search_gender;
-    String current_user_received;
-    Boolean is_request_already_sent = false;
-    int current_count = 0;
-    int last_seen_count = 0;
-    String last_seen_data;
-    String player_id = "";
+    Boolean is_connected,is_changed = false,is_request_already_sent = false,is_network_checked=false;
+    String[] separated, spli;
+    String all_request,push_data,data, push_send,temp_for_request,user_gender;
+    String user_key,search_gender,current_user_received,last_seen_data,player_id = "";
+    int count = 0,final_length,s_count = 0,no_of_child = 0, current_count = 0,last_seen_count = 0;
     Handler handler=new Handler();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -114,27 +104,41 @@ public class home extends Fragment {
         no_net=v.findViewById(R.id.no_net);
         list_name.setAdapter(custom);
         no_net.setVisibility(View.GONE);
+
+        Window window = getActivity().getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FFFFFF"));
+        Log.d("barry ", "**************************************");
+        Log.d("barry","initiated home sequence ");
         try {
             //retreiving users gender
             SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
             user_gender = getgender.getString("gender", "female");
+
             if (user_gender.equals("male")) {
                 search_gender = "female";
             } else {
                 search_gender = "male";
             }
+
             check_network();
             //retreiving user key
             SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
             user_key = ediss.getString("key", "999999999");
+            Log.d("start","key :"+user_key);
 
             //@refreshing and @updating is called inside check_network()
 
             //initialising one signal
             Log.d("onesignal", "initialising one signal with context");
             OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
-            OneSignal.initWithContext(getContext());
+            OneSignal.initWithContext(Objects.requireNonNull(getContext()));
             OneSignal.setAppId(ONESIGNAL_APP_ID);
+
+            //refreshing data
+            pass_current_users_received_requests();
+            refresh_data_final();
+            update_lastseen_data();
         }catch (Exception e)
         {
             Log.d("error ","catch in onCreateView :"+e.getMessage());
@@ -147,23 +151,20 @@ public class home extends Fragment {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void run() {
-                    ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    ConnectivityManager connectivityManager = (ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                     NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
                     if ((wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected())) {
                         is_connected = true;
                         no_net.setVisibility(View.GONE);
                         loading.setVisibility(View.VISIBLE);
-                        //testing
-                        pass_current_users_received_requests();
-                        refresh_data_final();
-                        update_lastseen_data();
                     } else {
                         is_connected = false;
                         no_net.setVisibility(View.VISIBLE);
                         loading.setVisibility(View.GONE);
                         check_network();
                     }
+                    is_network_checked=true;
                 }
             }, 3000);
 
@@ -177,6 +178,7 @@ public class home extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         handler.removeCallbacksAndMessages(null);
+        valid.clear();
     }
 
     public void change_request_text(int i) {
@@ -194,7 +196,7 @@ public class home extends Fragment {
             keys.clear();
             gender.clear();
             links.clear();
-            Log.d("delta ", "inside refresh_data_final()");
+            Log.d("barry","initiated refresh_data_final in home ");
 
             reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
             reference.addChildEventListener(new ChildEventListener() {
@@ -211,7 +213,7 @@ public class home extends Fragment {
                                 Log.d("delta ", "data :" + data);
                                 separated = data.split("\\#");
                                 //we add the names only when validated
-                                Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                                Log.d("home ", "name :" + separated[0] + " fam :" + separated[1] + " age :" + age + " gen :" + gender + " link :" + separated[4]);
                             }
                         }
                         if (count == 1) {
@@ -229,7 +231,8 @@ public class home extends Fragment {
                                 Log.d("split", "data :" + data);
                                 String[] split_last = data.split("\\:");
                                 //only adding if the account is valid
-                                if (split_last[1].equals("yes")) {
+                                if (split_last[1].equals("yes"))
+                                {
                                     Log.d("split", "   Added :" + split_last[1]);
                                     seen.add(split_last[0]);
                                     valid.add(split_last[1]);
@@ -239,17 +242,23 @@ public class home extends Fragment {
                                     age.add(Integer.valueOf(separated[2]));
                                     gender.add(separated[3]);
                                     links.add(separated[4]);
-
-                                    for (int e = 0; e < spli.length; e++) {
-                                        Log.d("request ", "1) comparing " + user_key + " with " + spli[e]);
-                                        if (user_key.equals(spli[e])) {
+                                    height.add(separated[6]);
+                                    description.add(separated[9]);
+                                    //we have problems with the logic
+                                    for (int e = 0; e < spli.length; e++)
+                                    {
+                                        Log.d("fele ", "1) comparing " + user_key + " with " + spli[e]);
+                                        if (user_key.equals(spli[e]))
+                                        {
                                             is_request_already_sent = true;
                                         }
                                     }
-                                    if (is_request_already_sent) {
+                                    if (is_request_already_sent)
+                                    {
                                         received_text.add("Requested");
                                         is_request_already_sent = false;
-                                    } else {
+                                    } else
+                                        {
                                         received_text.add("Send Request");
                                     }
                                 }
@@ -399,7 +408,6 @@ public class home extends Fragment {
         }
     }
 
-    //improved method for lastseen
     public void update_lastseen_data()
     {
         try {
@@ -410,7 +418,8 @@ public class home extends Fragment {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     last_seen_count++;
-                    if (last_seen_count == 3) {
+                    if (last_seen_count == 3)
+                    {
                         last_seen_data = snapshot.getValue(String.class);
                         Log.d("seen", "data " + last_seen_data);
                         update_last_seen(last_seen_data);
@@ -448,7 +457,9 @@ public class home extends Fragment {
         try {
             //retreiving the user id for notifications
             OSDeviceState device = OneSignal.getDeviceState();
-            player_id = device.getUserId();
+            if (device != null) {
+                player_id = device.getUserId();
+            }
 
             Log.d("seen", "received data " + data);
             String[] split_seen = data.split("\\:");
@@ -571,7 +582,7 @@ public class home extends Fragment {
             String sender_family = family.get(index);
 
             //getting user family
-            SharedPreferences getfamily = getActivity().getSharedPreferences(FAMILY, MODE_PRIVATE);
+            SharedPreferences getfamily = Objects.requireNonNull(getActivity()).getSharedPreferences(FAMILY, MODE_PRIVATE);
             String user_family = getfamily.getString("family", "null");
 
             //retreiving the user_name
@@ -592,8 +603,8 @@ public class home extends Fragment {
         }
     }
 
-    class custom_adapter extends BaseAdapter {
-
+    class custom_adapter extends BaseAdapter
+    {
         @Override
         public int getCount() {
             Log.d("try ", "inside get count :" + names.size());
@@ -619,22 +630,27 @@ public class home extends Fragment {
             }
             try {
                 Log.d("try", "************************************");
-                Log.d("try ", "inside times " + i);
+                Log.d("barry","initiated adapterr for home ");
+
                 ImageView img = view.findViewById(R.id.pic);
                 TextView name = view.findViewById(R.id.name);
                 Button request = view.findViewById(R.id.request);
                 TextView last = view.findViewById(R.id.last);
-                //here we only show  the valid accounts
+                TextView desc = view.findViewById(R.id.desc);
+                CardView main_card=view.findViewById(R.id.main_card);
+                Animation list_anim=AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
+                main_card.startAnimation(list_anim);
 
-                name.setText("Name :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge :" + age.get(i));
+                name.setText("Name  :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge      :" + age.get(i));
                 last.setText("Last seen :" + seen.get(i));
+                desc.setText(description.get(i));
                 Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
-
 
                 Log.d("try ", "names :" + names.get(i));
                 Log.d("try ", "link :" + links.get(i));
                 request.setText(received_text.get(i));
-                if (received_text.get(i).equals("Requested")) {
+                if (received_text.get(i).equals("Requested"))
+                {
                     request.setVisibility(View.GONE);
                 }
 

@@ -1,384 +1,495 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/grad_test_two"
-    android:orientation="vertical"
-    android:theme="@style/custom_for_user_details"
-    tools:context=".user_data">
+    android:background="@drawable/grad_test_two">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_four"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="10dp"
-        app:cardCornerRadius="30dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/step_3"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/long_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="@string/warning_text"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="italic" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/p_loading"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/yellow"
-            app:lottie_speed="2" />
+        android:orientation="vertical"
+        android:theme="@style/custom_for_user_details"
+        tools:context=".user_data">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_four"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
             app:cardCornerRadius="30dp">
 
-            <Button
-                android:id="@+id/sub_proof"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:backgroundTint="#0277BD"
-                android:scaleX="1.3"
-                android:scaleY="1.3"
-                android:text="@string/upload"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                tools:ignore="ButtonStyle" />
-
-        </androidx.cardview.widget.CardView>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_one"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        app:cardCornerRadius="30dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/step_1"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/custom_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="10dp"
-            android:imeOptions="actionNext"
-            android:nextFocusForward="@id/family"
-            app:boxCornerRadiusBottomEnd="30dp"
-            app:boxCornerRadiusBottomStart="30dp"
-            app:boxCornerRadiusTopEnd="30dp"
-            app:boxCornerRadiusTopStart="30dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:hint="@string/enter_your_name"
-                android:singleLine="true"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/step_3"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/custom_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="110dp"
-            android:layout_marginEnd="10dp"
-            android:imeOptions="actionNext"
-            android:nextFocusForward="@id/family"
-            app:boxCornerRadiusBottomEnd="30dp"
-            app:boxCornerRadiusBottomStart="30dp"
-            app:boxCornerRadiusTopEnd="30dp"
-            app:boxCornerRadiusTopStart="30dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/family"
+            <TextView
+                android:id="@+id/long_text"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:hint="@string/enter_your_family"
-                android:singleLine="true"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/warning_text"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="italic" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/custom_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="180dp"
-            android:layout_marginEnd="10dp"
-            android:imeOptions="actionDone"
-            app:boxCornerRadiusBottomEnd="30dp"
-            app:boxCornerRadiusBottomStart="30dp"
-            app:boxCornerRadiusTopEnd="30dp"
-            app:boxCornerRadiusTopStart="30dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/age"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:hint="@string/enter_your_age"
-                android:inputType="number"
-                android:singleLine="true"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="250dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="horizontal">
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/p_loading"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/yellow"
+                app:lottie_speed="2" />
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="30dp">
-
-                <Button
-                    android:id="@+id/male"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="#0277BD"
-                    android:scaleX="1.3"
-                    android:scaleY="1.3"
-                    android:text="@string/male"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    tools:ignore="ButtonStyle" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="200dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="30dp">
 
                 <Button
-                    android:id="@+id/female"
+                    android:id="@+id/sub_proof"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="#0277BD"
+                    android:backgroundTint="#0277BD"
                     android:scaleX="1.3"
                     android:scaleY="1.3"
-                    android:text="@string/female"
+                    android:text="@string/upload"
                     android:textColor="@color/white"
                     android:textSize="13sp"
                     tools:ignore="ButtonStyle" />
 
             </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="310dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="30dp">
-
-            <Button
-                android:id="@+id/submit"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:backgroundTint="#0277BD"
-                android:scaleX="1.3"
-                android:scaleY="1.3"
-                android:text="@string/next"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                tools:ignore="ButtonStyle" />
-
         </androidx.cardview.widget.CardView>
 
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_two"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="30dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/step_2"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/up"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/upload_photo" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/up_img"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_gravity="center|top"
-            android:layout_marginTop="40dp"
-            android:src="@drawable/profile"
-            app:civ_border_color="@color/black"
-            app:civ_border_width="2dp"/>
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/loading"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="175dp"
-            app:lottie_speed="2"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/yellow" />
-
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="220dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="30dp">
-
-            <Button
-                android:id="@+id/upload"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:backgroundTint="#0277BD"
-                android:scaleX="1.3"
-                android:scaleY="1.3"
-                android:text="@string/upload_image"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                tools:ignore="ButtonStyle" />
-
-        </androidx.cardview.widget.CardView>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_three"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="150dp"
-        android:layout_marginEnd="10dp"
-        app:cardCornerRadius="30dp">
-
-        <TextView
-            android:id="@+id/welcome"
+            android:id="@+id/card_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/welcome_text"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
             app:cardCornerRadius="30dp">
 
-            <Button
-                android:id="@+id/conti"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:backgroundTint="#0277BD"
-                android:scaleX="1.3"
-                android:scaleY="1.3"
-                android:text="@string/continue_"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                tools:ignore="ButtonStyle" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="@string/step_1"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@id/family"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/enter_your_name"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="10dp"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
+
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                        android:id="@+id/family"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/family_name"
+                        android:imeOptions="actionNext"
+                        android:nextFocusForward="@id/age"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="10dp"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@id/place"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/age"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/enter_your_age"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="10dp"
+                    android:imeOptions="actionDone"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/place"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/currently_living_in"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="@string/your_height"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/height"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="@string/highest_qualification"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/edu"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center|end"
+                        android:text="@string/working_sector"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/work1"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:prompt="@string/working_sector"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="30dp">
+
+                        <Button
+                            android:id="@+id/male"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="#0277BD"
+                            android:scaleX="1.3"
+                            android:scaleY="1.3"
+                            android:text="@string/male"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            tools:ignore="ButtonStyle" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="30dp">
+
+                        <Button
+                            android:id="@+id/female"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="#0277BD"
+                            android:scaleX="1.3"
+                            android:scaleY="1.3"
+                            android:text="@string/female"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            tools:ignore="ButtonStyle" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardCornerRadius="30dp">
+
+                    <Button
+                        android:id="@+id/submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:backgroundTint="#0277BD"
+                        android:scaleX="1.3"
+                        android:scaleY="1.3"
+                        android:text="@string/next"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        tools:ignore="ButtonStyle" />
+
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="30dp">
 
-    </androidx.cardview.widget.CardView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/step_2"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-</LinearLayout>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/up"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/upload_photo" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/up_img"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/profile"
+                app:civ_border_color="@color/black"
+                app:civ_border_width="2dp" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loading"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="175dp"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/yellow"
+                app:lottie_speed="2" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="220dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="30dp">
+
+                <Button
+                    android:id="@+id/upload"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#0277BD"
+                    android:scaleX="1.3"
+                    android:scaleY="1.3"
+                    android:text="@string/upload_image"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    tools:ignore="ButtonStyle" />
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_three"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="150dp"
+            android:layout_marginEnd="10dp"
+            app:cardCornerRadius="30dp">
+
+            <TextView
+                android:id="@+id/welcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/welcome_text"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="30dp">
+
+                <Button
+                    android:id="@+id/conti"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#0277BD"
+                    android:scaleX="1.3"
+                    android:scaleY="1.3"
+                    android:text="@string/continue_"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    tools:ignore="ButtonStyle" />
+
+            </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

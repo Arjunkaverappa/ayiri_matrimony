@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/Platform.MaterialComponents.Light"
-    tools:context=".MainActivity">
+    tools:context=".host">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tablayout"
@@ -17,21 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="55dp" />
-
     <FrameLayout
-        android:id="@+id/change_frag"
+        android:id="@+id/change_frags"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="55dp" />
-
-    <LinearLayout
-        android:id="@+id/main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
-        android:orientation="vertical">
-
-    </LinearLayout>
 
     <com.gauravk.bubblenavigation.BubbleNavigationConstraintView
         android:id="@+id/bottom_bar"
@@ -39,8 +28,8 @@
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:background="#000000"
-        app:bnc_mode="spread"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:bnc_mode="spread">
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/settings"

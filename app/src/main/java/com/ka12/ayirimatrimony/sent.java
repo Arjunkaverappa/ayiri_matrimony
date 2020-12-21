@@ -3,11 +3,14 @@ package com.ka12.ayirimatrimony;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -59,6 +62,12 @@ public class sent extends Fragment
         View v= inflater.inflate(R.layout.fragment_sent, container, false);
         list_names=v.findViewById(R.id.list_name);
         loading=v.findViewById(R.id.loading);
+
+        Window window = getActivity().getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FFFFFF"));
+        Log.d("barry","**************************************");
+        Log.d("barry","initiated sent sequence ");
         try {
             //retrieving the key of the current user
             SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
@@ -81,7 +90,7 @@ public class sent extends Fragment
     private void refresh_data_final() {
         try {
             clear_lists();
-            SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+            SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
             user_gender = getgender.getString("gender", "female");
             if (user_gender.equals("male")) {
                 search_gender = "female";
@@ -89,7 +98,7 @@ public class sent extends Fragment
                 search_gender = "male";
             }
             reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
-            Log.d("try ", "inside refresh_data()");
+            Log.d("barry","initiated refresh_data_final in sent");
             reference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -103,8 +112,10 @@ public class sent extends Fragment
                         String data = ds.getValue(String.class);
                         if (temp == 0) {
                             Log.d("delta ", "data :" + data);
-                            separated = data.split("\\#");
-                            Log.d("delta ", "\nname :" + separated[0] + "\nfam :" + separated[1] + "\nage :" + age + "\ngen :" + gender + "\nlink :" + separated[4]);
+                            if (data != null) {
+                                separated = data.split("\\#");
+                            }
+                            Log.d("sent ", "name :" + separated[0] + "fam :" + separated[1] + "age :" + age + "gen :" + gender + "link :" + separated[4]);
                         }
                         if (temp == 1) {
                             received.add(data);
@@ -131,7 +142,9 @@ public class sent extends Fragment
                             }
                         }
                     }
-                    if (asd == no_of_children) {
+                    if (asd == no_of_children)
+                    {
+                        temp=0;
                         n = 0;
                         count = 0;
                         asd = 0;
@@ -211,11 +224,14 @@ public class sent extends Fragment
                 LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.display_list_sent, null);
             }
+            Log.d("barry","initiated adapter in sent");
             try {
                 Log.d("try ", "inside times " + i);
                 ImageView img = view.findViewById(R.id.pic);
                 TextView name = view.findViewById(R.id.name);
-
+              //  CardView main_card=view.findViewById(R.id.main_card);
+              //  Animation list_anim= AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
+              //  main_card.startAnimation(list_anim);
                 Log.d("loop ", "**************************************************");
                 Log.d("loop ", "the value of n before entering =" + n);
 

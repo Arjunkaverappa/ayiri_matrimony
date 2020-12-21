@@ -5,11 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -83,21 +86,27 @@ public class received extends Fragment {
     //the following are for 'sent' list
     ListView list_name;
     custom_adapter_for_requests custom_req = new custom_adapter_for_requests();
-    int no_of_children,n,sizz,total_count,count,asd,temp_e,temp;
+    int no_of_children, n, sizz, total_count, count, asd, temp_e, temp;
     Boolean is_checked = false;
-    String current_user_received,key,user_gender,user_name,search_gender,accept_data;
+    String current_user_received, key, user_gender, user_name, search_gender, accept_data;
     String[] separated;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v= inflater.inflate(R.layout.fragment_received, container, false);
-        requests_list=v.findViewById(R.id.requests);
-        loading=v.findViewById(R.id.loading);
+        View v = inflater.inflate(R.layout.fragment_received, container, false);
+        requests_list = v.findViewById(R.id.requests);
+        loading = v.findViewById(R.id.loading);
+
+        Window window = getActivity().getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FFFFFF"));
+        Log.d("barry", "*********************************");
+        Log.d("barry", "initiated received sequence ");
         try {
             //getting the current user 'received' data
-            SharedPreferences getdata = getActivity().getSharedPreferences(CUR_USER_DATA, MODE_PRIVATE);
+            SharedPreferences getdata = Objects.requireNonNull(getActivity()).getSharedPreferences(CUR_USER_DATA, MODE_PRIVATE);
             current_user_received = getdata.getString("data", "something_went_wrong");
 
             //getting the number of child nodes in main db
@@ -120,18 +129,17 @@ public class received extends Fragment {
             requests_list.setAdapter(custom_req);
 
             refresh_data_final();
-        }catch (Exception e)
-        {
-            Log.d("error received","catch in onCreate"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error received", "catch in onCreate" + e.getMessage());
         }
         return v;
     }
-    private void refresh_data_final()
-    {
+
+    private void refresh_data_final() {
         try {
             clear_lists();
             Log.d("flash", "cuurent user received :" + current_user_received);
-            SharedPreferences getgender = getActivity().getSharedPreferences(GENDER, MODE_PRIVATE);
+            SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
             user_gender = getgender.getString("gender", "female");
 
             if (user_gender.equals("male")) {
@@ -139,7 +147,7 @@ public class received extends Fragment {
             } else {
                 search_gender = "male";
             }
-            Log.d("flash ", "inside refresh_data()");
+            Log.d("barry", "initiated refresh_data_final of received");
 
             reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
             reference.addChildEventListener(new ChildEventListener() {
@@ -161,13 +169,15 @@ public class received extends Fragment {
                         String data = ds.getValue(String.class);
                         if (temp == 0) {
                             Log.d("delta ", "data :" + data);
-                            separated = data.split("\\#");
-                            m_names.add(separated[0]);
-                            m_family.add(separated[1]);
-                            m_age.add(Integer.valueOf(separated[2]));
-                            m_gender.add(separated[3]);
-                            m_links.add(separated[4]);
-                            Log.d("flash ", "\nname :" + separated[0] + "\nfam :" + separated[1]);
+                            if (data != null) {
+                                separated = data.split("\\#");
+                                m_names.add(separated[0]);
+                                m_family.add(separated[1]);
+                                m_age.add(Integer.valueOf(separated[2]));
+                                m_gender.add(separated[3]);
+                                m_links.add(separated[4]);
+                                Log.d("got", " name :" + separated[0] + " fam :" + separated[1]);
+                            }
                         }
                         if (temp == 1) {
                             received.add(data);
@@ -249,6 +259,7 @@ public class received extends Fragment {
                     }
 
                     if (asd == no_of_children) {
+                        temp = 0;
                         n = 0;
                         count = 0;
                         asd = 0;
@@ -284,9 +295,8 @@ public class received extends Fragment {
                     custom_req.notifyDataSetChanged();
                 }
             });
-        }catch (Exception e)
-        {
-            Log.d("error received","catch in refresh_data_final"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error received", "catch in refresh_data_final" + e.getMessage());
         }
     }
 
@@ -314,8 +324,7 @@ public class received extends Fragment {
         Log.d("beta ", "clear list initiated");
     }
 
-    public void accept_request(String data, String sender_gender, String sender_key, int i)
-    {
+    public void accept_request(String data, String sender_gender, String sender_key, int i) {
         try {
             Log.d("send ", "*************************************");
             Log.d("send ", "data :" + data + "\nsender gender=" + sender_gender + "\nsender_key=" + sender_key);
@@ -344,21 +353,19 @@ public class received extends Fragment {
                     Log.d("send ", "pushed successfully");
                 }
             });
-        }catch (Exception e)
-        {
-            Log.d("error received","catch in accept_request :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error received", "catch in accept_request :" + e.getMessage());
         }
     }
 
-    public void send_notification(int index)
-    {
+    public void send_notification(int index) {
         try {
             String user_id = noti_req.get(index);
             String sender_name = names_req.get(index);
             String sender_family = family_req.get(index);
 
             //getting user family
-            SharedPreferences getfamily = getActivity().getSharedPreferences(FAMILY, MODE_PRIVATE);
+            SharedPreferences getfamily = Objects.requireNonNull(getActivity()).getSharedPreferences(FAMILY, MODE_PRIVATE);
             String user_family = getfamily.getString("family", "null");
 
             //retreiving the user_name
@@ -373,9 +380,8 @@ public class received extends Fragment {
                 Log.d("json", "Error :" + e.getMessage());
                 e.printStackTrace();
             }
-        }catch (Exception e)
-        {
-            Log.d("error received","catch in send_notification :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error received", "catch in send_notification :" + e.getMessage());
         }
     }
 
@@ -405,11 +411,15 @@ public class received extends Fragment {
                 LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.display_list_received, null);
             }
+            Log.d("barry", "initiated adapter for received ");
             try {
                 Log.d("flash ", "inside times " + i);
                 ImageView img = view.findViewById(R.id.pic);
                 TextView name = view.findViewById(R.id.name);
                 Button request = view.findViewById(R.id.request);
+                //  CardView main_card=view.findViewById(R.id.main_card);
+                //  Animation list_anim= AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
+                // main_card.startAnimation(list_anim);
                 Log.d("flashs ", "**************************************************");
                 Log.d("flashs ", "the value of n before entering =" + n);
 
@@ -439,9 +449,8 @@ public class received extends Fragment {
                         }).show();
                     }
                 });
-            }catch (Exception e)
-            {
-                Log.d("error received","catch in custom_adapter_for_requests :"+e.getMessage());
+            } catch (Exception e) {
+                Log.d("error received", "catch in custom_adapter_for_requests :" + e.getMessage());
             }
             return view;
         }
