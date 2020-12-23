@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,32 +30,45 @@ public class splash_screen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         back = findViewById(R.id.back);
         name = findViewById(R.id.name);
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.hide();
-        //changing status bar color
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.parseColor("#6ABEDF"));
-        //dark text in status bar
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        //getting the login details
-        SharedPreferences edit = getSharedPreferences(LOGIN, MODE_PRIVATE);
-        is_logged_in = edit.getBoolean("login", false);
-        YoYo.with(Techniques.FadeIn).duration(1300).repeat(0).playOn(name);
+        try {
+            ActionBar actionBar = getSupportActionBar();
+            assert actionBar != null;
+            actionBar.hide();
+            //changing status bar color
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.parseColor("#6ABEDF"));
+            //dark text in status bar
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            //getting the login details
+            SharedPreferences edit = getSharedPreferences(LOGIN, MODE_PRIVATE);
+            is_logged_in = edit.getBoolean("login", false);
+            YoYo.with(Techniques.FadeIn).duration(1300).repeat(0).playOn(name);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            Log.d("error","in start :"+e.getMessage());
+        }
         //defining the runnable
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent in;
-                if (is_logged_in) {
-                    in = new Intent(splash_screen.this, MainActivity.class);
-                } else {
-                    in = new Intent(splash_screen.this, Login.class);
+                try {
+                    if (is_logged_in) {
+                        Intent in = new Intent(splash_screen.this, com.ka12.ayirimatrimony.MainActivity.class);
+                        startActivity(in);
+                        Animatoo.animateZoom(splash_screen.this);
+                    } else {
+                        Intent in = new Intent(splash_screen.this, com.ka12.ayirimatrimony.Login.class);
+                        startActivity(in);
+                        Animatoo.animateZoom(splash_screen.this);
+                    }
+                    finish();
+                }catch (Exception e)
+                {
+                    Log.d("error ","catch in splash screen :"+e.getMessage());
+                    e.printStackTrace();
                 }
-                startActivity(in);
-                Animatoo.animateZoom(splash_screen.this);
-                finish();
             }
         }, 1550);
     }

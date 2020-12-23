@@ -24,7 +24,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -41,11 +41,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     //noinspection GradleDependency
     implementation 'com.google.firebase:firebase-auth:19.4.0'           //firebase auth
+    implementation 'com.google.firebase:firebase-database:19.6.0'       //realtime db
+   // implementation 'com.google.android.material:material:1.2.1'         //material design
     //noinspection GradleDependency
-    implementation 'com.google.firebase:firebase-database:19.5.0'       //realtime db
-    implementation 'com.google.android.material:material:1.2.1'         //material design
-    //noinspection GradleDependency
-    implementation 'com.google.android.material:material:1.0.0-beta01'
+   // implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'com.daimajia.androidanimations:library:2.4@aar'      //yoyo animation
     implementation 'com.github.mohammadatif:Animatoo:master'             //Animatoo
     implementation 'com.google.firebase:firebase-storage:19.2.1'         //firebase storage

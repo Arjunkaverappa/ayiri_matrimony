@@ -1,146 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profile_frag"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/grad_test_two"
-    android:orientation="vertical"
-    tools:context=".profile">
+    android:background="@drawable/grad_test_two">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="210dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:src="@drawable/profile"
-            app:civ_border_color="@color/black"
-            app:civ_border_width="2dp" />
-
-    </LinearLayout>
-    <TextView
-        android:id="@+id/edit"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|center_vertical"
-        android:text="@string/edit_profile"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        tools:ignore="RtlHardcoded" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#7A7878"
-        android:contentDescription="@string/app_name" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|top"
-        android:lineSpacingExtra="-3dp"
-        android:text="@string/name"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/edit"
-        tools:ignore="RtlHardcoded" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#7A7878"
-        android:contentDescription="@string/app_name" />
-
-    <TextView
-        android:id="@+id/family"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|top"
-        android:lineSpacingExtra="-3dp"
-        android:text="@string/family_name"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/edit"
-        tools:ignore="RtlHardcoded" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#7A7878"
-        android:contentDescription="@string/app_name" />
-
-
-    <TextView
-        android:id="@+id/age"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|top"
-        android:lineSpacingExtra="-3dp"
-        android:text="@string/age"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/edit"
-        tools:ignore="RtlHardcoded" />
-
-
-    <ImageView
-        android:id="@+id/a"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#7A7878"
-        android:contentDescription="@string/app_name" />
-
-    <TextView
-        android:id="@+id/desc"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/profile_frag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="left|top"
-        android:lineSpacingExtra="-3dp"
-        android:text="@string/bio"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/edit"
-        tools:ignore="RtlHardcoded" />
+        android:orientation="vertical"
+        tools:context=".profile">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:gravity="center">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:src="@drawable/profile"
+                app:civ_border_color="@color/black"
+                app:civ_border_width="2dp" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loading"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="50dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/yellow"
+                app:lottie_speed="2.1" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/edit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|center_vertical"
+            android:text="@string/edit_profile"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|top"
+            android:lineSpacingExtra="-3dp"
+            android:text="@string/name"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/edit"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/one"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/family"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|top"
+            android:lineSpacingExtra="-3dp"
+            android:text="@string/family_name"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/edit"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/two"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#7A7878"
-        android:contentDescription="@string/app_name" />
+        <TextView
+            android:id="@+id/age"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|top"
+            android:lineSpacingExtra="-3dp"
+            android:text="@string/age"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/edit"
+            tools:ignore="RtlHardcoded" />
 
-</LinearLayout>
+
+        <ImageView
+            android:id="@+id/three"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|top"
+            android:lineSpacingExtra="-3dp"
+            android:text="@string/bio"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/edit"
+            tools:ignore="RtlHardcoded" />
+
+
+        <ImageView
+            android:id="@+id/a"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/change_log"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|center_vertical"
+            android:text="@string/whats_new"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|center_vertical"
+            android:text="@string/logout"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|center_vertical"
+            android:text="@string/delete_account"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+    </LinearLayout>
+</ScrollView>

@@ -78,79 +78,95 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //hiding the action bar
-        ActionBar act = getSupportActionBar();
-        assert act != null;
-        act.hide();
-        sub_card = findViewById(R.id.sub_card);
-        otp_card = findViewById(R.id.otp_card);
-        get_number = findViewById(R.id.number);
-        otp = findViewById(R.id.otp);
-        submit = findViewById(R.id.submit);
-        submit_otp = findViewById(R.id.get_otp);
-        note = findViewById(R.id.note);
-        //changing status bar color
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.parseColor("#A374ED"));
-        //hiding the otp card
-        otp_card.setVisibility(View.GONE);
-        //resetting is_old preferences
-        SharedPreferences.Editor getstatus=getSharedPreferences(IS_OLD,MODE_PRIVATE).edit();
-        getstatus.putBoolean("isold",false).apply();
-        //setting up onclick listeneres
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Objects.requireNonNull(get_number.getText()).toString().equals("")) {
-                    Toast.makeText(Login.this, "Please enter the number first", Toast.LENGTH_SHORT).show();
-                } else if (Objects.requireNonNull(get_number.getText()).toString().length() < 10) {
-                    Toast.makeText(Login.this, "Please check the number", Toast.LENGTH_SHORT).show();
-                } else if(is_connected)
-                {
-                    sendvarification(get_number.getText().toString().trim());
-                    Log.d("login ", "sent number " + get_number.getText().toString().trim());
-                    sub_card.setVisibility(View.GONE);
-                    otp_card.setVisibility(View.VISIBLE);
-                    //hiding the keyboard
-                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    start_timer();
-
-                    //TODO:do not forget to enable this method(imp)
-                     check_if_old_account(get_number.getText().toString().trim());
-                }else
-                {
-                    Toast.makeText(Login.this, "Please connect to internet and try again!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        submit_otp.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-                if (Objects.requireNonNull(otp.getText()).toString().trim().length() < 6) {
-                    Toast.makeText(Login.this, "Please check the otp", Toast.LENGTH_SHORT).show();
-                } else {
-                    varify_code(Objects.requireNonNull(otp.getText()).toString().trim());
-                    Log.d("login ", "sent code " + otp.getText().toString().trim());
-                    countDownTimer.cancel();
-                    submit_otp.setText("Varifying...");
-                }
-            }
-        });
-        //TODO:remove the following code
-        submit.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view)
+        try {
+            sub_card = findViewById(R.id.sub_card);
+            otp_card = findViewById(R.id.otp_card);
+            get_number = findViewById(R.id.number);
+            otp = findViewById(R.id.otp);
+            submit = findViewById(R.id.submit);
+            submit_otp = findViewById(R.id.get_otp);
+            note = findViewById(R.id.note);
+            //hiding the action bar
+            try {
+                ActionBar act = getSupportActionBar();
+                assert act != null;
+                act.hide();
+            }catch (Exception e)
             {
-                Intent in=new Intent(Login.this,user_data.class);
-                startActivity(in);
-                finish();
-                return false;
+                Log.d("errorz","error in act.hide :"+e.getMessage());
+                e.printStackTrace();
             }
-        });
-        check_network();
+            //changing status bar color
+            try {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Color.parseColor("#A374ED"));
+            } catch (Exception e) {
+                Log.d("errorz", "error in get window :" + e.getMessage());
+                e.printStackTrace();
+            }
+            //hiding the otp card
+            otp_card.setVisibility(View.GONE);
+            //resetting is_old preferences
+            SharedPreferences.Editor getstatus = getSharedPreferences(IS_OLD, MODE_PRIVATE).edit();
+            getstatus.putBoolean("isold", false).apply();
+            //setting up onclick listeneres
+            submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Objects.requireNonNull(get_number.getText()).toString().equals("")) {
+                        Toast.makeText(Login.this, "Please enter the number first", Toast.LENGTH_SHORT).show();
+                    } else if (Objects.requireNonNull(get_number.getText()).toString().length() < 10) {
+                        Toast.makeText(Login.this, "Please check the number", Toast.LENGTH_SHORT).show();
+                    } else if (is_connected) {
+                        sendvarification(get_number.getText().toString().trim());
+                        Log.d("login ", "sent number " + get_number.getText().toString().trim());
+                        sub_card.setVisibility(View.GONE);
+                        otp_card.setVisibility(View.VISIBLE);
+                        //hiding the keyboard
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        start_timer();
+
+                        //TODO:do not forget to re-enable this method(imp)=done
+                        check_if_old_account(get_number.getText().toString().trim());
+                    } else {
+                        Toast.makeText(Login.this, "Please connect to internet and try again!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            submit_otp.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onClick(View view) {
+                    if (Objects.requireNonNull(otp.getText()).toString().trim().length() < 6) {
+                        Toast.makeText(Login.this, "Please check the otp", Toast.LENGTH_SHORT).show();
+                    } else if (!is_connected) {
+                        Toast.makeText(Login.this, "Please connnect to internet", Toast.LENGTH_SHORT).show();
+                    } else {
+                        varify_code(Objects.requireNonNull(otp.getText()).toString().trim());
+                        Log.d("login ", "sent code " + otp.getText().toString().trim());
+                        countDownTimer.cancel();
+                        submit_otp.setText("Varifying...");
+                    }
+                }
+            });
+            //TODO:remove the following code
+            submit.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Intent in = new Intent(Login.this, com.ka12.ayirimatrimony.user_data.class);
+                    startActivity(in);
+                    finish();
+                    return false;
+                }
+            });
+            check_network();
+        }catch (Exception e)
+        {
+            Log.d("errorz","error in onCreate :"+e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void sendvarification(String number) {
@@ -228,27 +244,31 @@ public class Login extends AppCompatActivity {
 
     public void check_network()
     {
-        new Handler().postDelayed(new Runnable() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void run() {
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-                if ((wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected()))
-                {
-                    is_connected = true;
-                    note.setTextColor(Color.GRAY);
-                    note.setText(R.string.note);
-                } else
-                    {
-                    note.setTextColor(Color.RED);
-                    note.setText("Please connect to internet");
-                    is_connected = false;
+        try {
+            new Handler().postDelayed(new Runnable() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void run() {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                    NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                    if ((wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected())) {
+                        is_connected = true;
+                        note.setTextColor(Color.GRAY);
+                        note.setText(R.string.note);
+                    } else {
+                        note.setTextColor(Color.RED);
+                        note.setText("Please connect to internet");
+                        is_connected = false;
+                    }
+                    check_network();
                 }
-                check_network();
-            }
-        }, 3000);
+            }, 3000);
+        }catch (Exception e)
+        {
+            Log.d("errorz","error in check network :"+e.getMessage());
+            e.printStackTrace();
+        }
     }
     public void start_timer()
     {
@@ -273,7 +293,7 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
-                    Intent restart = new Intent(Login.this, Login.class);
+                    Intent restart = new Intent(Login.this,com.ka12.ayirimatrimony.Login.class);
                     finish();
                     startActivity(restart);
                 }

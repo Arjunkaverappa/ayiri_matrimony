@@ -306,17 +306,6 @@ public class user_data extends AppCompatActivity {
                 return false;
             }
         });
-        //TODO:delete the following code
-        submit.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(user_data.this, "yeah?", Toast.LENGTH_SHORT).show();
-                description d=new description();
-                String ans=d.get_description(u_qua,u_work, Objects.requireNonNull(place.getText()).toString());
-                Log.d("answer",ans);
-                return false;
-            }
-        });
     }
 
     private void upload_image(Uri image_url) {
@@ -439,7 +428,8 @@ public class user_data extends AppCompatActivity {
         public String link;
         public String phone;
 
-        public heplerclass() {
+        public heplerclass()
+        {
 
         }
 

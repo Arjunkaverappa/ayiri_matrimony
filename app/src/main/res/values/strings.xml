@@ -1,4 +1,28 @@
 <resources>
+     <string name="fake_alert"> There was a problem validating your account, please make sure you have entered the correct deatails.
+                               \nPlease delete the existing account and create a new one with same number.</string>
+    <string name="warning_text">
+                               Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
+                               User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
+    <string name="change_log"><b>Version_0.5_alpha</b>\n
+                              <i>23/12/2020</i>\n
+                               * Added security measures \n
+                               * Added live notification support\n
+                               * Added Image compression(beta) \n
+                               * Added option to detect old users \n
+                               * Added Auto generating bio \n
+                               * New animations \n
+                               * New profile section \n
+                               * Option to edit user deatils \n
+                               * Call or message when matched \n
+                               * Fixed bugs from previous version\n\n
+                              <b>Version_0.1_alpha</b>\n
+                               <i>11/12/2020</i>\n
+                               * first alpha release \n
+                               * Send and received requests(beta) \n
+                               * Added Instant data retrival(beta) \n
+                               * Option to add profile picture \n
+    </string>
     <string name="app_name">Ayiri Matrimony</string>
     <string name="check">check</string>
     <string name="add">add</string>
@@ -50,12 +74,7 @@
     <string name="no_sent">You havent sent any requests to anyone yet</string>
     <string name="no_match">No matches yet</string>
     <string name="step_3">Step 3</string>
-    <string name="fake_alert"> There was a problem validating your account, please make sure you have entered the correct deatails.
-                               \nPlease delete the existing account and create a new one with same number.</string>
-    <string name="warning_text">
-                               Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
-                               User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
-    <string name="continue_">Continue</string>
+   <string name="continue_">Continue</string>
     <string name="please_connect_to_internet">Please connect to internet</string>
     <string name="highest_qualification">Qualification :</string>
     <string name="working_sector">Working sector :</string>
@@ -64,4 +83,9 @@
     <string name="description">description</string>
     <string name="requested">Requested</string>
     <string name="bio">Bio</string>
+    <string name="call">Call</string>
+    <string name="message">Message</string>
+    <string name="whats_new">Whats new?</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete account</string>
 </resources>

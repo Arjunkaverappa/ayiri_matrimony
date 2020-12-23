@@ -1,5 +1,8 @@
 package com.ka12.ayirimatrimony;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class description
 {
 

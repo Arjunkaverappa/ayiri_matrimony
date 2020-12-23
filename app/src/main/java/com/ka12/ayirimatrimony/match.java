@@ -56,6 +56,8 @@ public class match extends Fragment {
     public ArrayList<String> m_received = new ArrayList<>();
     public ArrayList<String> m_height = new ArrayList<>();
     public ArrayList<String> m_description = new ArrayList<>();
+    public ArrayList<String> m_qua = new ArrayList<>();
+    public ArrayList<String> m_work = new ArrayList<>();
     //defining the master array list
     public ArrayList<String> m_names = new ArrayList<>();
     //the following are for 'sent' list
@@ -80,7 +82,9 @@ public class match extends Fragment {
     public ArrayList<String> received_req = new ArrayList<>();
     public ArrayList<String> m_notification = new ArrayList<>();
     public ArrayList<String> height_req = new ArrayList<>();
+    public ArrayList<String> work_req = new ArrayList<>();
     public ArrayList<String> description_req = new ArrayList<>();
+    public ArrayList<String> qua_req = new ArrayList<>();
     //the following lists are for matches profiles
     ListView list_match;
     public ArrayList<String> names_match = new ArrayList<>();
@@ -91,8 +95,10 @@ public class match extends Fragment {
     public ArrayList<String> keys_match = new ArrayList<>();
     public ArrayList<String> sent_match = new ArrayList<>();
     public ArrayList<String> received_match = new ArrayList<>();
-    public ArrayList<String> height = new ArrayList<>();
+    public ArrayList<String> height_match = new ArrayList<>();
     public ArrayList<String> description_match = new ArrayList<>();
+    public ArrayList<String> qua_match = new ArrayList<>();
+    public ArrayList<String> work_match = new ArrayList<>();
     //database references
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
@@ -308,6 +314,9 @@ public class match extends Fragment {
                                 m_age.add(Integer.valueOf(separated[2]));
                                 m_gender.add(separated[3]);
                                 m_links.add(separated[4]);
+                                m_height.add(separated[6]);
+                                m_qua.add(separated[7]);
+                                m_work.add(separated[8]);
                                 m_description.add(separated[9]);
                                 Log.d("match ", "name :" + separated[0] + " fam :" + separated[1] + "age :" + age + "gen :" + gender + "link :" + separated[4]);
                             }
@@ -366,6 +375,10 @@ public class match extends Fragment {
                                     age_req.add(Integer.parseInt(String.valueOf(m_age.get(d))));
                                     noti_req.add(m_notification.get(d));
                                     description_req.add(m_description.get(d));
+                                    qua_req.add(m_qua.get(d));
+                                    height_req.add(m_height.get(d));
+                                    work_req.add(m_work.get(d));
+                                    keys_req.add(m_keys.get(d));
                                 }
                             }
                         }
@@ -387,6 +400,10 @@ public class match extends Fragment {
                                 gender_match.add(gender_req.get(get_j));
                                 age_match.add(age_req.get(get_j));
                                 description_match.add(description_req.get(get_j));
+                                qua_match.add(qua_req.get(get_j));
+                                height_match.add(height_req.get(get_j));
+                                work_match.add(work_req.get(get_j));
+                                keys_match.add(keys_req.get(get_j));
 
                                 //trying a method of removing the duplicates from requested list
                                 Log.d("removed", names_req.get(get_j));
@@ -450,112 +467,6 @@ public class match extends Fragment {
             Log.d("error match", "catch in refresh_data_final :" + e.getMessage());
         }
     }
-    /*
-    //this adapter is to show all 'sent' requests lists
-    @Keep
-    class custom_adapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            Log.d("loop ", "size " + names.size());
-            return names.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @SuppressLint({"InflateParams", "SetTextI18n"})
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.display_list_sent, null);
-            }
-            Log.d("try ", "inside times " + i);
-            ImageView img = view.findViewById(R.id.pic);
-            TextView name = view.findViewById(R.id.name);
-
-            Log.d("loop ", "**************************************************");
-            Log.d("loop ", "the value of n before entering =" + n);
-
-            name.setText("Name :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge :" + age.get(i));
-            Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
-            return view;
-        }
-    }
-
-    //this adapter is to display 'requests' from other users
-    @Keep
-    class custom_adapter_for_requests extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            Log.d("loop ", "size " + names.size());
-            return names_req.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @SuppressLint({"InflateParams", "SetTextI18n"})
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.display_list_received, null);
-            }
-            Log.d("try ", "inside times " + i);
-            ImageView img = view.findViewById(R.id.pic);
-            TextView name = view.findViewById(R.id.name);
-            Button request = view.findViewById(R.id.request);
-            Log.d("loop ", "**************************************************");
-            Log.d("loop ", "the value of n before entering =" + n);
-
-            name.setText("Name :" + names_req.get(i) + "\nFamily :" + family_req.get(i) + "\nAge :" + age_req.get(i));
-            Picasso.get().load(links_req.get(i)).fit().centerCrop().into(img);
-
-            request.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //we have all the details of the sender account
-
-                    AlertDialog.Builder b = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
-                    b.setTitle("Disclaimer");
-                    b.setMessage("Accepting this request will mean that you have matched with " + names_req.get(i)
-                            + ".\nyour contact details will be shared with " + names_req.get(i) + ".Do you still wish to continue?");
-                    b.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int in) {
-                            request.setText("Accepted");
-                            accept_request(received_req.get(i), gender_req.get(i), keys_req.get(i), i);
-                        }
-                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int in) {
-
-                        }
-                    }).show();
-                }
-            });
-            return view;
-        }
-    }
-
-     */
 
     class custom_adapter_for_list_match extends BaseAdapter {
 
@@ -598,51 +509,23 @@ public class match extends Fragment {
 
                 request.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(View view)
+                    {
+                        Log.d("gotit","before :"+names_match.get(i)+" "+family_match.get(i)+" "+age_match.get(i));
                         Intent ins = new Intent(getActivity(), final_match.class);
                         ins.putExtra("name", names_match.get(i));
                         ins.putExtra("family", family_match.get(i));
-                        ins.putExtra("age", age_match.get(i));
+                        ins.putExtra("age",String.valueOf(age_match.get(i)));
                         ins.putExtra("link", links_match.get(i));
                         ins.putExtra("desc", description_match.get(i));
+                        ins.putExtra("work", work_match.get(i));
+                        ins.putExtra("height", height_match.get(i));
+                        ins.putExtra("qua", qua_match.get(i));
+                        ins.putExtra("key", keys_match.get(i));
                         startActivity(ins);
                         Animatoo.animateZoom(Objects.requireNonNull(getActivity()));
                     }
                 });
-
-                  /*
-                request.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("QueryPermissionsNeeded")
-                    @Override
-                    public void onClick(View view) {
-                        Context context;
-                        AlertDialog.Builder build = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
-                        build.setTitle("Contact " + names_match.get(i) + "?");
-                        build.setMessage("number :" + m_keys.get(i));
-                        build.setPositiveButton("COPY", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int in) {
-                                getContext();
-                                ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("+91", m_keys.get(i));
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(getActivity(), "Number copied to clipboard", Toast.LENGTH_SHORT).show();
-                            }
-                        }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int in) {
-
-                            }
-                        }).setNeutralButton("CALL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int in) {
-                                Intent intent_name = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:+91" + m_keys.get(i)));
-                                startActivity(intent_name);
-                            }
-                        }).show();
-                    }
-                });
-              */
 
             } catch (Exception e) {
                 Log.d("error match", "catch in custom_adapter_for_list_match :" + e.getMessage());

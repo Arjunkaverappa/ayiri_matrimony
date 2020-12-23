@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -26,6 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -42,7 +46,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/*
+   TODO:add logout
+   TODO:delete account
+ */
 public class profile extends Fragment {
+    public static final String LOGIN = "com.ka12.ayiri_matrimony_login_details";
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
     public static final String P_LINK = "com.ka12.ayiri_matrimony.this_is_where_local_link_is_saved";
@@ -51,8 +60,9 @@ public class profile extends Fragment {
     public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
     public static final String AGE = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
     CircleImageView image;
-    ImageView a;//image;
-    TextView name, age, family, edit, desc;
+    LottieAnimationView loading;
+    ImageView a, one, two, three;
+    TextView name, age, family, edit, desc, change_log, delete, logout;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
     String user_key, user_gender, profile_link, u_name, u_fam, u_age, all_update_data, update_conversion;
@@ -71,10 +81,28 @@ public class profile extends Fragment {
         image = v.findViewById(R.id.image);
         edit = v.findViewById(R.id.edit);
         desc = v.findViewById(R.id.desc);
+        change_log = v.findViewById(R.id.change_log);
+        delete = v.findViewById(R.id.delete);
+        logout = v.findViewById(R.id.logout);
+        a = v.findViewById(R.id.a);
+        one = v.findViewById(R.id.one);
+        two = v.findViewById(R.id.two);
+        three = v.findViewById(R.id.three);
+        loading=v.findViewById(R.id.loading);
 
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#ED8A6B"));
+
+        //hiding views
+        name.setVisibility(View.GONE);
+        age.setVisibility(View.GONE);
+        family.setVisibility(View.GONE);
+        desc.setVisibility(View.GONE);
+        a.setVisibility(View.GONE);
+        one.setVisibility(View.GONE);
+        two.setVisibility(View.GONE);
+        three.setVisibility(View.GONE);
 
         //retrieving user name
         SharedPreferences get_n = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
@@ -125,7 +153,11 @@ public class profile extends Fragment {
                 name.setVisibility(View.VISIBLE);
                 age.setVisibility(View.VISIBLE);
                 family.setVisibility(View.VISIBLE);
+                desc.setVisibility(View.VISIBLE);
                 a.setVisibility(View.VISIBLE);
+                one.setVisibility(View.VISIBLE);
+                two.setVisibility(View.VISIBLE);
+                three.setVisibility(View.VISIBLE);
             }
         });
         name.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +184,57 @@ public class profile extends Fragment {
                 change_fields("bio");
             }
         });
-        desc.setVisibility(View.GONE);
+        change_log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder change = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
+                change.setTitle("Whats new?");
+                change.setMessage(R.string.change_log);
+                change.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                change.show();
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                AlertDialog.Builder logout=new AlertDialog.Builder(getContext(),R.style.alert_custom);
+                logout.setTitle("Disclaimer");
+                logout.setMessage("Do you want to logout from this devide?");
+                logout.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences.Editor setlogout=getActivity().getSharedPreferences(LOGIN,MODE_PRIVATE).edit();
+                        setlogout.putBoolean("login",false).apply();
+                        Intent in=new Intent(getActivity(),com.ka12.ayirimatrimony.Login.class);
+                        startActivity(in);
+                        Animatoo.animateZoom(getActivity());
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).show();
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
+            }
+        });
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loading.setVisibility(View.GONE);
+            }
+        },4000);
         return v;
     }
 
@@ -180,22 +262,18 @@ public class profile extends Fragment {
         builder.setTitle("Please enter your " + text);
         View inflated = LayoutInflater.from(getContext()).inflate(R.layout.edit_fields, (ViewGroup) getView(), false);
         EditText edits = inflated.findViewById(R.id.edits);
-        if (text.equals("age"))
-        {
+        if (text.equals("age")) {
             edits.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
-        if(text.equals("name") || text.equals("family"))
-        {
+        if (text.equals("name") || text.equals("family")) {
             edits.setMaxLines(1);
-        }else if(text.equals("bio"))
-        {
+        } else if (text.equals("bio")) {
             edits.setMaxLines(3);
         }
         builder.setView(inflated);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
+            public void onClick(DialogInterface dialogInterface, int i) {
                 if (edits.getText().toString().equals("")) {
                     Toast.makeText(getContext(), "Please enter a value", Toast.LENGTH_SHORT).show();
                 } else {
@@ -218,8 +296,7 @@ public class profile extends Fragment {
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (count == 0)
-                {
+                if (count == 0) {
                     String data = snapshot.getValue(String.class);
                     Log.d("datas ", "fetched :" + data);
 
@@ -227,8 +304,6 @@ public class profile extends Fragment {
                     String[] split_data = data.split("\\#");
                     set_up_strings(split_data[0], split_data[1], split_data[2]);
 
-                    //setting up description text
-                    desc.setVisibility(View.VISIBLE);
                     String get_desc = "Bio \n" + split_data[9];
                     SpannableString s4 = new SpannableString(get_desc);
                     s4.setSpan(new RelativeSizeSpan(0.7f), 0, 4, 0);
@@ -260,31 +335,32 @@ public class profile extends Fragment {
         });
     }
 
-    private void change_values_now(String text, String new_value)
-    {
+    private void change_values_now(String text, String new_value) {
         update_conversion = "";
-        if (all_update_data != null)
-        {
+        if (all_update_data != null) {
             split_update = all_update_data.split("\\#");
         }
         switch (text) {
-            case "name":SharedPreferences.Editor edit_name=getActivity().getSharedPreferences(NAME,MODE_PRIVATE).edit();
-              edit_name.putString("name",new_value).apply();
+            case "name":
+                SharedPreferences.Editor edit_name = getActivity().getSharedPreferences(NAME, MODE_PRIVATE).edit();
+                edit_name.putString("name", new_value).apply();
                 update_conversion = new_value + "#" + split_update[1] + "#" + split_update[2] + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + split_update[9];
                 break;
-            case "family":SharedPreferences.Editor edit_fam=getActivity().getSharedPreferences(FAMILY,MODE_PRIVATE).edit();
-                edit_fam.putString("family",new_value).apply();
+            case "family":
+                SharedPreferences.Editor edit_fam = getActivity().getSharedPreferences(FAMILY, MODE_PRIVATE).edit();
+                edit_fam.putString("family", new_value).apply();
                 update_conversion = split_update[0] + "#" + new_value + "#" + split_update[2] + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + split_update[9];
                 break;
-            case "age":SharedPreferences.Editor edit_age=getActivity().getSharedPreferences(AGE,MODE_PRIVATE).edit();
-                edit_age.putString("age",new_value).apply();
+            case "age":
+                SharedPreferences.Editor edit_age = getActivity().getSharedPreferences(AGE, MODE_PRIVATE).edit();
+                edit_age.putString("age", new_value).apply();
                 update_conversion = split_update[0] + "#" + split_update[1] + "#" + new_value + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + split_update[9];
                 break;
             case "bio":
-                update_conversion = split_update[0] + "#"+split_update[1]+"#"+ split_update[2] + "#" + split_update[3] + "#"
+                update_conversion = split_update[0] + "#" + split_update[1] + "#" + split_update[2] + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + new_value;
                 break;
 
@@ -295,9 +371,8 @@ public class profile extends Fragment {
         reference = firebaseDatabase.getReference().child(user_gender).child(user_key).child("name");
         reference.setValue(update_conversion).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                count=0;
+            public void onComplete(@NonNull Task<Void> task) {
+                count = 0;
                 refresh_data_final();
                 Toast.makeText(getActivity(), "updated profile!", Toast.LENGTH_SHORT).show();
                 Log.d("datas", "updated in database");
