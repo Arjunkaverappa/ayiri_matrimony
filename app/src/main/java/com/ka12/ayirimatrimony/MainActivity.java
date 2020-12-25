@@ -17,7 +17,7 @@ import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 public class MainActivity extends AppCompatActivity {
     // BubbleNavigationLinearView bottom_bar;
     long mback_pressed;
-    int TIME_INTERVAL_BACK = 2000;
+    final int TIME_INTERVAL_BACK = 2000;
     BubbleNavigationConstraintView bottom_bar;
     FrameLayout change_frag;
     LinearLayout main_layout, profile_frag;

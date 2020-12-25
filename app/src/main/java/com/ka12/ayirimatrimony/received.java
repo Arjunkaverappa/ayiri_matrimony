@@ -105,7 +105,7 @@ public class received extends Fragment {
         turtle.setVisibility(View.GONE);
         no_data.setVisibility(View.GONE);
 
-        Window window = getActivity().getWindow();
+        Window window = Objects.requireNonNull(getActivity()).getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#FFFFFF"));
         Log.d("barry", "*********************************");

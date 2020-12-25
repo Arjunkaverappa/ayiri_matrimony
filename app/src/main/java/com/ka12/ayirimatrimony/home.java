@@ -107,7 +107,7 @@ public class home extends Fragment {
         list_name.setAdapter(custom);
         no_net.setVisibility(View.GONE);
 
-        Window window = getActivity().getWindow();
+        Window window = Objects.requireNonNull(getActivity()).getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#FFFFFF"));
         Log.d("barry ", "**************************************");
@@ -539,7 +539,7 @@ public class home extends Fragment {
             }).show();
 
              */
-            CustomAlertDialog fake = new CustomAlertDialog(getActivity(), CustomAlertDialog.DialogStyle.CURVE);
+            CustomAlertDialog fake = new CustomAlertDialog(Objects.requireNonNull(getActivity()), CustomAlertDialog.DialogStyle.CURVE);
             fake.setAlertTitle("Disclaimer!");
             fake.setAlertMessage(" There was a problem validating your account, please make sure you have entered the correct deatails.\n" +
                     "\nPlease delete the existing account and create a new one with same number.");

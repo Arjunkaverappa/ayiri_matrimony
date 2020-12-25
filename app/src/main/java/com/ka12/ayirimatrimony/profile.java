@@ -92,7 +92,7 @@ public class profile extends Fragment {
         loading=v.findViewById(R.id.loading);
         faq=v.findViewById(R.id.faq);
 
-        Window window = getActivity().getWindow();
+        Window window = Objects.requireNonNull(getActivity()).getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#ED8A6B"));
 
@@ -206,7 +206,7 @@ public class profile extends Fragment {
             public void onClick(View view) {
                 Intent ins=new Intent(getActivity(),com.ka12.ayirimatrimony.FAQ.class);
                 startActivity(ins);
-                Animatoo.animateSwipeRight(getContext());
+                Animatoo.animateSwipeRight(Objects.requireNonNull(getContext()));
             }
         });
         change_log.setOnClickListener(new View.OnClickListener() {
@@ -228,7 +228,7 @@ public class profile extends Fragment {
             @Override
             public void onClick(View view)
             {
-                CustomAlertDialog customAlertDialog=new CustomAlertDialog(getActivity(),CustomAlertDialog.DialogStyle.CURVE);
+                CustomAlertDialog customAlertDialog=new CustomAlertDialog(Objects.requireNonNull(getActivity()),CustomAlertDialog.DialogStyle.CURVE);
                 customAlertDialog.setAlertTitle("Disclaimer");
                 customAlertDialog.setAlertMessage("Do you want to logout from this device?");
                 customAlertDialog.setDialogType(CustomAlertDialog.DialogType.INFO);
@@ -248,7 +248,7 @@ public class profile extends Fragment {
                        customAlertDialog.cancel();
                     }
                 });
-                customAlertDialog.create();;
+                customAlertDialog.create();
                 customAlertDialog.show();
                 /*
                 AlertDialog.Builder logout=new AlertDialog.Builder(getContext(),R.style.alert_custom);
@@ -276,7 +276,7 @@ public class profile extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CustomAlertDialog customAlertDialog=new CustomAlertDialog(getActivity(),CustomAlertDialog.DialogStyle.CURVE);
+                CustomAlertDialog customAlertDialog=new CustomAlertDialog(Objects.requireNonNull(getActivity()),CustomAlertDialog.DialogStyle.CURVE);
                 customAlertDialog.setAlertTitle("Disclaimer");
                 customAlertDialog.setAlertMessage("Do you want to delete your account?\nThis cannot be undone.");
                 customAlertDialog.setDialogType(CustomAlertDialog.DialogType.INFO);
@@ -292,7 +292,7 @@ public class profile extends Fragment {
                         customAlertDialog.cancel();
                     }
                 });
-                customAlertDialog.create();;
+                customAlertDialog.create();
                 customAlertDialog.show();
             }
         });
@@ -368,13 +368,15 @@ public class profile extends Fragment {
                     Log.d("datas ", "fetched :" + data);
 
                     all_update_data = data;
-                    String[] split_data = data.split("\\#");
-                    set_up_strings(split_data[0], split_data[1], split_data[2]);
+                    if(data!=null) {
+                        String[] split_data = data.split("\\#");
+                        set_up_strings(split_data[0], split_data[1], split_data[2]);
 
-                    String get_desc = "Bio \n" + split_data[9];
-                    SpannableString s4 = new SpannableString(get_desc);
-                    s4.setSpan(new RelativeSizeSpan(0.7f), 0, 4, 0);
-                    desc.setText(s4);
+                        String get_desc = "Bio \n" + split_data[9];
+                        SpannableString s4 = new SpannableString(get_desc);
+                        s4.setSpan(new RelativeSizeSpan(0.7f), 0, 4, 0);
+                        desc.setText(s4);
+                    }
                 }
                 count++;
             }
@@ -409,19 +411,19 @@ public class profile extends Fragment {
         }
         switch (text) {
             case "name":
-                SharedPreferences.Editor edit_name = getActivity().getSharedPreferences(NAME, MODE_PRIVATE).edit();
+                SharedPreferences.Editor edit_name = Objects.requireNonNull(getActivity()).getSharedPreferences(NAME, MODE_PRIVATE).edit();
                 edit_name.putString("name", new_value).apply();
                 update_conversion = new_value + "#" + split_update[1] + "#" + split_update[2] + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + split_update[9];
                 break;
             case "family":
-                SharedPreferences.Editor edit_fam = getActivity().getSharedPreferences(FAMILY, MODE_PRIVATE).edit();
+                SharedPreferences.Editor edit_fam = Objects.requireNonNull(getActivity()).getSharedPreferences(FAMILY, MODE_PRIVATE).edit();
                 edit_fam.putString("family", new_value).apply();
                 update_conversion = split_update[0] + "#" + new_value + "#" + split_update[2] + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + split_update[9];
                 break;
             case "age":
-                SharedPreferences.Editor edit_age = getActivity().getSharedPreferences(AGE, MODE_PRIVATE).edit();
+                SharedPreferences.Editor edit_age = Objects.requireNonNull(getActivity()).getSharedPreferences(AGE, MODE_PRIVATE).edit();
                 edit_age.putString("age", new_value).apply();
                 update_conversion = split_update[0] + "#" + split_update[1] + "#" + new_value + "#" + split_update[3] + "#"
                         + split_update[4] + "#" + split_update[5] + "#" + split_update[6] + "#" + split_update[7] + "#" + split_update[8] + "#" + split_update[9];

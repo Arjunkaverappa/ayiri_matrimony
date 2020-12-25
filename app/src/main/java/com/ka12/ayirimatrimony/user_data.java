@@ -86,7 +86,7 @@ public class user_data extends AppCompatActivity {
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
     public static final String IS_OLD = "com.ka12.ayiri_matrimony_checking_for_previous_entries";
-    String TAG = "LOG ";
+    final String TAG = "LOG ";
     //database needs
     public static final String PHONE = "com.ka12.ayiri_matrimony_phone_number_is_saved_here";
     String user_num,u_height,u_qua,u_work,u_place;
@@ -272,8 +272,6 @@ public class user_data extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 YoYo.with(Techniques.Tada).duration(1000).repeat(0).playOn(female);
-            //    SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
-            //    edit.putString("gender", "female").apply();
                 gender = "female";
                 is_gender_clicked = true;
                 female.setBackgroundColor(Color.parseColor("#ED8A6B"));
@@ -308,7 +306,7 @@ public class user_data extends AppCompatActivity {
             }
         });
 
-        //initialising one signal
+        //initialising one signal for notifications
         Log.d("onesignal", "initialising one signal with context");
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
         OneSignal.initWithContext(this);
@@ -347,8 +345,6 @@ public class user_data extends AppCompatActivity {
                                 push_into_database_final(uri.toString());
 
                             } else {
-                                //pushing the values into firebase
-                                // push_into_database_final(uri.toString());
                                 //getting the download link
                                 download_link = uri.toString();
                                 Log.d("download ", "sending " + download_link);
@@ -376,8 +372,13 @@ public class user_data extends AppCompatActivity {
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onFailure(@NonNull Exception e)
+                {
+                    Log.d("error :","Error while uploading the photo :"+e.getMessage());
+                    AlertDialog.Builder alert=new AlertDialog.Builder(user_data.this,R.style.alert_custom);
+                    alert.setTitle("Error");
+                    alert.setMessage(e.getMessage());
+                    alert.show();
                 }
             });
         } else {
