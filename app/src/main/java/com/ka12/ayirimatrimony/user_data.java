@@ -55,6 +55,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.iceteck.silicompressorr.SiliCompressor;
+import com.onesignal.OSDeviceState;
+import com.onesignal.OneSignal;
 
 import java.io.File;
 import java.util.Objects;
@@ -90,13 +92,14 @@ public class user_data extends AppCompatActivity {
     String user_num,u_height,u_qua,u_work,u_place;
     //the following are for uploading the image
     Uri image_url;
-    String download_link, download_link_proof;
+    public static final String ONESIGNAL_APP_ID = "4359ad23-f128-46aa-aba3-caebf6058549";
     public StorageReference storageReference;
     public static final int PICK_IMAGE_REQUEST = 1;
     Boolean is_connected;
     TextView welcome, long_text;
     Boolean is_uploaded_proof = false;
     Spinner work1, height, edu;
+    String download_link, download_link_proof,player_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +147,7 @@ public class user_data extends AppCompatActivity {
                 "BBA", "BFM", "BHM", "BHA", "MBA", "MFM", "MHRM", "PGDM", "MHA", "B.A.M.S", "BDS", "BHMS", "BSMS",
                 "B.pharm", "BPT", "BUMS", "MBBS", "Bsc nursing", "MDs", "MD/MS", "M.pharm", "MPT", "MVSc", "BGL", "BL", "LLB",
                 "LLM", "ML", "CA", "CFA", "ICWA", "IAS", "IES", "IFS", "IRS", "IPS", "Phd", "Diploma", "Polytechnic",};
-        String[] getwork = {"select", "Government", "Private", "Defence", "Business", "Self employed", "Not working"};
+        String[] getwork = {"select", "Government", "Private", "Defence", "Business", "Self employed", "Not working","PUC","10th"};
         String[] geth ={"select","4¼ ft","4½ ft","4¾ ft","5 ft","5¼ ft","5½ ft","5¾ ft","6 ft","6¼ ft","6½ ft","6¾ ft","7 ft"};
 
 
@@ -198,8 +201,6 @@ public class user_data extends AppCompatActivity {
                 Log.d("getting",get_edu[0]+" as height");
             }
         });
-
-        check_network();
 
         //TODO:safely remove this section
         //fetching the image link from firebase
@@ -306,6 +307,18 @@ public class user_data extends AppCompatActivity {
                 return false;
             }
         });
+
+        //initialising one signal
+        Log.d("onesignal", "initialising one signal with context");
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+        OneSignal.initWithContext(this);
+        OneSignal.setAppId(ONESIGNAL_APP_ID);
+
+        OSDeviceState device = OneSignal.getDeviceState();
+        if (device != null) {
+            player_id = device.getUserId();
+        }
+        check_network();
     }
 
     private void upload_image(Uri image_url) {

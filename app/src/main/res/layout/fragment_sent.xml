@@ -20,6 +20,29 @@
     <ListView
         android:id="@+id/list_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/turtle"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/turtle"
+        app:lottie_speed="0.6" />
+
+    <TextView
+        android:id="@+id/no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/archivo_black"
+        android:gravity="center"
+        android:text="@string/you_havent_sent_request_to_anyone"
+        android:textColor="#959494"
+        android:textSize="16sp" />
 
 </RelativeLayout>

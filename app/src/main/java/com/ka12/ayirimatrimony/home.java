@@ -43,6 +43,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.onesignal.OSDeviceState;
 import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
+import com.yeyint.customalertdialog.CustomAlertDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,12 +88,13 @@ public class home extends Fragment {
     public static final String CUR_USER_DATA = "com.ka12.ayiri_this_is_where_current_user_data_is_aved";
     public ArrayList<String> valid = new ArrayList<>();
     public ArrayList<String> notification_token = new ArrayList<>();
-    Boolean is_connected,is_changed = false,is_request_already_sent = false,is_network_checked=false;
+    Boolean is_connected, is_changed = false, is_request_already_sent = false, is_network_checked = false;
     String[] separated, spli;
-    String all_request,push_data,data, push_send,temp_for_request,user_gender;
-    String user_key,search_gender,current_user_received,last_seen_data,player_id = "";
-    int count = 0,final_length,s_count = 0,no_of_child = 0, current_count = 0,last_seen_count = 0;
-    Handler handler=new Handler();
+    String all_request, push_data, data, push_send, temp_for_request, user_gender;
+    String user_key, search_gender, current_user_received, last_seen_data, player_id = "";
+    int count = 0, final_length, s_count = 0, no_of_child = 0, current_count = 0, last_seen_count = 0;
+    Handler handler = new Handler();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,7 +103,7 @@ public class home extends Fragment {
         list_name = v.findViewById(R.id.list_name);
         main_layout = v.findViewById(R.id.main_layout);
         loading = v.findViewById(R.id.loading);
-        no_net=v.findViewById(R.id.no_net);
+        no_net = v.findViewById(R.id.no_net);
         list_name.setAdapter(custom);
         no_net.setVisibility(View.GONE);
 
@@ -109,7 +111,7 @@ public class home extends Fragment {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#FFFFFF"));
         Log.d("barry ", "**************************************");
-        Log.d("barry","initiated home sequence ");
+        Log.d("barry", "initiated home sequence ");
         try {
             //retreiving users gender
             SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
@@ -125,7 +127,7 @@ public class home extends Fragment {
             //retreiving user key
             SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
             user_key = ediss.getString("key", "999999999");
-            Log.d("start","key :"+user_key);
+            Log.d("start", "key :" + user_key);
 
             //@refreshing and @updating is called inside check_network()
 
@@ -139,12 +141,12 @@ public class home extends Fragment {
             pass_current_users_received_requests();
             refresh_data_final();
             update_lastseen_data();
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in onCreateView :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in onCreateView :" + e.getMessage());
         }
         return v;
     }
+
     public void check_network() {
         try {
             handler.postDelayed(new Runnable() {
@@ -164,13 +166,12 @@ public class home extends Fragment {
                         loading.setVisibility(View.GONE);
                         check_network();
                     }
-                    is_network_checked=true;
+                    is_network_checked = true;
                 }
             }, 3000);
 
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in check_network :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in check_network :" + e.getMessage());
         }
     }
 
@@ -186,8 +187,7 @@ public class home extends Fragment {
         custom.notifyDataSetChanged();
     }
 
-    private void refresh_data_final()
-    {
+    private void refresh_data_final() {
         try {
             count = 0;
             names.clear();
@@ -196,7 +196,7 @@ public class home extends Fragment {
             keys.clear();
             gender.clear();
             links.clear();
-            Log.d("barry","initiated refresh_data_final in home ");
+            Log.d("barry", "initiated refresh_data_final in home ");
 
             reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
             reference.addChildEventListener(new ChildEventListener() {
@@ -205,7 +205,6 @@ public class home extends Fragment {
                     count = 0;
                     Log.d("delta ", "triggered on child added");
                     loading.setVisibility(View.GONE);
-                    keys.add(snapshot.getKey());
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String data = ds.getValue(String.class);
                         if (count == 0) {
@@ -231,10 +230,10 @@ public class home extends Fragment {
                                 Log.d("split", "data :" + data);
                                 String[] split_last = data.split("\\:");
                                 //only adding if the account is valid
-                                if (split_last[1].equals("yes"))
-                                {
+                                if (split_last[1].equals("yes")) {
                                     Log.d("split", "   Added :" + split_last[1]);
                                     seen.add(split_last[0]);
+                                    keys.add(snapshot.getKey());
                                     valid.add(split_last[1]);
                                     notification_token.add(split_last[2]);
                                     names.add(separated[0]);
@@ -245,20 +244,16 @@ public class home extends Fragment {
                                     height.add(separated[6]);
                                     description.add(separated[9]);
                                     //we have problems with the logic
-                                    for (int e = 0; e < spli.length; e++)
-                                    {
+                                    for (int e = 0; e < spli.length; e++) {
                                         Log.d("fele ", "1) comparing " + user_key + " with " + spli[e]);
-                                        if (user_key.equals(spli[e]))
-                                        {
+                                        if (user_key.equals(spli[e])) {
                                             is_request_already_sent = true;
                                         }
                                     }
-                                    if (is_request_already_sent)
-                                    {
+                                    if (is_request_already_sent) {
                                         received_text.add("Requested");
                                         is_request_already_sent = false;
-                                    } else
-                                        {
+                                    } else {
                                         received_text.add("Send Request");
                                     }
                                 }
@@ -307,20 +302,16 @@ public class home extends Fragment {
                     custom.notifyDataSetChanged();
                 }
             });
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in update_data_final :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in update_data_final :" + e.getMessage());
         }
     }
 
-    public void send_request_finally_ultra(String data, String gender, String key, int notifi_index)
-    {
+    public void send_request_finally_ultra(String data, String gender, String key, int notifi_index) {
         try {
             is_changed = true;
             Log.d("send", "Entered send request finally ultra");
-            //key is the receiver key
-            //tempo is passed as data
-
+            //key is the receiver key and tempo is passed as data
             //retrieving the user key
             SharedPreferences ediss = Objects.requireNonNull(getActivity()).getSharedPreferences(KEY, MODE_PRIVATE);
             String user_key = ediss.getString("key", "999999999");
@@ -348,14 +339,12 @@ public class home extends Fragment {
             temp_for_request = "";
             is_changed = false;
             s_count = 0;
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in send_request_finally_ultra:"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in send_request_finally_ultra:" + e.getMessage());
         }
     }
 
-    public void send_request_pro(String key, String gender, int notify_index)
-    {
+    public void send_request_pro(String key, String gender, int notify_index) {
         try {
             Log.d("send ", "sender key   :" + user_key);
             Log.d("send ", "receiver key :" + key);
@@ -402,14 +391,12 @@ public class home extends Fragment {
                     }
                 });
             }
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in send_request_pro :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in send_request_pro :" + e.getMessage());
         }
     }
 
-    public void update_lastseen_data()
-    {
+    public void update_lastseen_data() {
         try {
             Log.d("seen_data", "initiated");
             firebaseDatabase = FirebaseDatabase.getInstance();
@@ -418,8 +405,7 @@ public class home extends Fragment {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     last_seen_count++;
-                    if (last_seen_count == 3)
-                    {
+                    if (last_seen_count == 3) {
                         last_seen_data = snapshot.getValue(String.class);
                         Log.d("seen", "data " + last_seen_data);
                         update_last_seen(last_seen_data);
@@ -446,14 +432,12 @@ public class home extends Fragment {
 
                 }
             });
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in update_last_seen_data :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in update_last_seen_data :" + e.getMessage());
         }
     }
 
-    public void update_last_seen(String data)
-    {
+    public void update_last_seen(String data) {
         try {
             //retreiving the user id for notifications
             OSDeviceState device = OneSignal.getDeviceState();
@@ -480,31 +464,17 @@ public class home extends Fragment {
                     }
                 });
             }
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in update_last_seen :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in update_last_seen :" + e.getMessage());
         }
     }
 
-    public void pass_current_users_received_requests()
-    {
+    public void pass_current_users_received_requests() {
         try {
             reference = FirebaseDatabase.getInstance().getReference().child(user_gender);
             reference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                /*
-                current_count++;
-                if(current_count==3)
-                {
-                    String snap=snapshot.getValue(String.class);
-                    current_user_received=snap;
-                    SharedPreferences.Editor putsnap=getActivity().getSharedPreferences(CUR_USER_DATA,MODE_PRIVATE).edit();
-                    putsnap.putString("data",snap).apply();
-                    Log.d("receivedz","current_data ="+snap);
-                    current_count=0;
-                }
-                 */
                     //alternate method to get the desired values,use if the current method is not working
                     count = 0;
                     for (DataSnapshot ds : snapshot.getChildren()) {
@@ -542,17 +512,16 @@ public class home extends Fragment {
 
                 }
             });
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in update_current_users_received_requests : "+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in update_current_users_received_requests : " + e.getMessage());
         }
     }
 
-    public void initiate_fake_user_protocol()
-    {
+    public void initiate_fake_user_protocol() {
         try {
-            Context context;
+            /*
             AlertDialog.Builder fakeAlert = new AlertDialog.Builder(getActivity(), R.style.alert_custom);
+
             fakeAlert.setTitle("Disclaimer!");
             fakeAlert.setMessage(R.string.fake_alert);
             fakeAlert.setCancelable(false);
@@ -568,14 +537,35 @@ public class home extends Fragment {
                     System.exit(0);
                 }
             }).show();
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in fake_user_protocol :"+e.getMessage());
+
+             */
+            CustomAlertDialog fake = new CustomAlertDialog(getActivity(), CustomAlertDialog.DialogStyle.CURVE);
+            fake.setAlertTitle("Disclaimer!");
+            fake.setAlertMessage(" There was a problem validating your account, please make sure you have entered the correct deatails.\n" +
+                    "\nPlease delete the existing account and create a new one with same number.");
+            fake.setDialogType(CustomAlertDialog.DialogType.ERROR);
+            fake.setPositiveButton("Delete", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), "coming soon", Toast.LENGTH_SHORT).show();
+                }
+            });
+            fake.setNegativeButton("Exit ", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    System.exit(0);
+                }
+            });
+            fake.setCancelable(false);
+
+            fake.create();
+            fake.show();
+        } catch (Exception e) {
+            Log.d("error ", "catch in fake_user_protocol :" + e.getMessage());
         }
     }
 
-    public void send_notification(int index)
-    {
+    public void send_notification(int index) {
         try {
             String user_id = notification_token.get(index);
             String sender_name = names.get(index);
@@ -597,14 +587,12 @@ public class home extends Fragment {
                 Log.d("json", "Error :" + e.getMessage());
                 e.printStackTrace();
             }
-        }catch (Exception e)
-        {
-            Log.d("error ","catch in send_notifications :"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("error ", "catch in send_notifications :" + e.getMessage());
         }
     }
 
-    class custom_adapter extends BaseAdapter
-    {
+    class custom_adapter extends BaseAdapter {
         @Override
         public int getCount() {
             Log.d("try ", "inside get count :" + names.size());
@@ -630,18 +618,18 @@ public class home extends Fragment {
             }
             try {
                 Log.d("try", "************************************");
-                Log.d("barry","initiated adapterr for home ");
+                Log.d("barry", "initiated adapterr for home ");
 
                 ImageView img = view.findViewById(R.id.pic);
                 TextView name = view.findViewById(R.id.name);
                 Button request = view.findViewById(R.id.request);
                 TextView last = view.findViewById(R.id.last);
                 TextView desc = view.findViewById(R.id.desc);
-                CardView main_card=view.findViewById(R.id.main_card);
-                Animation list_anim=AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
+                CardView main_card = view.findViewById(R.id.main_card);
+                Animation list_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
                 main_card.startAnimation(list_anim);
 
-                name.setText("Name  :" + names.get(i) + "\nFamily :" + family.get(i) + "\nAge      :" + age.get(i));
+                name.setText("Name  : " + names.get(i) + "\nFamily : " + family.get(i) + "\nAge      : " + age.get(i));
                 last.setText("Last seen :" + seen.get(i));
                 desc.setText(description.get(i));
                 Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
@@ -649,8 +637,7 @@ public class home extends Fragment {
                 Log.d("try ", "names :" + names.get(i));
                 Log.d("try ", "link :" + links.get(i));
                 request.setText(received_text.get(i));
-                if (received_text.get(i).equals("Requested"))
-                {
+                if (received_text.get(i).equals("Requested")) {
                     request.setVisibility(View.GONE);
                 }
 
@@ -677,7 +664,7 @@ public class home extends Fragment {
                                 }
                             }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                                public void onClick(DialogInterface dialogInterface, int in) {
 
                                 }
                             });
@@ -685,9 +672,8 @@ public class home extends Fragment {
                         }
                     }
                 });
-            }catch (Exception e)
-            {
-                Log.d("error ","catch in custom_adapter :"+e.getMessage());
+            } catch (Exception e) {
+                Log.d("error ", "catch in custom_adapter :" + e.getMessage());
             }
             return view;
         }

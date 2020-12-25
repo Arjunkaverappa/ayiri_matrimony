@@ -53,18 +53,15 @@ public class Login extends AppCompatActivity {
     PinView otp;
     Button submit, submit_otp;
     TextView note;
-    //otp send by the server
-    String received_otp_from_server;
-    Boolean is_connected;
+    public static final String LOGIN="com.ka12.ayiri_matrimony_login_details";
     //trying countdown timer
     CountDownTimer countDownTimer;
     long time_left_in_mili=61000;
-    //login details
-    public static final String LOGIN="com.ka12.ayiri_matrimony_login_details";
     //database entries
     DatabaseReference reference;
-    String data_m="",data_f="";
     int count_m=0,count_f=0;
+    //otp send by the server
+    String received_otp_from_server,data_m="",data_f="";
     public static final String PHONE="com.ka12.ayiri_matrimony_phone_number_is_saved_here";
     public static final String IS_OLD="com.ka12.ayiri_matrimony_checking_for_previous_entries";
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
@@ -73,11 +70,12 @@ public class Login extends AppCompatActivity {
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     public static final String FAMILY = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
     public static final String AGE = "com.ka12.ayiri_matrimony_this_is_where_family_is_stored";
-    Boolean old_data_obtained=false;
+    Boolean old_data_obtained=false,is_connected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d("zoom","started activity ");
         try {
             sub_card = findViewById(R.id.sub_card);
             otp_card = findViewById(R.id.otp_card);
@@ -86,14 +84,16 @@ public class Login extends AppCompatActivity {
             submit = findViewById(R.id.submit);
             submit_otp = findViewById(R.id.get_otp);
             note = findViewById(R.id.note);
+            Log.d("zoom","initialization done right");
             //hiding the action bar
             try {
                 ActionBar act = getSupportActionBar();
                 assert act != null;
                 act.hide();
+                Log.d("zoom","action bar hidden");
             }catch (Exception e)
             {
-                Log.d("errorz","error in act.hide :"+e.getMessage());
+                Log.d("zoom","error in act.hide :"+e.getMessage());
                 e.printStackTrace();
             }
             //changing status bar color
@@ -101,15 +101,18 @@ public class Login extends AppCompatActivity {
                 Window window = getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.setStatusBarColor(Color.parseColor("#A374ED"));
+                Log.d("zoom","changed status bar color ");
             } catch (Exception e) {
-                Log.d("errorz", "error in get window :" + e.getMessage());
+                Log.d("zoom", "error in get window :" + e.getMessage());
                 e.printStackTrace();
             }
             //hiding the otp card
             otp_card.setVisibility(View.GONE);
+            Log.d("zoom","otp card hidden ");
             //resetting is_old preferences
             SharedPreferences.Editor getstatus = getSharedPreferences(IS_OLD, MODE_PRIVATE).edit();
             getstatus.putBoolean("isold", false).apply();
+
             //setting up onclick listeneres
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,9 +165,10 @@ public class Login extends AppCompatActivity {
                 }
             });
             check_network();
+            Log.d("zoom","network checked successfully");
         }catch (Exception e)
         {
-            Log.d("errorz","error in onCreate :"+e.getMessage());
+            Log.d("zoom","error in onCreate :"+e.getMessage());
             e.printStackTrace();
         }
     }
@@ -245,6 +249,7 @@ public class Login extends AppCompatActivity {
     public void check_network()
     {
         try {
+            Log.d("zoom","checking network");
             new Handler().postDelayed(new Runnable() {
                 @SuppressLint("SetTextI18n")
                 @Override
@@ -260,10 +265,10 @@ public class Login extends AppCompatActivity {
                         note.setTextColor(Color.RED);
                         note.setText("Please connect to internet");
                         is_connected = false;
+                        check_network();
                     }
-                    check_network();
                 }
-            }, 3000);
+            }, 3500);
         }catch (Exception e)
         {
             Log.d("errorz","error in check network :"+e.getMessage());

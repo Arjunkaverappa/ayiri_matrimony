@@ -51,7 +51,8 @@ public class sent extends Fragment
     ListView list_name;
     custom_adapter custom=new custom_adapter();
     int no_of_children,n,sizz,total_count,count,asd,temp_e,temp;
-    LottieAnimationView loading;
+    LottieAnimationView loading,turtle;
+    TextView no_data;
     ListView list_names;
     String current_user_received,key,user_gender,user_name,search_gender,accept_data;
     String[] separated;
@@ -62,6 +63,11 @@ public class sent extends Fragment
         View v= inflater.inflate(R.layout.fragment_sent, container, false);
         list_names=v.findViewById(R.id.list_name);
         loading=v.findViewById(R.id.loading);
+        turtle=v.findViewById(R.id.turtle);
+        no_data=v.findViewById(R.id.no_data);
+
+        turtle.setVisibility(View.GONE);
+        no_data.setVisibility(View.GONE);
 
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -204,6 +210,11 @@ public class sent extends Fragment
         @Override
         public int getCount() {
             Log.d("loop ", "size " + names.size());
+            if(names.size()==0)
+            {
+                turtle.setVisibility(View.VISIBLE);
+                no_data.setVisibility(View.VISIBLE);
+            }
             return names.size();
         }
 
@@ -232,6 +243,11 @@ public class sent extends Fragment
               //  CardView main_card=view.findViewById(R.id.main_card);
               //  Animation list_anim= AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
               //  main_card.startAnimation(list_anim);
+                if(names.size()!=0)
+                {
+                    turtle.setVisibility(View.GONE);
+                    no_data.setVisibility(View.GONE);
+                }
                 Log.d("loop ", "**************************************************");
                 Log.d("loop ", "the value of n before entering =" + n);
 

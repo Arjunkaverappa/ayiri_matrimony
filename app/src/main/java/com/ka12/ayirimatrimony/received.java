@@ -80,7 +80,8 @@ public class received extends Fragment {
     //database references
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
-    LottieAnimationView loading;
+    LottieAnimationView loading,turtle;
+    TextView no_data;
     //the following are for 'received' list
     ListView requests_list;
     //the following are for 'sent' list
@@ -98,6 +99,11 @@ public class received extends Fragment {
         View v = inflater.inflate(R.layout.fragment_received, container, false);
         requests_list = v.findViewById(R.id.requests);
         loading = v.findViewById(R.id.loading);
+        turtle=v.findViewById(R.id.turtle);
+        no_data=v.findViewById(R.id.no_data);
+
+        turtle.setVisibility(View.GONE);
+        no_data.setVisibility(View.GONE);
 
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -391,6 +397,11 @@ public class received extends Fragment {
 
         @Override
         public int getCount() {
+            if(names.size()==0)
+            {
+                turtle.setVisibility(View.VISIBLE);
+                no_data.setVisibility(View.VISIBLE);
+            }
             return names_req.size();
         }
 
@@ -422,7 +433,11 @@ public class received extends Fragment {
                 // main_card.startAnimation(list_anim);
                 Log.d("flashs ", "**************************************************");
                 Log.d("flashs ", "the value of n before entering =" + n);
-
+                if(names_req.size()!=0)
+                {
+                    turtle.setVisibility(View.GONE);
+                    no_data.setVisibility(View.GONE);
+                }
                 name.setText("Name :" + names_req.get(i) + "\nFamily :" + family_req.get(i) + "\nAge :" + age_req.get(i));
                 Picasso.get().load(links_req.get(i)).fit().centerCrop().into(img);
 

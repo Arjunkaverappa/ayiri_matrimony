@@ -4,6 +4,24 @@
     <string name="warning_text">
                                Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
                                User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
+
+    <string name="faq">
+        <b>Why cant I send request?</b><br>\n
+        <i>All new accounts has to go through varification process to prevent misuse of user data. Users wont be able to send or received
+           requests from other users when their account is pending for varification.Please be patient while we varify your
+           account based on the user details.</i></br>\n\n
+        <br><br><b>Why the colors are distorted?</b><br>\n
+        <i>Some devices override colors when switched to Night/Dark mode. Please make sure to
+            exclude this app from forced dark mode.</i></br></br>\n\n
+        <br><br><b>Im asked delete the account</b></br></br>\n
+        <br><i>It is because your account was invalidated by the admin. It can only mean that the details provided by you was found to be false or
+           inaccurate.</i></br>
+    </br>\n\n
+        <b>Who can see my number?</b>\n
+        <i>Phone numbers are only shared with whome you get matched. No one can access you contact details before getting matched.</i>\n\n
+        <b>What after i find a match?</b>\n
+        <i>Its up to the user to proceed accordingly. The other user will be notified about the match.</i>
+    </string>
     <string name="change_log"><b>Version_0.5_alpha</b>\n
                               <i>23/12/2020</i>\n
                                * Added security measures \n
@@ -74,7 +92,7 @@
     <string name="no_sent">You havent sent any requests to anyone yet</string>
     <string name="no_match">No matches yet</string>
     <string name="step_3">Step 3</string>
-   <string name="continue_">Continue</string>
+    <string name="continue_">Continue</string>
     <string name="please_connect_to_internet">Please connect to internet</string>
     <string name="highest_qualification">Qualification :</string>
     <string name="working_sector">Working sector :</string>
@@ -88,4 +106,8 @@
     <string name="whats_new">Whats new?</string>
     <string name="logout">Logout</string>
     <string name="delete_account">Delete account</string>
+    <string name="faq_s">FAQs</string>
+    <string name="you_havent_sent_request_to_anyone">You havent sent any requests yet</string>
+    <string name="you_havent_received_any_requests">You havent received any requests yet</string>
+    <string name="you_havent_found_any_matches_yet">you havent matched with anyone yet</string>
 </resources>

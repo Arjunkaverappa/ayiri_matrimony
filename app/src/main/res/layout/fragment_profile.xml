@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/grad_test_two">
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/profile_frag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,14 +45,15 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
+            android:fontFamily="@font/archivo_black"
             android:layout_marginEnd="10dp"
+            android:scaleY="1.1"
             android:clickable="true"
             android:focusable="true"
             android:gravity="left|center_vertical"
             android:text="@string/edit_profile"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textSize="22sp"
             tools:ignore="RtlHardcoded" />
 
         <ImageView
@@ -67,13 +69,13 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:clickable="true"
+            android:textStyle="bold"
             android:focusable="true"
             android:gravity="left|top"
             android:lineSpacingExtra="-3dp"
             android:text="@string/name"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:drawableEndCompat="@drawable/edit"
             tools:ignore="RtlHardcoded" />
 
@@ -95,9 +97,9 @@
             android:gravity="left|top"
             android:lineSpacingExtra="-3dp"
             android:text="@string/family_name"
+            android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:drawableEndCompat="@drawable/edit"
             tools:ignore="RtlHardcoded" />
 
@@ -118,11 +120,11 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="left|top"
+            android:textStyle="bold"
             android:lineSpacingExtra="-3dp"
             android:text="@string/age"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:drawableEndCompat="@drawable/edit"
             tools:ignore="RtlHardcoded" />
 
@@ -140,14 +142,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             android:focusable="true"
+            android:textSize="17sp"
             android:gravity="left|top"
             android:lineSpacingExtra="-3dp"
             android:text="@string/bio"
             android:textColor="@color/white"
-            android:textSize="18sp"
             android:textStyle="bold"
             app:drawableEndCompat="@drawable/edit"
             tools:ignore="RtlHardcoded" />
@@ -167,12 +169,38 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:clickable="true"
+            android:fontFamily="@font/archivo_black"
+
+            android:scaleY="1.1"
             android:focusable="true"
             android:gravity="left|center_vertical"
             android:text="@string/whats_new"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textSize="22sp"
+            tools:ignore="RtlHardcoded" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#7A7878"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/faq"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:focusable="true"
+
+            android:fontFamily="@font/archivo_black"
+            android:gravity="left|center_vertical"
+            android:scaleY="1.1"
+            android:text="@string/faq_s"
+            android:textColor="@color/white"
+            android:textSize="22sp"
             tools:ignore="RtlHardcoded" />
 
 
@@ -190,11 +218,12 @@
             android:layout_marginEnd="10dp"
             android:clickable="true"
             android:focusable="true"
+            android:fontFamily="@font/archivo_black"
             android:gravity="left|center_vertical"
             android:text="@string/logout"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:scaleY="1.1"
+            android:textSize="22sp"
             tools:ignore="RtlHardcoded" />
 
 
@@ -211,12 +240,14 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:clickable="true"
+            android:fontFamily="@font/archivo_black"
+
             android:focusable="true"
+            android:scaleY="1.1"
             android:gravity="left|center_vertical"
             android:text="@string/delete_account"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textSize="22sp"
             tools:ignore="RtlHardcoded" />
 
 

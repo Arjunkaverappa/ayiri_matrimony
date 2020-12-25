@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,9 +43,9 @@ import static android.content.Context.MODE_PRIVATE;
   please go through the methods below upon encountering bugs in future
  */
 public class match extends Fragment {
-    LottieAnimationView loading;
-    LinearLayout mat, rec, sen;
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
+    //defining the master array list
+    public ArrayList<String> m_names = new ArrayList<>();
     public ArrayList<String> m_family = new ArrayList<>();
     public ArrayList<Integer> m_age = new ArrayList<>();
     public ArrayList<String> m_gender = new ArrayList<>();
@@ -58,8 +57,6 @@ public class match extends Fragment {
     public ArrayList<String> m_description = new ArrayList<>();
     public ArrayList<String> m_qua = new ArrayList<>();
     public ArrayList<String> m_work = new ArrayList<>();
-    //defining the master array list
-    public ArrayList<String> m_names = new ArrayList<>();
     //the following are for 'sent' list
     ListView list_name;
     public ArrayList<String> names = new ArrayList<>();
@@ -102,36 +99,19 @@ public class match extends Fragment {
     //database references
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
+    LottieAnimationView loading, turtle;
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
     public static final String CHILD = "com.ka12.ayiri_matrimony_number_of_child_nodes";
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     public static final String CUR_USER_DATA = "com.ka12.ayiri_this_is_where_current_user_data_is_aved";
     public ArrayList<String> noti_req = new ArrayList<>();
-    //  TextView nomat,noreq,nosen;
-    //initializing all the adapters here
-    //  custom_adapter custom = new custom_adapter();
-    //  custom_adapter_for_requests custom_req = new custom_adapter_for_requests();
+    //adapter
     custom_adapter_for_list_match custom_match = new custom_adapter_for_list_match();
-    String key;
-    int no_of_children;
-    //testing
-    int n;
+    String key, user_gender, accept_data, user_name, search_gender, current_user_received;
+    int no_of_children, sizz, total_count = 0, n, count = 0, asd = 0, temp_e = 0, temp = 0, get_i = 0, get_j = 0;
     Boolean is_checked = false;
-    int sizz;
-    int total_count = 0;
-    int count = 0;
-    int asd = 0;
-    int temp_e = 0;
-    //testing
-    int temp = 0;
-    String user_gender;
     String[] separated;
-    String accept_data;
-    String user_name;
-    //used in match list
-    int get_i = 0, get_j = 0;
-    String search_gender;
-    String current_user_received;
+    TextView no_data;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,6 +122,12 @@ public class match extends Fragment {
         list_match = v.findViewById(R.id.list_match);
         //  requests_list = v.findViewById(R.id.requests);
         loading = v.findViewById(R.id.loading);
+
+        turtle = v.findViewById(R.id.turtle);
+        no_data = v.findViewById(R.id.no_data);
+
+        turtle.setVisibility(View.GONE);
+        no_data.setVisibility(View.GONE);
 
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -172,20 +158,9 @@ public class match extends Fragment {
             //retreiving user name
             SharedPreferences getname = getActivity().getSharedPreferences(NAME, MODE_PRIVATE);
             user_name = getname.getString("name", "manan");
-         /*
-        //hinding the requests list initialy
-        requests_list.setVisibility(View.GONE);
-        list_name.setVisibility(View.GONE);
-
-         */
 
             //fetching data
             refresh_data_final();
-        /*
-        list_name.setAdapter(custom);
-        requests_list.setAdapter(custom_req);
-
-         */
 
             list_match.setAdapter(custom_match);
         } catch (Exception e) {
@@ -233,49 +208,6 @@ public class match extends Fragment {
         custom_match.notifyDataSetChanged();
         Log.d("beta ", "clear list initiated");
     }
-   /*
-    public void accept_request(String data, String sender_gender, String sender_key, int i) {
-        Log.d("send ", "*************************************");
-        Log.d("send ", "data :" + data + "\nsender gender=" + sender_gender + "\nsender_key=" + sender_key);
-        //key is the user_key
-        //i is the sender position from the requested sender account
-        accept_data = key + ":" + data;
-        Log.d("send ", "accept data final" + accept_data);
-        //updating received node in sender account
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        reference = firebaseDatabase.getReference().child(sender_gender).child(sender_key).child("received");
-        reference.setValue(accept_data).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-                //sending notification
-                send_notification(i);
-
-                accept_data = "";
-                custom_match.notifyDataSetChanged();
-                //adding it to the matched list
-                names_match.add(names_req.get(i));
-                family_match.add(family_req.get(i));
-                links_match.add(links_req.get(i));
-                gender_match.add(gender_req.get(i));
-                age_match.add(age_req.get(i));
-                custom_match.notifyDataSetChanged();
-
-                //removing it from the requests list
-                names_req.remove(i);
-                family_req.remove(i);
-                links_req.remove(i);
-                gender_req.remove(i);
-                age_req.remove(i);
-             //   custom_req.notifyDataSetChanged();
-
-                Toast.makeText(getActivity(), "Request accepted!", Toast.LENGTH_SHORT).show();
-                Log.d("send ", "pushed successfully");
-            }
-        });
-    }
-
-    */
 
     private void refresh_data_final() {
         try {
@@ -425,8 +357,7 @@ public class match extends Fragment {
                         Log.d("beta", "asd reset");
                     }
                     count++;
-                    //   custom.notifyDataSetChanged();
-                    //   custom_req.notifyDataSetChanged();
+
                     custom_match.notifyDataSetChanged();
                     Log.d("beta", "*****************************************************");
                 }
@@ -434,33 +365,25 @@ public class match extends Fragment {
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     Log.d("beta", "went inside on child changed!!! " + previousChildName);
-                    //   custom.notifyDataSetChanged();
                     custom_match.notifyDataSetChanged();
-                    //   custom_req.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                     Log.d("beta", "went inside on child removed");
-                    //   custom.notifyDataSetChanged();
                     custom_match.notifyDataSetChanged();
-                    //   custom_req.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     Log.d("beta", "went inside onChildMoved");
-                    //  custom.notifyDataSetChanged();
                     custom_match.notifyDataSetChanged();
-                    //  custom_req.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.d("beta", "went inside onCancelled");
-                    //  custom.notifyDataSetChanged();
                     custom_match.notifyDataSetChanged();
-                    //  custom_req.notifyDataSetChanged();
                 }
             });
         } catch (Exception e) {
@@ -473,6 +396,10 @@ public class match extends Fragment {
         @Override
         public int getCount() {
             Log.d("loop ", "size " + names.size());
+            if (names_match.size() == 0) {
+                turtle.setVisibility(View.VISIBLE);
+                no_data.setVisibility(View.VISIBLE);
+            }
             return names_match.size();
         }
 
@@ -503,19 +430,21 @@ public class match extends Fragment {
                 //  main_card.startAnimation(list_anim);
                 Log.d("loop ", "**************************************************");
                 Log.d("barry", "initiated adapter for match");
-
+                if (names_match.size() != 0) {
+                    turtle.setVisibility(View.GONE);
+                    no_data.setVisibility(View.GONE);
+                }
                 name.setText("Name :" + names_match.get(i) + "\nFamily :" + family_match.get(i) + "\nAge :" + age_match.get(i));
                 Picasso.get().load(links_match.get(i)).fit().centerCrop().into(img);
 
                 request.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
-                        Log.d("gotit","before :"+names_match.get(i)+" "+family_match.get(i)+" "+age_match.get(i));
+                    public void onClick(View view) {
+                        Log.d("gotit", "before :" + names_match.get(i) + " " + family_match.get(i) + " " + age_match.get(i));
                         Intent ins = new Intent(getActivity(), final_match.class);
                         ins.putExtra("name", names_match.get(i));
                         ins.putExtra("family", family_match.get(i));
-                        ins.putExtra("age",String.valueOf(age_match.get(i)));
+                        ins.putExtra("age", String.valueOf(age_match.get(i)));
                         ins.putExtra("link", links_match.get(i));
                         ins.putExtra("desc", description_match.get(i));
                         ins.putExtra("work", work_match.get(i));

@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+import com.yeyint.customalertdialog.CustomAlertDialog;
 
 import java.util.Objects;
 
@@ -62,11 +63,11 @@ public class profile extends Fragment {
     CircleImageView image;
     LottieAnimationView loading;
     ImageView a, one, two, three;
-    TextView name, age, family, edit, desc, change_log, delete, logout;
+    TextView name, age, family, edit, desc, change_log, delete, logout,faq;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
     String user_key, user_gender, profile_link, u_name, u_fam, u_age, all_update_data, update_conversion;
-    int count = 0;
+    int count = 0,edit_temp=0;
     String[] split_update;
 
     @SuppressLint("SetTextI18n")
@@ -89,6 +90,7 @@ public class profile extends Fragment {
         two = v.findViewById(R.id.two);
         three = v.findViewById(R.id.three);
         loading=v.findViewById(R.id.loading);
+        faq=v.findViewById(R.id.faq);
 
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -149,15 +151,30 @@ public class profile extends Fragment {
         //setting up on click listerners
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                name.setVisibility(View.VISIBLE);
-                age.setVisibility(View.VISIBLE);
-                family.setVisibility(View.VISIBLE);
-                desc.setVisibility(View.VISIBLE);
-                a.setVisibility(View.VISIBLE);
-                one.setVisibility(View.VISIBLE);
-                two.setVisibility(View.VISIBLE);
-                three.setVisibility(View.VISIBLE);
+            public void onClick(View view)
+            {
+                if(edit_temp%2==0) {
+                    name.setVisibility(View.VISIBLE);
+                    age.setVisibility(View.VISIBLE);
+                    family.setVisibility(View.VISIBLE);
+                    desc.setVisibility(View.VISIBLE);
+                    a.setVisibility(View.VISIBLE);
+                    one.setVisibility(View.VISIBLE);
+                    two.setVisibility(View.VISIBLE);
+                    three.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    name.setVisibility(View.GONE);
+                    age.setVisibility(View.GONE);
+                    family.setVisibility(View.GONE);
+                    desc.setVisibility(View.GONE);
+                    a.setVisibility(View.GONE);
+                    one.setVisibility(View.GONE);
+                    two.setVisibility(View.GONE);
+                    three.setVisibility(View.GONE);
+                }
+                edit_temp++;
             }
         });
         name.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +201,14 @@ public class profile extends Fragment {
                 change_fields("bio");
             }
         });
+        faq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ins=new Intent(getActivity(),com.ka12.ayirimatrimony.FAQ.class);
+                startActivity(ins);
+                Animatoo.animateSwipeRight(getContext());
+            }
+        });
         change_log.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,6 +228,29 @@ public class profile extends Fragment {
             @Override
             public void onClick(View view)
             {
+                CustomAlertDialog customAlertDialog=new CustomAlertDialog(getActivity(),CustomAlertDialog.DialogStyle.CURVE);
+                customAlertDialog.setAlertTitle("Disclaimer");
+                customAlertDialog.setAlertMessage("Do you want to logout from this device?");
+                customAlertDialog.setDialogType(CustomAlertDialog.DialogType.INFO);
+                customAlertDialog.setPositiveButton("Yes", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SharedPreferences.Editor setlogout=getActivity().getSharedPreferences(LOGIN,MODE_PRIVATE).edit();
+                        setlogout.putBoolean("login",false).apply();
+                        Intent in=new Intent(getActivity(),com.ka12.ayirimatrimony.Login.class);
+                        startActivity(in);
+                        Animatoo.animateZoom(getActivity());
+                    }
+                });
+                customAlertDialog.setNegativeButton("No", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                       customAlertDialog.cancel();
+                    }
+                });
+                customAlertDialog.create();;
+                customAlertDialog.show();
+                /*
                 AlertDialog.Builder logout=new AlertDialog.Builder(getContext(),R.style.alert_custom);
                 logout.setTitle("Disclaimer");
                 logout.setMessage("Do you want to logout from this devide?");
@@ -221,12 +269,31 @@ public class profile extends Fragment {
 
                     }
                 }).show();
+
+                 */
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
+                CustomAlertDialog customAlertDialog=new CustomAlertDialog(getActivity(),CustomAlertDialog.DialogStyle.CURVE);
+                customAlertDialog.setAlertTitle("Disclaimer");
+                customAlertDialog.setAlertMessage("Do you want to delete your account?\nThis cannot be undone.");
+                customAlertDialog.setDialogType(CustomAlertDialog.DialogType.INFO);
+                customAlertDialog.setPositiveButton("Yes", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                customAlertDialog.setNegativeButton("No", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        customAlertDialog.cancel();
+                    }
+                });
+                customAlertDialog.create();;
+                customAlertDialog.show();
             }
         });
         new Handler().postDelayed(new Runnable() {
@@ -234,7 +301,7 @@ public class profile extends Fragment {
             public void run() {
                 loading.setVisibility(View.GONE);
             }
-        },4000);
+        },2500);
         return v;
     }
 

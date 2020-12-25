@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         main_layout.setVisibility(View.GONE);
         FragmentManager goto_frag = getSupportFragmentManager();
         goto_frag.beginTransaction().add(R.id.change_frag, new home()).commit();
-        // bottom_bar.setVisibility(View.GONE);
 
         bottom_bar.setCurrentActiveItem(2);
         bottom_bar.setNavigationChangeListener(new BubbleNavigationChangeListener() {

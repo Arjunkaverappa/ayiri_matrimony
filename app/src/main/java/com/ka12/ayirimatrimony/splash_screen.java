@@ -54,15 +54,17 @@ public class splash_screen extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    if (is_logged_in) {
-                        Intent in = new Intent(splash_screen.this, com.ka12.ayirimatrimony.MainActivity.class);
-                        startActivity(in);
-                        Animatoo.animateZoom(splash_screen.this);
-                    } else {
-                        Intent in = new Intent(splash_screen.this, com.ka12.ayirimatrimony.Login.class);
-                        startActivity(in);
-                        Animatoo.animateZoom(splash_screen.this);
-                    }
+                    //TODO:check the target intent
+                    Intent in;
+                    if (is_logged_in)
+                    {
+                        in = new Intent(splash_screen.this,com.ka12.ayirimatrimony.MainActivity.class);
+                    } else
+                        {
+                        in = new Intent(splash_screen.this,com.ka12.ayirimatrimony.Login.class);
+                        }
+                    startActivity(in);
+                    Animatoo.animateZoom(splash_screen.this);
                     finish();
                 }catch (Exception e)
                 {

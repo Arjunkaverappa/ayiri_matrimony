@@ -59,7 +59,7 @@
             app:bt_colorActive="@color/black"
             app:bt_colorInactive="@color/white"
             app:bt_icon="@drawable/down"
-            app:bt_title="Requests" />
+            app:bt_title="Received" />
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/home"
