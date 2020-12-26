@@ -23,11 +23,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +64,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class user_data extends AppCompatActivity {
     //permission management
     public static final int uni_code = 1234;
-    TextInputEditText name, age,place;
-    AutoCompleteTextView family;
+    TextInputEditText name, age, place, height;
+    AutoCompleteTextView family, work1, edu;
     public static final String PROOF_DOWNLOAD = "com.ka12.ayiri_matrimony_proof_download_link_is_saved_here";
     Button submit, male, female, upload, conti, sub_proof;
     LottieAnimationView up, loading, p_loading;
@@ -89,7 +87,7 @@ public class user_data extends AppCompatActivity {
     final String TAG = "LOG ";
     //database needs
     public static final String PHONE = "com.ka12.ayiri_matrimony_phone_number_is_saved_here";
-    String user_num,u_height,u_qua,u_work,u_place;
+    String user_num, u_height, u_qua, u_work, u_place;
     //the following are for uploading the image
     Uri image_url;
     public static final String ONESIGNAL_APP_ID = "4359ad23-f128-46aa-aba3-caebf6058549";
@@ -98,8 +96,7 @@ public class user_data extends AppCompatActivity {
     Boolean is_connected;
     TextView welcome, long_text;
     Boolean is_uploaded_proof = false;
-    Spinner work1, height, edu;
-    String download_link, download_link_proof,player_id;
+    String download_link, download_link_proof, player_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,15 +128,15 @@ public class user_data extends AppCompatActivity {
         work1 = findViewById(R.id.work1);
         edu = findViewById(R.id.edu);
         height = findViewById(R.id.height);
-        place=findViewById(R.id.place);
+        place = findViewById(R.id.place);
         //background task
         new do_in_background().execute();
 
-        final String[] get_fam = {"Airira", "Balyakanda", "Mukairira", "Appachanda","Balera","dugganda","Kuttairira","Cheyanerira",
-                "Bolairira", "Kannikanda", "Angira", "Ayyanira","Akkachira","Mullerira","Aimaniyanda","Malera","Aimanda","Mudiyanda",
-                "Ammananda", "Ponnira", "Aleyanda","Anjapanda","Kundairira","Thattanda","Bollanamanda","Ikolanda","Minnimada",
-                "Boppandira", "Athiyanda", "Aginira", "Alathanda","Inamanda","Kameyanda","Pattacharira","Manjanerira","Babbira",
-                "Annalapanda","Melathanda","Aiyanira","Aiparavanda"};
+        final String[] get_fam = {"Airira", "Balyakanda", "Mukairira", "Appachanda", "Balera", "dugganda", "Kuttairira", "Cheyanerira",
+                "Bolairira", "Kannikanda", "Angira", "Ayyanira", "Akkachira", "Mullerira", "Aimaniyanda", "Malera", "Aimanda", "Mudiyanda",
+                "Ammananda", "Ponnira", "Aleyanda", "Anjapanda", "Kundairira", "Thattanda", "Bollanamanda", "Ikolanda", "Minnimada",
+                "Boppandira", "Athiyanda", "Aginira", "Alathanda", "Inamanda", "Kameyanda", "Pattacharira", "Manjanerira", "Babbira",
+                "Annalapanda", "Melathanda", "Aiyanira", "Aiparavanda"};
 
         String[] get_edu = {"select", "Aeronautical engineering", "B.Arch", "Bca", "BE", "B.plan", "Bsc", "B.Tech", "Bs", "Masters in Engineering",
                 "M.arch", "Mca", "ME", "Msc", "Ms", "M.Tech", "PGDCA", "Aviation", "Ba", "Bcom", "BEd",
@@ -147,60 +144,18 @@ public class user_data extends AppCompatActivity {
                 "BBA", "BFM", "BHM", "BHA", "MBA", "MFM", "MHRM", "PGDM", "MHA", "B.A.M.S", "BDS", "BHMS", "BSMS",
                 "B.pharm", "BPT", "BUMS", "MBBS", "Bsc nursing", "MDs", "MD/MS", "M.pharm", "MPT", "MVSc", "BGL", "BL", "LLB",
                 "LLM", "ML", "CA", "CFA", "ICWA", "IAS", "IES", "IFS", "IRS", "IPS", "Phd", "Diploma", "Polytechnic",};
-        String[] getwork = {"select", "Government", "Private", "Defence", "Business", "Self employed", "Not working","PUC","10th"};
-        String[] geth ={"select","4¼ ft","4½ ft","4¾ ft","5 ft","5¼ ft","5½ ft","5¾ ft","6 ft","6¼ ft","6½ ft","6¾ ft","7 ft"};
+        String[] getwork = {"Government", "Private", "Defence", "Business", "Self employed", "Not working", "PUC", "10th"};
 
 
-        ArrayAdapter<String> adapterr = new ArrayAdapter<>(user_data.this, R.layout.support_simple_spinner_dropdown_item, getwork);
-        ArrayAdapter<String> adapterh = new ArrayAdapter<>(user_data.this, R.layout.support_simple_spinner_dropdown_item, geth);
-        ArrayAdapter<String> adapterq = new ArrayAdapter<>(user_data.this, R.layout.support_simple_spinner_dropdown_item, get_edu);
+        ArrayAdapter<String> adapterr = new ArrayAdapter<>(user_data.this, R.layout.autocomplete, getwork);
+        ArrayAdapter<String> adapterq = new ArrayAdapter<>(user_data.this, R.layout.autocomplete, get_edu);
         ArrayAdapter<String> fadapter = new ArrayAdapter<>(user_data.this, R.layout.autocomplete, get_fam);
         family.setThreshold(1);
         family.setAdapter(fadapter);
+        work1.setThreshold(1);
         work1.setAdapter(adapterr);
-        height.setAdapter(adapterh);
+        edu.setThreshold(1);
         edu.setAdapter(adapterq);
-
-        height.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                u_height=geth[i];
-                Log.d("getting",geth[i]+" as height");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            u_height=geth[0];
-                Log.d("getting",geth[0]+" as height");
-            }
-        });
-        work1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                u_work=getwork[i];
-                Log.d("getting",getwork[i]+" as work");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                u_work=getwork[0];
-                Log.d("getting",getwork[0]+" as height");
-            }
-        });
-        edu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                u_qua=get_edu[i];
-                Log.d("getting",get_edu[i]+" as height");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                u_qua=get_edu[0];
-                Log.d("getting",get_edu[0]+" as height");
-            }
-        });
 
         //TODO:safely remove this section
         //fetching the image link from firebase
@@ -214,8 +169,7 @@ public class user_data extends AppCompatActivity {
 
         Log.d("old", "old user " + is_old);
 
-        if (is_old)
-        {
+        if (is_old) {
             Log.d("old", "initiated old user protocol");
             initiate_old_user_protocol();
         }
@@ -227,20 +181,18 @@ public class user_data extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!is_connected)
-                {
+                if (!is_connected) {
                     Toast.makeText(user_data.this, "Please connect to internet", Toast.LENGTH_SHORT).show();
                 } else if
                 (
-                           Objects.requireNonNull(name.getText()).toString().equals("")
-                        || Objects.requireNonNull(age.getText()).toString().equals("")
-                        || Objects.requireNonNull(family.getText()).toString().equals("")
-                        || Objects.requireNonNull(place.getText()).toString().equals("")
-                        || u_work.equals("select")
-                        || u_height.equals("select")
-                        || u_qua.equals("select")
-                        || gender.equals("")  )
-                {
+                        Objects.requireNonNull(name.getText()).toString().equals("")
+                                || Objects.requireNonNull(age.getText()).toString().equals("")
+                                || Objects.requireNonNull(family.getText()).toString().equals("")
+                                || Objects.requireNonNull(place.getText()).toString().equals("")
+                                || Objects.requireNonNull(edu.getText()).toString().equals("")
+                                || Objects.requireNonNull(work1.getText()).toString().equals("")
+                                || Objects.requireNonNull(height.getText()).toString().equals("")
+                                || gender.equals("")) {
                     Toast.makeText(user_data.this, "Please fill all the details", Toast.LENGTH_SHORT).show();
                 } else {
                     SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
@@ -260,8 +212,8 @@ public class user_data extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 YoYo.with(Techniques.Tada).duration(1000).repeat(0).playOn(male);
-              //  SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
-              //  edit.putString("gender", "male").apply();
+                //  SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
+                //  edit.putString("gender", "male").apply();
                 gender = "male";
                 is_gender_clicked = true;
                 male.setBackgroundColor(Color.parseColor("#ED8A6B"));
@@ -372,10 +324,9 @@ public class user_data extends AppCompatActivity {
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onFailure(@NonNull Exception e)
-                {
-                    Log.d("error :","Error while uploading the photo :"+e.getMessage());
-                    AlertDialog.Builder alert=new AlertDialog.Builder(user_data.this,R.style.alert_custom);
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("error :", "Error while uploading the photo :" + e.getMessage());
+                    AlertDialog.Builder alert = new AlertDialog.Builder(user_data.this, R.style.alert_custom);
                     alert.setTitle("Error");
                     alert.setMessage(e.getMessage());
                     alert.show();
@@ -431,6 +382,114 @@ public class user_data extends AppCompatActivity {
         }
     }
 
+    private void push_into_database_final(String image_dwonload_link) {
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        if (gender.equals("male"))
+            reference = firebaseDatabase.getReference().child("male");
+        else
+            reference = firebaseDatabase.getReference().child("female");
+
+        //getting download link
+        SharedPreferences getlink = getSharedPreferences(D_LINK, MODE_PRIVATE);
+        download_link = getlink.getString("link", "wrong link");
+
+        //retriving the values
+        String uname = Objects.requireNonNull(name.getText()).toString().trim();
+        String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
+        String uage = Objects.requireNonNull(age.getText()).toString().trim();
+        String ugender = gender.trim();
+        save_in_shared_preferences(uname, ufamily);
+        //TODO:do not forget to set the correct download link=done
+        Log.d("downs", "proof    :" + image_dwonload_link);
+        Log.d("downs", "download :" + download_link);
+
+        //getting the decription
+        description d = new description();
+        String description = d.get_description(u_qua, u_work, Objects.requireNonNull(place.getText()).toString());
+
+        //image_download_link is the id proof
+        String final_data = uname + "#" + ufamily + "#" + uage + "#" + ugender + "#"
+                + download_link + "#" + image_dwonload_link + "#" + u_height + "#" + u_qua + "#" + u_work + "#" + description;
+        Log.d("downs", "final data :" + final_data);
+        //helperclass
+        heplerclass help = new heplerclass();
+        help.setName(final_data);
+        help.setReceived("received");
+        help.setSent("seen:yes:noti_token:");
+
+        SharedPreferences.Editor putkey = getSharedPreferences(KEY, MODE_PRIVATE).edit();
+        putkey.putString("key", user_num).apply();
+
+        reference.child(user_num).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
+                //navigate to the third card
+                card_two.setVisibility(View.GONE);
+                card_four.setVisibility(View.VISIBLE);
+                p_loading.setVisibility(View.GONE);
+
+                //TODO:change to true!!(done for now)
+                SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
+                edist.putBoolean("login", true).apply();
+                Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
+                startActivity(in);
+                finish();
+                Log.d("push ", "from inside " + reference.getKey());
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(user_data.this, "error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void check_network() {
+        new Handler().postDelayed(new Runnable() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void run() {
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                is_connected = (wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected());
+                check_network();
+            }
+        }, 2500);
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void initiate_old_user_protocol() {
+        //retreiving the name
+        SharedPreferences getname = getSharedPreferences(NAME, MODE_PRIVATE);
+        String get_name = getname.getString("name", "null");
+        //retreiving the family
+        SharedPreferences getfamily = getSharedPreferences(FAMILY, MODE_PRIVATE);
+        String fam = getfamily.getString("family", "null");
+
+        card_one.setVisibility(View.GONE);
+        card_two.setVisibility(View.GONE);
+        card_four.setVisibility(View.GONE);
+        card_three.setVisibility(View.VISIBLE);
+        welcome.setText("Welcome back,\n" + fam + " " + get_name);
+
+        conti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //saving the login details
+                SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
+                edist.putBoolean("login", true).apply();
+
+                Intent in = new Intent(user_data.this, MainActivity.class);
+                startActivity(in);
+                finish();
+                Animatoo.animateZoom(user_data.this);
+            }
+        });
+    }
+
     @Keep
     static class heplerclass {
         public String name;
@@ -442,8 +501,7 @@ public class user_data extends AppCompatActivity {
         public String link;
         public String phone;
 
-        public heplerclass()
-        {
+        public heplerclass() {
 
         }
 
@@ -495,114 +553,6 @@ public class user_data extends AppCompatActivity {
             this.link = link;
         }
 
-    }
-
-    public void check_network() {
-        new Handler().postDelayed(new Runnable() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void run() {
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo wifi_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                NetworkInfo data_conn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-                is_connected = (wifi_conn != null && wifi_conn.isConnected()) || (data_conn != null && data_conn.isConnected());
-                check_network();
-            }
-        }, 2500);
-    }
-
-    @SuppressLint("SetTextI18n")
-    public void initiate_old_user_protocol() {
-        //retreiving the name
-        SharedPreferences getname = getSharedPreferences(NAME, MODE_PRIVATE);
-        String get_name = getname.getString("name", "null");
-        //retreiving the family
-        SharedPreferences getfamily = getSharedPreferences(FAMILY, MODE_PRIVATE);
-        String fam = getfamily.getString("family", "null");
-
-        card_one.setVisibility(View.GONE);
-        card_two.setVisibility(View.GONE);
-        card_four.setVisibility(View.GONE);
-        card_three.setVisibility(View.VISIBLE);
-        welcome.setText("Welcome back,\n" + fam + " " + get_name);
-
-        conti.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //saving the login details
-                SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
-                edist.putBoolean("login", true).apply();
-
-                Intent in = new Intent(user_data.this, MainActivity.class);
-                startActivity(in);
-                finish();
-                Animatoo.animateZoom(user_data.this);
-            }
-        });
-    }
-
-    private void push_into_database_final(String image_dwonload_link) {
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        if (gender.equals("male"))
-            reference = firebaseDatabase.getReference().child("male");
-        else
-            reference = firebaseDatabase.getReference().child("female");
-
-        //getting download link
-        SharedPreferences getlink = getSharedPreferences(D_LINK, MODE_PRIVATE);
-        download_link = getlink.getString("link", "wrong link");
-
-        //retriving the values
-        String uname = Objects.requireNonNull(name.getText()).toString().trim();
-        String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
-        String uage = Objects.requireNonNull(age.getText()).toString().trim();
-        String ugender = gender.trim();
-        save_in_shared_preferences(uname, ufamily);
-        //TODO:do not forget to set the correct download link=done
-        Log.d("downs", "proof    :" + image_dwonload_link);
-        Log.d("downs", "download :" + download_link);
-
-        //getting the decription
-        description d=new description();
-        String description=d.get_description(u_qua,u_work, Objects.requireNonNull(place.getText()).toString());
-
-        //image_download_link is the id proof
-        String final_data = uname + "#" + ufamily + "#" + uage + "#" + ugender + "#"
-                + download_link + "#" + image_dwonload_link+"#"+u_height+"#"+u_qua+"#"+u_work+"#"+description;
-        Log.d("downs", "final data :" + final_data);
-        //helperclass
-        heplerclass help = new heplerclass();
-        help.setName(final_data);
-        help.setReceived("received");
-        help.setSent("seen:yes:noti_token:");
-
-        SharedPreferences.Editor putkey = getSharedPreferences(KEY, MODE_PRIVATE).edit();
-        putkey.putString("key", user_num).apply();
-
-        reference.child(user_num).setValue(help).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(user_data.this, "success", Toast.LENGTH_SHORT).show();
-                //navigate to the third card
-                card_two.setVisibility(View.GONE);
-                card_four.setVisibility(View.VISIBLE);
-                p_loading.setVisibility(View.GONE);
-
-                //TODO:change to true!!(done for now)
-                SharedPreferences.Editor edist = getSharedPreferences(LOGIN, MODE_PRIVATE).edit();
-                edist.putBoolean("login", true).apply();
-                Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
-                startActivity(in);
-                finish();
-                Log.d("push ", "from inside " + reference.getKey());
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(user_data.this, "error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void save_in_shared_preferences(String name, String family) {
@@ -665,8 +615,7 @@ public class user_data extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... voids)
-        {
+        protected Void doInBackground(Void... voids) {
             return null;
         }
     }

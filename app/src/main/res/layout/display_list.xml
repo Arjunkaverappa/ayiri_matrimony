@@ -76,20 +76,11 @@
                 app:cardCornerRadius="20dp">
 
                 <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="#5FFD67"
-                    android:text="@string/requested"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    tools:ignore="SmallSp" />
-
-                <Button
                     android:id="@+id/request"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="#8F44FA"
-                    android:text="@string/send_request"
+                    android:text="@string/view_profile"
                     android:textColor="@color/white"
                     android:textSize="11.5sp"
                     tools:ignore="SmallSp" />

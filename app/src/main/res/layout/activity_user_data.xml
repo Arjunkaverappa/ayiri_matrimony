@@ -197,7 +197,8 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="10dp"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@id/edu"
                     app:boxCornerRadiusBottomEnd="30dp"
                     app:boxCornerRadiusBottomStart="30dp"
                     app:boxCornerRadiusTopEnd="30dp"
@@ -216,78 +217,157 @@
                         android:textSize="20sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginEnd="10dp"
-                    android:orientation="horizontal">
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@id/work1"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:gravity="center|end"
-                        android:text="@string/your_height"
-                        android:textSize="19sp" />
-
-                    <Spinner
-                        android:id="@+id/height"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:spinnerMode="dropdown" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:gravity="center|end"
-                        android:text="@string/highest_qualification"
-                        android:textSize="19sp" />
-
-                    <Spinner
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/edu"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:spinnerMode="dropdown" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/qualification"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
+                <!--
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginEnd="10dp"
+                   android:orientation="horizontal">
 
-                <LinearLayout
+                   <TextView
+                       android:layout_width="0dp"
+                       android:layout_height="50dp"
+                       android:layout_weight="1"
+                       android:gravity="center|end"
+                       android:text="@string/your_height"
+                       android:textSize="19sp" />
+
+                   <Spinner
+                       android:id="@+id/height"
+                       android:layout_width="0dp"
+                       android:layout_height="50dp"
+                       android:layout_weight="1"
+                       android:spinnerMode="dropdown" />
+
+               </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:gravity="center|end"
+                            android:text="@string/highest_qualification"
+                            android:textSize="19sp" />
+
+                        <Spinner
+                            android:id="@+id/edu"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:spinnerMode="dropdown" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:gravity="center|end"
+                            android:text="@string/working_sector"
+                            android:textSize="19sp" />
+
+                        <Spinner
+                            android:id="@+id/work1"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:prompt="@string/working_sector"
+                            android:spinnerMode="dropdown" />
+
+                    </LinearLayout>
+                    -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginEnd="10dp"
-                    android:orientation="horizontal">
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@id/height"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:gravity="center|end"
-                        android:text="@string/working_sector"
-                        android:textSize="19sp" />
-
-                    <Spinner
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/work1"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:prompt="@string/working_sector"
-                        android:spinnerMode="dropdown" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/working_at"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/custom_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    app:boxCornerRadiusBottomEnd="30dp"
+                    app:boxCornerRadiusBottomStart="30dp"
+                    app:boxCornerRadiusTopEnd="30dp"
+                    app:boxCornerRadiusTopStart="30dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/height"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/height_in_feet"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textColorHint="#919090"
+                        android:textSize="20sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -364,6 +444,7 @@
 
 
                 </androidx.cardview.widget.CardView>
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

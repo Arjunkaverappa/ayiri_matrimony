@@ -97,7 +97,7 @@
     <string name="highest_qualification">Qualification :</string>
     <string name="working_sector">Working sector :</string>
     <string name="your_height">Your height :</string>
-    <string name="currently_living_in">Currently living in (eg:Virajpet)</string>
+    <string name="currently_living_in">Currently living in</string>
     <string name="description">description</string>
     <string name="requested">Requested</string>
     <string name="bio">Bio</string>
@@ -110,4 +110,11 @@
     <string name="you_havent_sent_request_to_anyone">You havent sent any requests yet</string>
     <string name="you_havent_received_any_requests">You havent received any requests yet</string>
     <string name="you_havent_found_any_matches_yet">you havent matched with anyone yet</string>
+    <string name="search_for">Search for</string>
+    <string name="done">Done</string>
+    <string name="view_profile">View profile</string>
+    <string name="previous">Previous</string>
+    <string name="qualification">Qualification</string>
+    <string name="working_at">Working at</string>
+    <string name="height_in_feet">Height (in feet)</string>
 </resources>

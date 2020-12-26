@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:theme="@style/Platform.MaterialComponents.Light"
     tools:context=".MainActivity">
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
-
+    <!--
+     <com.google.android.material.tabs.TabLayout
+         android:id="@+id/tablayout"
+         android:layout_width="match_parent"
+         android:layout_height="0dp" />
+    -->
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="55dp"
         android:orientation="vertical">
 
     </LinearLayout>
@@ -39,8 +39,8 @@
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:background="#000000"
-        app:bnc_mode="spread"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:bnc_mode="spread">
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/settings"

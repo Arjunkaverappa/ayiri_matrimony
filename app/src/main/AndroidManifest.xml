@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light"
         tools:ignore="AllowBackup">
+        <activity android:name=".view_profile"></activity>
         <activity android:name=".FAQ" />
         <activity android:name=".final_match" />
         <activity android:name=".Login" />
@@ -37,7 +38,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>
