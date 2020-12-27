@@ -43,6 +43,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mohammedalaa.seekbar.DoubleValueSeekBarView;
+import com.mohammedalaa.seekbar.OnDoubleValueSeekBarChangeListener;
 import com.onesignal.OSDeviceState;
 import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
@@ -90,7 +92,7 @@ public class home extends Fragment {
     //firebase
     FirebaseDatabase firebaseDatabase;
     FloatingActionButton fab;
-    Boolean fab_was_changed = false;
+    Boolean fab_was_changed = false, was_seekbar_changed = false;
     public static final String KEY = "com.ka12.ayiri_matrimony_this_is_where_key_is_stored";
     public static final String GENDER = "com.ka12.ayiri_matrimony_this_is_where_gender_is_stored";
     public static final String CHILD = "com.ka12.ayiri_matrimony_number_of_child_nodes";
@@ -107,7 +109,9 @@ public class home extends Fragment {
     RelativeLayout root_layout;
     CardView fab_card;
     ImageView blur_img;
-    Button male, female, done;
+    DoubleValueSeekBarView seekbar;
+    Button male, female, done, reset;
+    int min_age = 21, max_age = 50;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,7 +131,9 @@ public class home extends Fragment {
         done = v.findViewById(R.id.done);
         fab_card = v.findViewById(R.id.fab_lay);
         blur_img = v.findViewById(R.id.blur_img);
-
+        reset = v.findViewById(R.id.reset);
+        seekbar = v.findViewById(R.id.seekbar);
+        //hiding blurimg
         blur_img.setVisibility(View.GONE);
         fab_card.setVisibility(View.GONE);
         Window window = Objects.requireNonNull(getActivity()).getWindow();
@@ -167,9 +173,10 @@ public class home extends Fragment {
                         blur_img.setVisibility(View.VISIBLE);
                     } else {
                         fab_card.setVisibility(View.GONE);
-                        fab.setImageResource(R.drawable.fab);
+                        fab.setImageResource(R.drawable.filter);
                         list_name.setVisibility(View.VISIBLE);
                         blur_img.setVisibility(View.GONE);
+                        loading.setVisibility(View.GONE);
                         if (fab_was_changed) {
                             Toast.makeText(getActivity(), "Done", Toast.LENGTH_SHORT).show();
                             fab_was_changed = false;
@@ -177,6 +184,54 @@ public class home extends Fragment {
                         }
                     }
                     fab_count++;
+                }
+            });
+            //seekbar filter
+            seekbar.setOnRangeSeekBarViewChangeListener(new OnDoubleValueSeekBarChangeListener() {
+                @Override
+                public void onValueChanged(@org.jetbrains.annotations.Nullable DoubleValueSeekBarView doubleValueSeekBarView, int min, int max, boolean b) {
+                    min_age = min;
+                    max_age = max;
+                    was_seekbar_changed = true;
+                    Log.d("doubleseekbar", "onValueChanged: triggered");
+                }
+
+                @Override
+                public void onStartTrackingTouch(@org.jetbrains.annotations.Nullable DoubleValueSeekBarView doubleValueSeekBarView, int i, int i1) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(@org.jetbrains.annotations.Nullable DoubleValueSeekBarView doubleValueSeekBarView, int i, int i1) {
+
+                }
+            });
+            //the following method is to reset all the filters
+            reset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity(), "Done", Toast.LENGTH_SHORT).show();
+                    //resetting the gender
+                    SharedPreferences getgender = Objects.requireNonNull(getActivity()).getSharedPreferences(GENDER, MODE_PRIVATE);
+                    user_gender = getgender.getString("gender", "female");
+                    if (user_gender.equals("male")) {
+                        search_gender = "female";
+                    } else {
+                        search_gender = "male";
+                    }
+                    //seekbar reset
+                    seekbar.setCurrentMinValue(21);
+                    seekbar.setCurrentMaxValue(50);
+                    female.setBackgroundColor(Color.parseColor("#D063E3"));
+                    male.setBackgroundColor(Color.parseColor("#D063E3"));
+                    fab_was_changed = false;
+                    was_seekbar_changed = false;
+                    //finally returning to parent view
+                    loading.setVisibility(View.GONE);
+                    fab_card.setVisibility(View.GONE);
+                    fab.setImageResource(R.drawable.filter);
+                    list_name.setVisibility(View.VISIBLE);
+                    blur_img.setVisibility(View.GONE);
                 }
             });
             female.setOnClickListener(new View.OnClickListener() {
@@ -201,12 +256,13 @@ public class home extends Fragment {
                 @Override
                 public void onClick(View view) {
                     fab_card.setVisibility(View.GONE);
-                    fab.setImageResource(R.drawable.fab);
+                    fab.setImageResource(R.drawable.filter);
                     list_name.setVisibility(View.VISIBLE);
                     blur_img.setVisibility(View.GONE);
-                    if (fab_was_changed) {
+                    if (fab_was_changed || was_seekbar_changed) {
                         Toast.makeText(getActivity(), "Done", Toast.LENGTH_SHORT).show();
                         fab_was_changed = false;
+                        was_seekbar_changed = false;
                         new do_in_background().execute();
                     }
                 }
@@ -269,128 +325,6 @@ public class home extends Fragment {
         received_text.add(i, "Requested");
         custom.notifyDataSetChanged();
     }
-/*
-    private void refresh_data_final() {
-        try {
-            count = 0;
-            names.clear();
-            family.clear();
-            age.clear();
-            keys.clear();
-            gender.clear();
-            links.clear();
-            Log.d("barry", "initiated refresh_data_final in home ");
-
-            reference = FirebaseDatabase.getInstance().getReference().child(search_gender);
-            reference.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    count = 0;
-                    Log.d("delta ", "triggered on child added");
-                    loading.setVisibility(View.GONE);
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        String data = ds.getValue(String.class);
-                        if (count == 0) {
-                            if (data != null) {
-                                Log.d("delta ", "data :" + data);
-                                separated = data.split("\\#");
-                                //we add the names only when validated
-                                Log.d("home ", "name :" + separated[0] + " fam :" + separated[1] + " age :" + age + " gen :" + gender + " link :" + separated[4]);
-                            }
-                        }
-                        if (count == 1) {
-                            //we are filtering dubplicate entries
-                            received.add(data);
-                            Log.d("request ", "**************************************");
-                            Log.d("request", "from db :" + data);
-                            if (data != null) {
-                                spli = data.split("\\:");
-                            }
-                        }
-                        if (count == 2) {
-                            //testing
-                            if (data != null) {
-                                Log.d("split", "data :" + data);
-                                String[] split_last = data.split("\\:");
-                                //only adding if the account is valid
-                                if (split_last[1].equals("yes")) {
-                                    Log.d("split", "   Added :" + split_last[1]);
-                                    seen.add(split_last[0]);
-                                    keys.add(snapshot.getKey());
-                                    valid.add(split_last[1]);
-                                    notification_token.add(split_last[2]);
-                                    names.add(separated[0]);
-                                    family.add(separated[1]);
-                                    age.add(Integer.valueOf(separated[2]));
-                                    gender.add(separated[3]);
-                                    links.add(separated[4]);
-                                    height.add(separated[6]);
-                                    description.add(separated[9]);
-                                    //we have problems with the logic
-                                    for (int e = 0; e < spli.length; e++) {
-                                        Log.d("fele ", "1) comparing " + user_key + " with " + spli[e]);
-                                        if (user_key.equals(spli[e])) {
-                                            is_request_already_sent = true;
-                                        }
-                                    }
-                                    if (is_request_already_sent) {
-                                        received_text.add("Requested");
-                                        is_request_already_sent = false;
-                                    } else {
-                                        received_text.add("Send Request");
-                                    }
-                                }
-                            }
-                        }
-                        count++;
-                    }
-                    //testing
-                    if (!is_changed) {
-                        custom.notifyDataSetChanged();
-                    }
-                    //getting the number of child nodes
-                    if (count > 0) {
-                        no_of_child++;
-                        Log.d("jiss", String.valueOf(no_of_child));
-                        try {
-                            SharedPreferences.Editor edit = Objects.requireNonNull(getActivity()).getSharedPreferences(CHILD, MODE_PRIVATE).edit();
-                            edit.putInt("child", no_of_child).apply();
-                        } catch (Exception e) {
-                            Log.d("catch", "Error :" + e.getMessage());
-                        }
-                    }
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Log.d("try ", "triggered on child changed");
-                    custom.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    Log.d("try ", "triggered on child removed");
-                    custom.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Log.d("try ", "triggered on child moved");
-                    custom.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("try ", "triggered on child cancelled");
-                    custom.notifyDataSetChanged();
-                }
-            });
-        } catch (Exception e) {
-            Log.d("error ", "catch in update_data_final :" + e.getMessage());
-        }
-    }
-
- */
 
     public void send_request_finally_ultra(String data, String gender, String key, int notifi_index) {
         try {
@@ -694,7 +628,7 @@ public class home extends Fragment {
                 Animation list_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim);
                 main_card.startAnimation(list_anim);
 
-                name.setText("Name  : " + names.get(i) + "\nFamily : " + family.get(i) + "\nAge      : " + age.get(i));
+                name.setText(names.get(i) + "\n" + family.get(i) + "\n" + age.get(i));
                 last.setText("Last seen :" + seen.get(i));
                 desc.setText(description.get(i));
                 Picasso.get().load(links.get(i)).fit().centerCrop().into(img);
@@ -705,12 +639,13 @@ public class home extends Fragment {
                 request.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent go=new Intent(getActivity(),com.ka12.ayirimatrimony.view_profile.class);
+                        Intent go = new Intent(getActivity(), com.ka12.ayirimatrimony.view_profile.class);
                         startActivity(go);
                         Animatoo.animateInAndOut(Objects.requireNonNull(getContext()));
                     }
                 });
                 //we need to copy this function to view_profile
+                //also copy the send request method
                 /*
                 request.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -803,34 +738,21 @@ public class home extends Fragment {
                                     String[] split_last = data.split("\\:");
                                     //only adding if the account is valid
                                     if (split_last[1].equals("yes")) {
-                                        Log.d("split", "   Added :" + split_last[1]);
-                                        seen.add(split_last[0]);
-                                        keys.add(snapshot.getKey());
-                                        valid.add(split_last[1]);
-                                        notification_token.add(split_last[2]);
-                                        names.add(separated[0]);
-                                        family.add(separated[1]);
-                                        age.add(Integer.valueOf(separated[2]));
-                                        gender.add(separated[3]);
-                                        links.add(separated[4]);
-                                        height.add(separated[6]);
-                                        description.add(separated[9]);
-                                        //we have problems with the logic
-                                        /*
-                                        for (int e = 0; e < spli.length; e++) {
-                                            Log.d("fele ", "1) comparing " + user_key + " with " + spli[e]);
-                                            if (user_key.equals(spli[e])) {
-                                                is_request_already_sent = true;
-                                            }
+                                        //filtering by the age
+                                        if (Integer.parseInt(separated[2]) >= min_age && Integer.parseInt(separated[2]) <= max_age) {
+                                            Log.d("split", "   Added :" + split_last[1]);
+                                            seen.add(split_last[0]);
+                                            keys.add(snapshot.getKey());
+                                            valid.add(split_last[1]);
+                                            notification_token.add(split_last[2]);
+                                            names.add(separated[0]);
+                                            family.add(separated[1]);
+                                            age.add(Integer.valueOf(separated[2]));
+                                            gender.add(separated[3]);
+                                            links.add(separated[4]);
+                                            height.add(separated[6]);
+                                            description.add(separated[9]);
                                         }
-                                        if (is_request_already_sent) {
-                                            received_text.add("Requested");
-                                            is_request_already_sent = false;
-                                        } else {
-                                            received_text.add("Send Request");
-                                        }
-
-                                         */
                                     }
                                 }
                             }

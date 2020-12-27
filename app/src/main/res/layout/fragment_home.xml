@@ -50,7 +50,7 @@
         android:contentDescription="@string/app_name"
         android:elevation="20dp"
         android:focusable="true"
-        android:src="@drawable/fab"
+        android:src="@drawable/filter"
         android:tint="@color/white"
         app:fabSize="normal"
         app:pressedTranslationZ="10dp"

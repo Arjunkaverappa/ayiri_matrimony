@@ -26,6 +26,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +41,6 @@ import androidx.core.content.ContextCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,10 +63,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class user_data extends AppCompatActivity {
     //permission management
     public static final int uni_code = 1234;
-    TextInputEditText name, age, place, height;
-    AutoCompleteTextView family, work1, edu;
+    TextInputEditText name, age, place, height, father, mother, work1;
+    AutoCompleteTextView family, edu;
     public static final String PROOF_DOWNLOAD = "com.ka12.ayiri_matrimony_proof_download_link_is_saved_here";
-    Button submit, male, female, upload, conti, sub_proof;
+    Button submit, upload, conti, sub_proof, prev_to_one, prev_to_two;
     LottieAnimationView up, loading, p_loading;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
@@ -97,6 +96,7 @@ public class user_data extends AppCompatActivity {
     TextView welcome, long_text;
     Boolean is_uploaded_proof = false;
     String download_link, download_link_proof, player_id;
+    RadioGroup radio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +110,8 @@ public class user_data extends AppCompatActivity {
         family = findViewById(R.id.family);
         age = findViewById(R.id.age);
         submit = findViewById(R.id.submit);
-        male = findViewById(R.id.male);
-        female = findViewById(R.id.female);
+        father = findViewById(R.id.father);
+        mother = findViewById(R.id.mother);
         upload = findViewById(R.id.upload);
         card_one = findViewById(R.id.card_one);
         card_two = findViewById(R.id.card_two);
@@ -129,6 +129,9 @@ public class user_data extends AppCompatActivity {
         edu = findViewById(R.id.edu);
         height = findViewById(R.id.height);
         place = findViewById(R.id.place);
+        prev_to_one = findViewById(R.id.prev_to_one);
+        prev_to_two = findViewById(R.id.prev_to_two);
+        radio = findViewById(R.id.radio);
         //background task
         new do_in_background().execute();
 
@@ -143,17 +146,12 @@ public class user_data extends AppCompatActivity {
                 "BFA", "BFD", "BMM", "B.SW", "B.phil", "MA", "Mcom", "M.ed", "BFA", "MLIS", "Msc", "MSW", "M.phil",
                 "BBA", "BFM", "BHM", "BHA", "MBA", "MFM", "MHRM", "PGDM", "MHA", "B.A.M.S", "BDS", "BHMS", "BSMS",
                 "B.pharm", "BPT", "BUMS", "MBBS", "Bsc nursing", "MDs", "MD/MS", "M.pharm", "MPT", "MVSc", "BGL", "BL", "LLB",
-                "LLM", "ML", "CA", "CFA", "ICWA", "IAS", "IES", "IFS", "IRS", "IPS", "Phd", "Diploma", "Polytechnic",};
-        String[] getwork = {"Government", "Private", "Defence", "Business", "Self employed", "Not working", "PUC", "10th"};
+                "LLM", "ML", "CA", "CFA", "ICWA", "IAS", "IES", "IFS", "IRS", "IPS", "Phd", "Diploma", "Polytechnic", "10th", "PUC"};
 
-
-        ArrayAdapter<String> adapterr = new ArrayAdapter<>(user_data.this, R.layout.autocomplete, getwork);
         ArrayAdapter<String> adapterq = new ArrayAdapter<>(user_data.this, R.layout.autocomplete, get_edu);
         ArrayAdapter<String> fadapter = new ArrayAdapter<>(user_data.this, R.layout.autocomplete, get_fam);
         family.setThreshold(1);
         family.setAdapter(fadapter);
-        work1.setThreshold(1);
-        work1.setAdapter(adapterr);
         edu.setThreshold(1);
         edu.setAdapter(adapterq);
 
@@ -192,6 +190,8 @@ public class user_data extends AppCompatActivity {
                                 || Objects.requireNonNull(edu.getText()).toString().equals("")
                                 || Objects.requireNonNull(work1.getText()).toString().equals("")
                                 || Objects.requireNonNull(height.getText()).toString().equals("")
+                                || Objects.requireNonNull(father.getText()).toString().equals("")
+                                || Objects.requireNonNull(mother.getText()).toString().equals("")
                                 || gender.equals("")) {
                     Toast.makeText(user_data.this, "Please fill all the details", Toast.LENGTH_SHORT).show();
                 } else {
@@ -204,30 +204,19 @@ public class user_data extends AppCompatActivity {
                     //hiding the keyboard
                     InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    //saving all details in shared preferences
                 }
             }
         });
-        male.setOnClickListener(new View.OnClickListener() {
+        radio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                YoYo.with(Techniques.Tada).duration(1000).repeat(0).playOn(male);
-                //  SharedPreferences.Editor edit = getSharedPreferences(GENDER, MODE_PRIVATE).edit();
-                //  edit.putString("gender", "male").apply();
-                gender = "male";
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i == 1) {
+                    gender = "male";
+                } else {
+                    gender = "female";
+                }
                 is_gender_clicked = true;
-                male.setBackgroundColor(Color.parseColor("#ED8A6B"));
-                female.setBackgroundColor(Color.parseColor("#0277BD"));
-            }
-        });
-        female.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                YoYo.with(Techniques.Tada).duration(1000).repeat(0).playOn(female);
-                gender = "female";
-                is_gender_clicked = true;
-                female.setBackgroundColor(Color.parseColor("#ED8A6B"));
-                male.setBackgroundColor(Color.parseColor("#0277BD"));
+                Log.d(TAG, "onCheckedChanged: gender =" + gender);
             }
         });
         //step 2
@@ -248,7 +237,7 @@ public class user_data extends AppCompatActivity {
         });
 
         //TODO:delete the following code
-        female.setOnLongClickListener(new View.OnLongClickListener() {
+        submit.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Intent in = new Intent(user_data.this, com.ka12.ayirimatrimony.MainActivity.class);
@@ -257,7 +246,21 @@ public class user_data extends AppCompatActivity {
                 return false;
             }
         });
-
+        prev_to_one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                card_one.setVisibility(View.VISIBLE);
+                card_two.setVisibility(View.GONE);
+            }
+        });
+        prev_to_two.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                card_one.setVisibility(View.GONE);
+                card_two.setVisibility(View.VISIBLE);
+                card_three.setVisibility(View.GONE);
+            }
+        });
         //initialising one signal for notifications
         Log.d("onesignal", "initialising one signal with context");
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
@@ -316,7 +319,7 @@ public class user_data extends AppCompatActivity {
                                 String[] children = dir.list();
                                 for (int i = 0; i < Objects.requireNonNull(children).length; i++) {
                                     new File(dir, children[i]).delete();
-                                    Log.d("download", "deleted!!");
+                                    Log.d("download", "deleted successfully!");
                                 }
                             }
                         }
@@ -373,7 +376,7 @@ public class user_data extends AppCompatActivity {
                 try {
                     upload_image(image_url);
                 } catch (Exception e) {
-                    Log.d("download", "Error in try :" + e.getMessage());
+                    Log.d("error ", "Error in try :" + e.getMessage());
                 }
                 upload.setText("Uploading...");
             } else {

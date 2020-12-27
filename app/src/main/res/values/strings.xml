@@ -3,7 +3,7 @@
                                \nPlease delete the existing account and create a new one with same number.</string>
     <string name="warning_text">
                                Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
-                               User privacy is our utmost concern.<br>User data will not be sold or used for marketing purposes. </br></string>
+                               User privacy is our utmost concern.\nUser data will not be sold or used for marketing purposes. </string>
 
     <string name="faq">
         <b>Why cant I send request?</b><br>\n
@@ -50,7 +50,7 @@
     <string name="enter_your_family">Family name</string>
     <string name="enter_your_age">Age</string>
     <string name="submit">submit</string>
-    <string name="male">male</string>
+    <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="choose_a_profile_picture">Choose a profile picture</string>
     <string name="choose">choose</string>
@@ -117,4 +117,12 @@
     <string name="qualification">Qualification</string>
     <string name="working_at">Working at</string>
     <string name="height_in_feet">Height (in feet)</string>
+    <string name="fathers_name">Fathers name</string>
+    <string name="mother">Mothers name</string>
+    <string name="job_title">Job title</string>
+    <string name="upload_id_proof">Upload id-proof</string>
+    <string name="gender">Gender</string>
+    <string name="sort_by_age">Sort by age</string>
+    <string name="reset">Reset</string>
+    <string name="apply">Apply</string>
 </resources>

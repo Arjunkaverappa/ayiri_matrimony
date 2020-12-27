@@ -75,9 +75,39 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp"
+            android:text="@string/sort_by_age"
+            android:textColor="@color/black"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
+
+        <com.mohammedalaa.seekbar.DoubleValueSeekBarView
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:r2CurrentMaxValue="50"
+            app:r2CurrentMinValue="21"
+            app:r2barHeight="12dp"
+            app:r2circleFillColor="#74CCF4"
+            app:r2circleRadius="14dp"
+            app:r2circleTextColor="@color/black"
+            app:r2circleTextSize="@dimen/value_bar_circleTextSize"
+            app:r2fillColor="#D56DE6"
+            app:r2maxValue="50"
+            app:r2minValue="21"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp">
 
             <androidx.cardview.widget.CardView
@@ -89,12 +119,33 @@
 
                 <Button
                     android:id="@+id/done"
-                    android:layout_width="match_parent"
+                    android:layout_width="100dp"
                     android:layout_height="45dp"
                     android:background="#D063E3"
                     android:scaleX="1.3"
                     android:scaleY="1.3"
-                    android:text="@string/done"
+                    android:text="@string/apply"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    tools:ignore="ButtonStyle" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="120dp"
+                app:cardCornerRadius="30dp">
+
+                <Button
+                    android:id="@+id/reset"
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:background="#D063E3"
+                    android:scaleX="1.3"
+                    android:scaleY="1.3"
+                    android:text="@string/reset"
                     android:textColor="@color/white"
                     android:textSize="13sp"
                     tools:ignore="ButtonStyle" />
