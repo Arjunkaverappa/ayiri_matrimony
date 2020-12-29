@@ -397,7 +397,10 @@
             android:id="@+id/card_two"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             app:cardCornerRadius="30dp">
 
             <TextView
@@ -619,14 +622,16 @@
                 android:gravity="center"
                 android:text="@string/welcome_text"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 app:cardCornerRadius="30dp">
 
                 <Button
@@ -636,7 +641,7 @@
                     android:backgroundTint="#0277BD"
                     android:scaleX="1.3"
                     android:scaleY="1.3"
-                    android:text="@string/upload_image"
+                    android:text="@string/continue_"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     tools:ignore="ButtonStyle" />

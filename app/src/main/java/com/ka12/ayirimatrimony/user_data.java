@@ -63,7 +63,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class user_data extends AppCompatActivity {
     //permission management
     public static final int uni_code = 1234;
-    TextInputEditText name, age, place, height, father, mother, work1;
+    TextInputEditText name, age, place, height, father, mother, work1,company;
     AutoCompleteTextView family, edu;
     public static final String PROOF_DOWNLOAD = "com.ka12.ayiri_matrimony_proof_download_link_is_saved_here";
     Button submit, upload, conti, sub_proof, prev_to_one, prev_to_two;
@@ -105,6 +105,8 @@ public class user_data extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.hide();
+        Window window=getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         //initialization
         name = findViewById(R.id.name);
         family = findViewById(R.id.family);
@@ -129,6 +131,7 @@ public class user_data extends AppCompatActivity {
         edu = findViewById(R.id.edu);
         height = findViewById(R.id.height);
         place = findViewById(R.id.place);
+        company=findViewById(R.id.company);
         prev_to_one = findViewById(R.id.prev_to_one);
         prev_to_two = findViewById(R.id.prev_to_two);
         radio = findViewById(R.id.radio);
@@ -313,6 +316,8 @@ public class user_data extends AppCompatActivity {
                                 card_four.setVisibility(View.VISIBLE);
                                 p_loading.setVisibility(View.GONE);
                             }
+                            //TODO:enable this
+                            /*
                             //deleting the compressed file after compression and upload
                             File dir = new File(Environment.getExternalStorageDirectory() + "/Pictures/SiliCompressor/");
                             if (dir.isDirectory()) {
@@ -322,6 +327,8 @@ public class user_data extends AppCompatActivity {
                                     Log.d("download", "deleted successfully!");
                                 }
                             }
+
+                             */
                         }
                     });
                 }
@@ -395,24 +402,35 @@ public class user_data extends AppCompatActivity {
         //getting download link
         SharedPreferences getlink = getSharedPreferences(D_LINK, MODE_PRIVATE);
         download_link = getlink.getString("link", "wrong link");
-
+      //  TextInputEditText name, age, place, height, father, mother, work1,company;
+      //  AutoCompleteTextView family, edu;
         //retriving the values
         String uname = Objects.requireNonNull(name.getText()).toString().trim();
         String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
         String uage = Objects.requireNonNull(age.getText()).toString().trim();
+        String u_father= Objects.requireNonNull(father.getText()).toString().trim();
+        String u_mother= Objects.requireNonNull(mother.getText()).toString().trim();
+        String u_address= Objects.requireNonNull(place.getText()).toString().trim();
+        String u_job= Objects.requireNonNull(company.getText()).toString().trim();
+        String u_qualification=edu.getText().toString().trim();
+        String u_working_at= Objects.requireNonNull(work1.getText()).toString().trim();
+        String u_place=place.getText().toString().trim();
         String ugender = gender.trim();
+        u_height= Objects.requireNonNull(height.getText()).toString().trim();
+
         save_in_shared_preferences(uname, ufamily);
         //TODO:do not forget to set the correct download link=done
         Log.d("downs", "proof    :" + image_dwonload_link);
         Log.d("downs", "download :" + download_link);
 
         //getting the decription
-        description d = new description();
-        String description = d.get_description(u_qua, u_work, Objects.requireNonNull(place.getText()).toString());
+        String description ="Working at " + u_working_at + " as "+u_job+" after having completed my " + u_qualification + " degree." +
+                "I'm currently living in " + u_place+".";
 
-        //image_download_link is the id proof
+        //NOTE:image_download_link is the id proof
         String final_data = uname + "#" + ufamily + "#" + uage + "#" + ugender + "#"
-                + download_link + "#" + image_dwonload_link + "#" + u_height + "#" + u_qua + "#" + u_work + "#" + description;
+                + download_link + "#" + image_dwonload_link + "#" + u_height + " feet#" + u_qualification + "#" + u_working_at + "#" + description
+                +"#"+u_father+"#"+u_mother+"#"+u_address+"#"+u_job;
         Log.d("downs", "final data :" + final_data);
         //helperclass
         heplerclass help = new heplerclass();

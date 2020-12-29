@@ -2,8 +2,8 @@
      <string name="fake_alert"> There was a problem validating your account, please make sure you have entered the correct deatails.
                                \nPlease delete the existing account and create a new one with same number.</string>
     <string name="warning_text">
-                               Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)<br> </br><br> </br>
-                               User privacy is our utmost concern.\nUser data will not be sold or used for marketing purposes. </string>
+                               Please upload any id proof to validate your Account(adhaar card/pan card/voter Id)\n
+                               User privacy is our utmost concern.User data will not be sold or used for marketing purposes. </string>
 
     <string name="faq">
         <b>Why cant I send request?</b><br>\n
@@ -65,7 +65,6 @@
     <string name="upload_image">Upload image</string>
     <string name="entre_the_value_here">Enter the value here</string>
     <string name="settings">Settings</string>
-    <string name="send_request">Send request</string>
     <string name="matches">Matches</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
@@ -125,4 +124,5 @@
     <string name="sort_by_age">Sort by age</string>
     <string name="reset">Reset</string>
     <string name="apply">Apply</string>
+    <string name="send_request">Send request</string>
 </resources>

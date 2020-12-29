@@ -2,7 +2,6 @@ package com.ka12.ayirimatrimony;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -36,8 +35,8 @@ public class splash_screen extends AppCompatActivity {
             actionBar.hide();
             //changing status bar color
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#6ABEDF"));
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+           // window.setStatusBarColor(Color.parseColor("#6ABEDF"));
             //dark text in status bar
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             //getting the login details
