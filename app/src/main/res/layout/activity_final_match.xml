@@ -26,10 +26,11 @@
                 <ImageView
                     android:id="@+id/profile"
                     android:layout_width="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="2dp"
                     android:layout_height="260dp"
                     android:contentDescription="@string/app_name"
-                    android:scaleX="1.01"
-                    android:scaleY="1.01"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/profile" />
 
             </androidx.cardview.widget.CardView>

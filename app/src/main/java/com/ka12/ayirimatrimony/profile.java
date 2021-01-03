@@ -248,6 +248,7 @@ public class profile extends Fragment {
                         // PreferenceManager.getDefaultSharedPreferences(getContext()).edit().clear().apply();
                         Intent in = new Intent(getActivity(), com.ka12.ayirimatrimony.Login.class);
                         startActivity(in);
+                        getActivity().finish();
                         Animatoo.animateZoom(getActivity());
                     }
                 });

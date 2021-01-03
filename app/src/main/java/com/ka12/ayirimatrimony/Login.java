@@ -150,7 +150,7 @@ public class Login extends AppCompatActivity {
                         varify_code(Objects.requireNonNull(otp.getText()).toString().trim());
                         Log.d("login ", "sent code " + otp.getText().toString().trim());
                         countDownTimer.cancel();
-                        submit_otp.setText("Varifying...");
+                        submit_otp.setText("Verifying...");
                     }
                 }
             });

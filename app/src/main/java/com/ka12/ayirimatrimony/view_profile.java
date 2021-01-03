@@ -42,7 +42,7 @@ public class view_profile extends AppCompatActivity {
     public static final String NAME = "com.ka12.ayiri_matrimony_this_is_where_name_is_stored";
     String name, family, age, height, qua, desc, work, father, mother, gender, place, token, job, profile_key, link, user_key, push_data;
     Handler handler = new Handler();
-    Boolean is_connected;
+    Boolean is_connected=false;
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
     int s_count = 0;
@@ -92,9 +92,9 @@ public class view_profile extends AppCompatActivity {
         profile_key = get.getStringExtra("key");
         link = get.getStringExtra("link");
         token = get.getStringExtra("token");
-        Log.d("receivedz ", "name :" + name + "\nfamily :" + family + "\nage :" + age + "\nheight :" + height);
-        Log.d("receivedz ", "qualification :" + qua + "\ndesc :" + desc + "\nwork :" + work + "\nfather :" + father);
-        Log.d("receivedz ", "mother :" + mother + "\nplace :" + place + "\njob :" + job + "\nkey :" + profile_key + "\nlink :" + link + "\ntoken " + token);
+        Log.d("receivedz ", "\nname :" + name + "\nfamily :" + family + "\nage :" + age + "\nheight :" + height+
+        "\nqualification :" + qua + "\ndesc :" + desc + "\nwork :" + work + "\nfather :" + father+
+        "\nmother :" + mother + "\nplace :" + place + "\njob :" + job + "\nkey :" + profile_key + "\nlink :" + link + "\ntoken :" + token);
         //setting up values
         Picasso.get().load(link).into(image);
         u_name.setText(family + " " + name);
@@ -106,21 +106,28 @@ public class view_profile extends AppCompatActivity {
         u_bio.setText(desc);
         if(gender.equals("male"))
         {
-            u_father.setText(" S/O "+father+" and "+mother);
-        }else u_father.setText(" D/O "+father+" and "+mother);
+            u_father.setText(" S/o "+father+" and "+mother);
+        }else u_father.setText(" D/o "+father+" and "+mother);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(is_connected)
                 {
-                    retreive_current_node();
+                    //TODO:make sure the user wont send requests to people with same gender
+                    try {
+                        retreive_current_node();
+                    }catch (Exception e)
+                    {
+                        Log.d("error ","Cought :"+e.getMessage());
+                    }
                 }else
                 {
                     Toast.makeText(view_profile.this, "Please connect to internet!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        check_network();
     }
 
     public void check_network() {
@@ -146,7 +153,8 @@ public class view_profile extends AppCompatActivity {
         }
     }
 
-    public void retreive_current_node() {
+    public void retreive_current_node()
+    {
         try {
             Log.d("send ", "sender key   :" + user_key);
             Log.d("send ", "receiver key :" + profile_key);
@@ -208,7 +216,8 @@ public class view_profile extends AppCompatActivity {
             reference = firebaseDatabase.getReference().child(gender).child(profile_key).child("received");
             reference.setValue(push_data).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
-                public void onSuccess(Void aVoid) {
+                public void onSuccess(Void aVoid)
+                {
                     Toast.makeText(view_profile.this, "Request sent", Toast.LENGTH_SHORT).show();
                     Log.d("send ", "pushed successfully");
                     //sending notification

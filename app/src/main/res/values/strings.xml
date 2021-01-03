@@ -7,8 +7,8 @@
 
     <string name="faq">
         <b>Why cant I send request?</b><br>\n
-        <i>All new accounts has to go through varification process to prevent misuse of user data. Users wont be able to send or received
-           requests from other users when their account is pending for varification.Please be patient while we varify your
+        <i>All new accounts has to go through verification process to prevent misuse of user data. Users wont be able to send or received
+           requests from other users when their account is pending for verification.Please be patient while we verify your
            account based on the user details.</i></br>\n\n
         <br><br><b>Why the colors are distorted?</b><br>\n
         <i>Some devices override colors when switched to Night/Dark mode. Please make sure to
@@ -22,7 +22,16 @@
         <b>What after i find a match?</b>\n
         <i>Its up to the user to proceed accordingly. The other user will be notified about the match.</i>
     </string>
-    <string name="change_log"><b>Version_0.5_alpha</b>\n
+    <string name="change_log"><b>Version_0.75_alpha</b>\n
+                                 <i>01/01/2021</i>\n
+                               * Filter based on age and gender \n
+                               * Disabled screenshot/recording \n
+                               * Added option to view profile \n
+                               * Redesigned user details page \n
+                               * Redesinged explore  \n
+                               * Added delete account \n
+                               * fixed previous bugs \n
+                              \n<b>Version_0.5_alpha</b>\n
                               <i>23/12/2020</i>\n
                                * Added security measures \n
                                * Added live notification support\n

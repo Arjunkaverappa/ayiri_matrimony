@@ -15,7 +15,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -51,19 +50,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.iceteck.silicompressorr.SiliCompressor;
 import com.onesignal.OSDeviceState;
 import com.onesignal.OneSignal;
 
-import java.io.File;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
+       /*
+          TODO: 1)try creating a destination folder and checking its existence before compression
+                2)try changing the destination directory alltogerther, and create my own
+                3)inspect the log entries from both the devices with different behaviours
+                // at line no: 282 -> upload function()
+        */
 public class user_data extends AppCompatActivity {
     //permission management
     public static final int uni_code = 1234;
-    TextInputEditText name, age, place, height, father, mother, work1,company;
+    TextInputEditText name, age, place, height, father, mother, work1, company;
     AutoCompleteTextView family, edu;
     public static final String PROOF_DOWNLOAD = "com.ka12.ayiri_matrimony_proof_download_link_is_saved_here";
     Button submit, upload, conti, sub_proof, prev_to_one, prev_to_two;
@@ -105,7 +107,7 @@ public class user_data extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.hide();
-        Window window=getWindow();
+        Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         //initialization
         name = findViewById(R.id.name);
@@ -131,7 +133,7 @@ public class user_data extends AppCompatActivity {
         edu = findViewById(R.id.edu);
         height = findViewById(R.id.height);
         place = findViewById(R.id.place);
-        company=findViewById(R.id.company);
+        company = findViewById(R.id.company);
         prev_to_one = findViewById(R.id.prev_to_one);
         prev_to_two = findViewById(R.id.prev_to_two);
         radio = findViewById(R.id.radio);
@@ -278,15 +280,82 @@ public class user_data extends AppCompatActivity {
     }
 
     private void upload_image(Uri image_url) {
-        if (image_url != null) {
+        if (image_url != null)
+        {
             Toast.makeText(this, "Uploading image", Toast.LENGTH_LONG).show();
             String name_file = System.currentTimeMillis() + "." + get_file_extension(image_url);
             StorageReference filereference = storageReference.child(name_file);
             //compressing the image
-            String filePath = SiliCompressor.with(user_data.this).compress(image_url.toString(), new File(Environment.DIRECTORY_PICTURES));
-            Log.d(TAG, "upload_image: filepath  :" + filePath);
+            //  String filePath = SiliCompressor.with(user_data.this).compress(image_url.toString(), new File(Environment.DIRECTORY_PICTURES));
+            //  Log.d(TAG, "upload_image: filepath  :" + filePath);
             Log.d(TAG, "upload_image: image_url :" + image_url);
-            filereference.putFile(Uri.parse(filePath)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            //hybrid image selection based on instances
+             /*
+            if(filePath!=null)
+            {
+                Log.d("filepath ","compression mode true");
+                filereference.putFile(Uri.parse(filePath)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                if (is_uploaded_proof)
+                                {
+                                    //getting the link of the proof
+                                    download_link_proof = uri.toString();
+                                    Log.d(TAG, "download link of proof :" + download_link_proof);
+                                    SharedPreferences.Editor edit = getSharedPreferences(PROOF_DOWNLOAD, MODE_PRIVATE).edit();
+                                    edit.putString("proof", download_link_proof).apply();
+
+                                    //save everything in db
+                                    push_into_database_final(uri.toString());
+
+                                } else {
+                                    //getting the download link
+                                    download_link = uri.toString();
+                                    Log.d("download ", "sending " + download_link);
+
+                                    //passing it to shared preferences
+                                    SharedPreferences.Editor edit = getSharedPreferences(D_LINK, MODE_PRIVATE).edit();
+                                    edit.putString("link", download_link).apply();
+                                    Log.d("downs ", "get download :" + download_link);
+
+                                    card_two.setVisibility(View.GONE);
+                                    card_four.setVisibility(View.VISIBLE);
+                                    p_loading.setVisibility(View.GONE);
+                                }
+                                //TODO:enable this
+
+                            //deleting the compressed file after compression and upload
+                            File dir = new File(Environment.getExternalStorageDirectory() + "/Pictures/SiliCompressor/");
+                            if (dir.isDirectory()) {
+                                String[] children = dir.list();
+                                for (int i = 0; i < Objects.requireNonNull(children).length; i++) {
+                                    new File(dir, children[i]).delete();
+                                    Log.d("download", "deleted successfully!");
+                                }
+                            }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("error :", "Error while uploading the photo :" + e.getMessage());
+                        AlertDialog.Builder alert = new AlertDialog.Builder(user_data.this, R.style.alert_custom);
+                        alert.setTitle("Error");
+                        alert.setMessage(e.getMessage());
+                        alert.show();
+                    }
+                });
+            }else
+
+              */
+            Log.d("filepath ", "compression mode false");
+            filereference.putFile(image_url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -294,6 +363,7 @@ public class user_data extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             if (is_uploaded_proof) {
+                                //getting the link of the proof
                                 download_link_proof = uri.toString();
                                 Log.d(TAG, "download link of proof :" + download_link_proof);
                                 SharedPreferences.Editor edit = getSharedPreferences(PROOF_DOWNLOAD, MODE_PRIVATE).edit();
@@ -383,7 +453,7 @@ public class user_data extends AppCompatActivity {
                 try {
                     upload_image(image_url);
                 } catch (Exception e) {
-                    Log.d("error ", "Error in try :" + e.getMessage());
+                    Log.d("error ", "Error in try while calling upload_image :" + e.getMessage());
                 }
                 upload.setText("Uploading...");
             } else {
@@ -402,21 +472,21 @@ public class user_data extends AppCompatActivity {
         //getting download link
         SharedPreferences getlink = getSharedPreferences(D_LINK, MODE_PRIVATE);
         download_link = getlink.getString("link", "wrong link");
-      //  TextInputEditText name, age, place, height, father, mother, work1,company;
-      //  AutoCompleteTextView family, edu;
+        //  TextInputEditText name, age, place, height, father, mother, work1,company;
+        //  AutoCompleteTextView family, edu;
         //retriving the values
         String uname = Objects.requireNonNull(name.getText()).toString().trim();
         String ufamily = Objects.requireNonNull(family.getText()).toString().trim();
         String uage = Objects.requireNonNull(age.getText()).toString().trim();
-        String u_father= Objects.requireNonNull(father.getText()).toString().trim();
-        String u_mother= Objects.requireNonNull(mother.getText()).toString().trim();
-        String u_address= Objects.requireNonNull(place.getText()).toString().trim();
-        String u_job= Objects.requireNonNull(company.getText()).toString().trim();
-        String u_qualification=edu.getText().toString().trim();
-        String u_working_at= Objects.requireNonNull(work1.getText()).toString().trim();
-        String u_place=place.getText().toString().trim();
+        String u_father = Objects.requireNonNull(father.getText()).toString().trim();
+        String u_mother = Objects.requireNonNull(mother.getText()).toString().trim();
+        String u_address = Objects.requireNonNull(place.getText()).toString().trim();
+        String u_job = Objects.requireNonNull(company.getText()).toString().trim();
+        String u_qualification = edu.getText().toString().trim();
+        String u_working_at = Objects.requireNonNull(work1.getText()).toString().trim();
+        String u_place = place.getText().toString().trim();
         String ugender = gender.trim();
-        u_height= Objects.requireNonNull(height.getText()).toString().trim();
+        u_height = Objects.requireNonNull(height.getText()).toString().trim();
 
         save_in_shared_preferences(uname, ufamily);
         //TODO:do not forget to set the correct download link=done
@@ -424,13 +494,13 @@ public class user_data extends AppCompatActivity {
         Log.d("downs", "download :" + download_link);
 
         //getting the decription
-        String description ="Working at " + u_working_at + " as "+u_job+" after having completed my " + u_qualification + " degree." +
-                "I'm currently living in " + u_place+".";
+        String description = "Working at " + u_working_at + " as " + u_job + " after having completed my " + u_qualification + " degree." +
+                "I'm currently living in " + u_place + ".";
 
         //NOTE:image_download_link is the id proof
         String final_data = uname + "#" + ufamily + "#" + uage + "#" + ugender + "#"
                 + download_link + "#" + image_dwonload_link + "#" + u_height + " feet#" + u_qualification + "#" + u_working_at + "#" + description
-                +"#"+u_father+"#"+u_mother+"#"+u_address+"#"+u_job;
+                + "#" + u_father + "#" + u_mother + "#" + u_address + "#" + u_job;
         Log.d("downs", "final data :" + final_data);
         //helperclass
         heplerclass help = new heplerclass();

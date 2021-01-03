@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/sa"
+    android:background="@drawable/grad_test_one"
     android:fitsSystemWindows="true"
     android:theme="@style/custom_for_view"
     tools:context=".view_profile">
@@ -95,7 +95,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:gravity="left"
                         android:singleLine="true"
@@ -109,7 +109,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:gravity="left"
                         android:singleLine="true"
@@ -123,7 +123,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:gravity="left"
                         android:singleLine="true"
@@ -137,7 +137,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="80dp"
                         android:gravity="left"
@@ -183,7 +183,7 @@
         android:layout_marginEnd="20dp"
         android:elevation="100dp"
         android:src="@mipmap/blur_img"
-        app:civ_border_color="#BDBBBB"
+        app:civ_border_color="#FFFFFF"
         app:civ_border_width="7dp" />
 
 </RelativeLayout>

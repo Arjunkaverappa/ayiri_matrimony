@@ -3,6 +3,7 @@ package com.ka12.ayirimatrimony;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,10 +23,11 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout change_frag;
     LinearLayout main_layout, profile_frag;
     ListView list_name;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //blocking screenshots
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_main);
         profile_frag = findViewById(R.id.profile_frag);
         // check = findViewById(R.id.change);
@@ -37,6 +39,25 @@ public class MainActivity extends AppCompatActivity {
         main_layout.setVisibility(View.GONE);
         FragmentManager goto_frag = getSupportFragmentManager();
         goto_frag.beginTransaction().add(R.id.change_frag, new home()).commit();
+        /*
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        decorView.setSystemUiVisibility(uiOptions);
+
+         */
+        /*
+        View decorViews = getWindow().getDecorView();
+        int uiOptionss = View.SYSTEM_UI_FLAG_VISIBLE;
+        decorViews.setSystemUiVisibility(uiOptionss);
+         */
+         /*
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                |View.SYSTEM_UI_FLAG_IMMERSIVE;
+        decorView.setSystemUiVisibility(uiOptions);
+
+          */
 
         bottom_bar.setCurrentActiveItem(2);
         bottom_bar.setNavigationChangeListener(new BubbleNavigationChangeListener() {
